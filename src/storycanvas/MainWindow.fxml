@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.dockfx.*?>
+
+<DockPane id="AnchorPane" prefHeight="200" prefWidth="320" xmlns:fx="http://javafx.com/fxml/1" fx:controller="storycanvas.MainWindowController">
+	<children>
+		<DockNode title="むりやり" prefWidth="300" dockPos="CENTER" >
+			<contents>
+				<Button layoutX="126" layoutY="90" text="Click Me!" onAction="#handleButtonAction" fx:id="button" />
+			</contents>
+		</DockNode>
+		<DockNode title="あいうえお" prefWidth="300" dockPos="TOP"  >
+			<contents>
+				<Label layoutX="126" layoutY="120" minHeight="16" minWidth="69" fx:id="label" />
+			</contents>
+		</DockNode>
+		<DockNode title="てすとらべる" prefWidth="300" dockPos="LEFT"  >
+			<contents>
+				<Label layoutX="126" layoutY="120" minHeight="16" minWidth="69" text="やあ" />
+			</contents>
+		</DockNode>
+	</children>
+</DockPane>
