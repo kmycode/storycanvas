@@ -128,7 +128,7 @@
 }
 
 .dock-title-bar {
-  -fx-background-color: #3399ff;
+  -fx-background-color: #9a9a9a;
   -fx-padding: 2;
   -fx-spacing: 3;
   -fx-border-width: 1;
@@ -156,11 +156,11 @@
 /* Set the icons for the dock title bar's buttons here. */
 .dock-state-button {
   -fx-graphic: url(restore.png);
-  -fx-background-color: transparent;
 }
 
 .dock-node:floating .dock-state-button {
   -fx-graphic: url(maximize.png);
+  -fx-background-color: transparent;
 }
 .dock-node:floating .dock-state-button:hover {
 	-fx-background-color: #cccccc;

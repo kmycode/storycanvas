@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.input.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<MenuBar xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="storycanvas.view.window.MainMenuController">
+  <menus>
+    <Menu mnemonicParsing="false" text="ファイル(_F)">
+      <items>
+        <MenuItem text="終了(_X)">
+               <accelerator>
+                  <KeyCodeCombination alt="UP" code="Q" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+               </accelerator></MenuItem>
+      </items>
+    </Menu>
+    <Menu mnemonicParsing="false" text="編集(_E)">
+      <items>
+        <MenuItem mnemonicParsing="false" text="Delete" />
+      </items>
+    </Menu>
+    <Menu mnemonicParsing="false" text="ヘルプ(_H)">
+      <items>
+        <MenuItem text="バージョン情報(_A)..." />
+      </items>
+    </Menu>
+  </menus>
+</MenuBar>

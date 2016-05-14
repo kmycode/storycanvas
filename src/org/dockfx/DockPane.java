@@ -587,10 +587,13 @@ public class DockPane extends StackPane implements EventHandler<DockEvent> {
           dockAreaIndicator.setTranslateX(0);
         }
 
+		// get DockPane layout y (for example, menu bar, tool bar, etc...) by KMY
+		final double layoutY = this.getLayoutY();
+
         if (dockPosDrag == DockPos.BOTTOM) {
-          dockAreaIndicator.setTranslateY(dockAreaDrag.getLayoutBounds().getHeight() / 2);
+          dockAreaIndicator.setTranslateY(dockAreaDrag.getLayoutBounds().getHeight() / 2 - layoutY);
         } else {
-          dockAreaIndicator.setTranslateY(0);
+          dockAreaIndicator.setTranslateY(-layoutY);
         }
 
         if (dockPosDrag == DockPos.LEFT || dockPosDrag == DockPos.RIGHT) {

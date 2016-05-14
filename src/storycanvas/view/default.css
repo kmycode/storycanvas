@@ -1,0 +1,63 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+
+// jStorybookのスタイルシートをそのまま転用
+
+.table-view .table-row-cell {
+	-fx-background-color: white;
+}
+.table-view .table-row-cell:even:filled {
+    -fx-background-color: white;
+}
+.table-view .table-row-cell:odd:filled {
+    -fx-background-color: #e6eef6;
+}
+.table-view .table-row-cell:selected:filled {
+	-fx-background-color: #dedede;
+}
+.table-view:focused .table-row-cell:selected:filled {
+	-fx-background-color: #b8cfe5;
+}
+.table-view .table-row-cell:selected:filled .table-cell {
+	-fx-border-color: transparent transparent transparent transparent;
+}
+
+/* 大きなアイコンを使ったタブ */
+.icon-tab-pane .tab {
+	-fx-pref-width: 50px;
+	-fx-pref-height: 50px;
+}
+
+.tab-pane .tab-header-background {
+	-fx-background-color: #eeeeee;
+	-fx-border-color: #aabbcc;
+	-fx-border-width: 0 0 1px 0;
+}
+
+.tab-pane .tab-close-button:hover {
+	-fx-border-color: red;
+}
+
+.tab-pane .tab {
+	-fx-border-radius: 10px 10px 0px 0px;
+	-fx-background-color: #bdd5ea;
+	-fx-border-color: #8899ee;
+	-fx-border-width: 1px 1px 0 1px;
+}
+.tab-pane .tab:selected,.tab-pane .tab:selected:hover {
+	-fx-background-color: white;
+	-fx-border-color: #999999;
+}
+.tab-pane .tab:hover {
+	-fx-background-color: #cceeff;
+	-fx-border-color: #8899ee;
+}
+
+.scroll-bar {
+	-fx-pref-width: 20px;
+	-fx-pref-height: 20px;
+	-fx-background-color: #eeeeee;
+}
+

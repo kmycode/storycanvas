@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.dockfx.*?>
+
+<DockPane xmlns:fx="http://javafx.com/fxml/1" id="DockPane" VBox.vgrow="ALWAYS">
+	<children>
+		<DockNode title="メイン" prefWidth="300" dockPos="CENTER" dockTitleBarVisible="false">
+			<contents>
+				<fx:include source="/storycanvas/view/node/StoryMainNode.fxml"/>
+			</contents>
+		</DockNode>
+		<DockNode title="編集" prefWidth="300" dockPos="RIGHT"  >
+			<contents>
+				<Label minHeight="16" minWidth="69" text="TODO: 編集画面" />
+			</contents>
+		</DockNode>
+	</children>
+</DockPane>

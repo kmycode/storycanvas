@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<TabPane side="LEFT" styleClass="icon-tab-pane" tabClosingPolicy="UNAVAILABLE"
+		 VBox.vgrow="ALWAYS"
+		 xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="storycanvas.view.node.StoryMainNodeController">
+  <tabs>
+    <Tab fx:id="personTab" text="人物">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0">
+			<TableView AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+		</AnchorPane>
+      </content>
+    </Tab>
+    <Tab fx:id="placeTab" text="場所">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0">
+			<TableView AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+		</AnchorPane>
+      </content>
+    </Tab>
+  </tabs>
+</TabPane>

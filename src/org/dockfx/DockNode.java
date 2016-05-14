@@ -380,6 +380,18 @@ public class DockNode extends VBox implements EventHandler<MouseEvent> {
 		return this.dockPos;
 	}
 
+	public boolean isDockTitleBarVisible() {
+		return this.getChildren().contains(this.dockTitleBar);
+	}
+
+	public void setDockTitleBarVisible(boolean visibility) {
+		if (visibility) {
+			this.setDockTitleBar(this.dockTitleBar);
+		} else {
+			this.setDockTitleBar(null);
+		}
+	}
+
 	/**
 	 * The dock pane that was last associated with this dock node. Either the dock pane that it is
 	 * currently docked to or the one it was detached from. Can be null if the node was never docked.

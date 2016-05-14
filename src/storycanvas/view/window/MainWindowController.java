@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package storycanvas;
+package storycanvas.view.window;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -13,7 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 
 /**
- *
+ * メインウィンドウのコントローラクラス
  * @author KMY
  */
 public class MainWindowController implements Initializable {
