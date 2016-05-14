@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<HBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="storycanvas.view.part.EntityListButtonBoxController">
+   <children>
+      <Button mnemonicParsing="false" text="新規" prefHeight="45" prefWidth="80">
+		  <graphic>
+			<ImageView pickOnBounds="true" preserveRatio="true">
+			   <image>
+				  <Image url="@/storycanvas/resource/icon/new.png" />
+			   </image>
+			</ImageView>
+		  </graphic>
+	  </Button>
+      <Button mnemonicParsing="false" text="編集" prefHeight="45" prefWidth="80">
+		  <graphic>
+			<ImageView pickOnBounds="true" preserveRatio="true">
+			   <image>
+				  <Image url="@/storycanvas/resource/icon/edit.png" />
+			   </image>
+			</ImageView>
+		  </graphic>
+	  </Button>
+      <Button mnemonicParsing="false" text="削除" prefHeight="45" prefWidth="80">
+		  <graphic>
+			<ImageView pickOnBounds="true" preserveRatio="true">
+			   <image>
+				  <Image url="@/storycanvas/resource/icon/cancel.png" />
+			   </image>
+			</ImageView>
+		  </graphic>
+	  </Button>
+      <Button mnemonicParsing="false" text="" prefHeight="45" prefWidth="40">
+		  <graphic>
+			<ImageView pickOnBounds="true" preserveRatio="true">
+			   <image>
+				  <Image url="@/storycanvas/resource/icon/up.png" />
+			   </image>
+			</ImageView>
+		  </graphic>
+	  </Button>
+      <Button mnemonicParsing="false" text="" prefHeight="45" prefWidth="40">
+		  <graphic>
+			<ImageView pickOnBounds="true" preserveRatio="true">
+			   <image>
+				  <Image url="@/storycanvas/resource/icon/down.png" />
+			   </image>
+			</ImageView>
+		  </graphic>
+	  </Button>
+   </children>
+</HBox>

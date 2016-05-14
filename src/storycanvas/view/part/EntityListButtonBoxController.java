@@ -15,32 +15,25 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package storycanvas.view.node;
+package storycanvas.view.part;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Tab;
 
 /**
- * メインとなるノードのコントローラ
+ * FXML Controller class
  *
  * @author KMY
  */
-public class StoryMainNodeController implements Initializable {
-
-	@FXML
-	private Tab personTab;
-
-	@FXML
-	private Tab placeTab;
+public class EntityListButtonBoxController implements Initializable {
 
 	/**
 	 * Initializes the controller class.
 	 */
 	@Override
 	public void initialize (URL url, ResourceBundle rb) {
+		// TODO
 	}
 
 }

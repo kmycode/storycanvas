@@ -11,14 +11,14 @@
 <DockPane xmlns:fx="http://javafx.com/fxml/1" id="DockPane" VBox.vgrow="ALWAYS">
 	<children>
 		<DockNode title="メイン" prefWidth="300" dockPos="CENTER" dockTitleBarVisible="false">
-			<contents>
+			<content>
 				<fx:include source="/storycanvas/view/node/StoryMainNode.fxml"/>
-			</contents>
+			</content>
 		</DockNode>
 		<DockNode title="編集" prefWidth="300" dockPos="RIGHT"  >
-			<contents>
+			<content>
 				<Label minHeight="16" minWidth="69" text="TODO: 編集画面" />
-			</contents>
+			</content>
 		</DockNode>
 	</children>
 </DockPane>

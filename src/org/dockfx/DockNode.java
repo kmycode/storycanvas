@@ -61,11 +61,11 @@ public class DockNode extends VBox implements EventHandler<MouseEvent> {
 	private Stage stage;
 
 	/**
-	 * The contents of the dock node, i.e. a TreeView or ListView.
+	 * The content of the dock node, i.e. a TreeView or ListView.
 	 */
-	private Node contents;
+	private Node content;
 	/**
-	 * The contents of the dock position. (KMY Original property)
+	 * The content of the dock position. (KMY Original property)
 	 */
 	private DockPos dockPos = DockPos.CENTER;
 	/**
@@ -139,16 +139,16 @@ public class DockNode extends VBox implements EventHandler<MouseEvent> {
 	/**
 	 * Creates a default DockNode with a default title bar and layout.
 	 *
-	 * @param contents The contents of the dock node which may be a tree or another scene graph node.
+	 * @param content The content of the dock node which may be a tree or another scene graph node.
 	 * @param title The caption title of this dock node which maintains bidirectional state with the
 	 *				title bar and stage.
 	 * @param graphic The caption graphic of this dock node which maintains bidirectional state with
 	 *				the title bar and stage.
 	 */
-	public DockNode(Node contents, String title, Node graphic) {
+	public DockNode(Node content, String title, Node graphic) {
 		this.titleProperty.setValue(title);
 		this.graphicProperty.setValue(graphic);
-		this.setContents(contents);
+		this.setContent(content);
 	}
 
 	/**
@@ -157,12 +157,12 @@ public class DockNode extends VBox implements EventHandler<MouseEvent> {
 	private void initialize() {
 		dockTitleBar = new DockTitleBar(this);
 
-		if (!this.getChildren().contains(this.contents)) {
-			getChildren().addAll(dockTitleBar, contents);
+		if (!this.getChildren().contains(this.content)) {
+			getChildren().addAll(dockTitleBar, content);
 		} else {
 			this.getChildren().add(0, this.dockTitleBar);
 		}
-		VBox.setVgrow(contents, Priority.ALWAYS);
+		VBox.setVgrow(content, Priority.ALWAYS);
 
 		this.getStyleClass().add("dock-node");
 		DockPane.initializeDefaultUserAgentStylesheet();
@@ -177,21 +177,21 @@ public class DockNode extends VBox implements EventHandler<MouseEvent> {
 	/**
 	 * Creates a default DockNode with a default title bar and layout.
 	 *
-	 * @param contents The contents of the dock node which may be a tree or another scene graph node.
+	 * @param content The content of the dock node which may be a tree or another scene graph node.
 	 * @param title The caption title of this dock node which maintains bidirectional state with the
 	 *				title bar and stage.
 	 */
-	public DockNode(Node contents, String title) {
-		this(contents, title, null);
+	public DockNode(Node content, String title) {
+		this(content, title, null);
 	}
 
 	/**
 	 * Creates a default DockNode with a default title bar and layout.
 	 *
-	 * @param contents The contents of the dock node which may be a tree or another scene graph node.
+	 * @param content The content of the dock node which may be a tree or another scene graph node.
 	 */
-	public DockNode(Node contents) {
-		this(contents, null, null);
+	public DockNode(Node content) {
+		this(content, null, null);
 	}
 
 	/**
@@ -205,19 +205,19 @@ public class DockNode extends VBox implements EventHandler<MouseEvent> {
 	}
 
 	/**
-	 * Changes the contents of the dock node.
+	 * Changes the content of the dock node.
 	 *
-	 * @param contents The new contents of this dock node.
+	 * @param content The new content of this dock node.
 	 */
-	public void setContents(Node contents) {
+	public void setContent(Node content) {
 		boolean isInitialized = true;
 
-		if (this.contents != null) {
-			this.getChildren().set(this.getChildren().indexOf(this.contents), contents);
+		if (this.content != null) {
+			this.getChildren().set(this.getChildren().indexOf(this.content), content);
 		} else {
 			isInitialized = false;
 		}
-		this.contents = contents;
+		this.content = content;
 		if (!isInitialized) {
 			this.initialize();
 		}
@@ -300,7 +300,7 @@ public class DockNode extends VBox implements EventHandler<MouseEvent> {
 
 			// the border pane allows the dock node to
 			// have a drop shadow effect on the border
-			// but also maintain the layout of contents
+			// but also maintain the layout of content
 			// such as a tab that has no content
 			borderPane = new BorderPane();
 			borderPane.getStyleClass().add("dock-node-border");
@@ -432,12 +432,12 @@ public class DockNode extends VBox implements EventHandler<MouseEvent> {
 	}
 
 	/**
-	 * The contents managed by this dock node.
+	 * The content managed by this dock node.
 	 *
-	 * @return The contents managed by this dock node.
+	 * @return The content managed by this dock node.
 	 */
-	public final Node getContents() {
-		return contents;
+	public final Node getContent() {
+		return content;
 	}
 
 	/**
