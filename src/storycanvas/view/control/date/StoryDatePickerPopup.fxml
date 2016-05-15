@@ -9,15 +9,15 @@
 <?import javafx.scene.layout.*?>
 
 <fx:root type="javafx.scene.layout.GridPane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
-			style="-fx-background-color:white;-fx-padding:10px"
+			style="-fx-background-color:#e5e5ff;-fx-padding:10px"
 			vgap="1.0" hgap="4.0">
 	<children>
 		<Label text="年" />
+		<TextField fx:id="yearInput"  prefWidth="60.0" GridPane.columnIndex="1" />
 		<Label text="月" GridPane.columnIndex="2" />
+		<TextField fx:id="monthInput" prefWidth="60.0" GridPane.columnIndex="3" />
 		<Label text="日" GridPane.columnIndex="4" />
-		<TextField GridPane.columnIndex="1" />
-		<TextField GridPane.columnIndex="3" />
-		<TextField GridPane.columnIndex="5" />
-		<storycanvas.view.control.date.CalendarControl GridPane.columnSpan="6" GridPane.rowIndex="1" />
+		<TextField fx:id="dayInput"   prefWidth="60.0" GridPane.columnIndex="5" />
+		<storycanvas.view.control.date.CalendarControl fx:id="calendar" GridPane.columnSpan="6" GridPane.rowIndex="1" />
 	</children>
 </fx:root>

@@ -21,6 +21,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Background;
@@ -38,15 +43,90 @@ public class CalendarControl extends GridPane implements Initializable {
 	private List<Button> dayButtons = new ArrayList<>();
 
 	public CalendarControl() {
-		this.setStoryCalendar(StoryCalendar.ANNO_DOMINI);
-		this.makeCalendar(StoryCalendar.ANNO_DOMINI, 2016, 5);
+		// 年月のリスナを設定
+		this.calendar.addListener(e -> this.storyCalendarChanged());
+		this.year.addListener(e -> this.makeCalendar());
+		this.month.addListener(e -> this.makeCalendar());
+
+		// TODO: とりあえず西暦固定で
+		this.setCalendar(StoryCalendar.ANNO_DOMINI);
+		this.setYear(2016);
+		this.setMonth(5);
 	}
+
+//<editor-fold defaultstate="collapsed" desc="プロパティ">
+	/**
+	 * 暦.
+	 */
+	private final ObjectProperty<StoryCalendar> calendar = new SimpleObjectProperty<>();
+
+	public StoryCalendar getCalendar () {
+		return calendar.get();
+	}
+
+	public void setCalendar (StoryCalendar value) {
+		calendar.set(value);
+	}
+
+	public ObjectProperty<StoryCalendar> calendarProperty () {
+		return calendar;
+	}
+
+	/**
+	 * 年.
+	 */
+	private final IntegerProperty year = new SimpleIntegerProperty();
+
+	public int getYear () {
+		return year.get();
+	}
+
+	public void setYear (int value) {
+		year.set(value);
+	}
+
+	public IntegerProperty yearProperty () {
+		return year;
+	}
+
+	/**
+	 * 月.
+	 */
+	private final IntegerProperty month = new SimpleIntegerProperty();
+
+	public int getMonth () {
+		return month.get();
+	}
+
+	public void setMonth (int value) {
+		month.set(value);
+	}
+
+	public IntegerProperty monthProperty () {
+		return month;
+	}
+
+	/**
+	 * 日.
+	 */
+	private final IntegerProperty day = new SimpleIntegerProperty();
+
+	public int getDay () {
+		return day.get();
+	}
+
+	public ReadOnlyIntegerProperty dayProperty () {
+		return day;
+	}
+
+//</editor-fold>
 
 	/**
 	 * 暦を設定し、それに応じてカレンダーの枠組みを生成
 	 * @param calendar 暦
 	 */
-	private void setStoryCalendar(StoryCalendar calendar) {
+	private void storyCalendarChanged() {
+		StoryCalendar calendar = this.getCalendar();
 		int weekdaysCount = calendar.getWeekdays().size();
 
 		// 一番日数が多い月の日数を取得
@@ -77,10 +157,20 @@ public class CalendarControl extends GridPane implements Initializable {
 			for (int x = 0; x < cols; x++) {
 				Button b = new Button();
 				b.setPrefWidth(35);
+				b.setTextFill(calendar.getWeekdays().get(x).getColor());
 				GridPane.setColumnIndex(b, x);
 				GridPane.setRowIndex(b, y);
 				this.getChildren().add(b);
 				this.dayButtons.add(b);
+
+				// ボタンクリックしたら、日付をプロパティに設定する
+				b.setOnAction((e) -> {
+					Button source = (Button)e.getSource();
+					Object day = source.getUserData();
+					if (day != null && day instanceof Integer) {
+						this.day.set((Integer)day);
+					}
+				});
 			}
 		}
 	}
@@ -91,7 +181,16 @@ public class CalendarControl extends GridPane implements Initializable {
 	 * @param year 年
 	 * @param mon 月
 	 */
-	private void makeCalendar(StoryCalendar calendar, int year, int mon) {
+	private void makeCalendar() {
+
+		int mon = this.getMonth();
+		int year = this.getYear();
+		StoryCalendar calendar = this.getCalendar();
+
+		// 設定値が無効な数字ならば戻る
+		if (mon < 1 || mon >= calendar.getMonths().size()) {
+			return;
+		}
 
 		StoryDate date = calendar.date(year, mon, 1);
 		this.clearCalendar();
@@ -108,9 +207,10 @@ public class CalendarControl extends GridPane implements Initializable {
 		int day = 1;
 		for (int i = firstWeekdayIndex; i < this.dayButtons.size(); i++) {
 			Button b = this.dayButtons.get(i);
+			b.setUserData(day);
 			b.setText(Integer.toString(day++));
 			b.setVisible(true);
-			if (day >= monthDayCount) {
+			if (day > monthDayCount) {
 				break;
 			}
 		}

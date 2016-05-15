@@ -17,6 +17,8 @@
  */
 package storycanvas.view.control.date;
 
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -24,15 +26,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
-import storycanvas.StoryCanvas;
+import javafx.scene.layout.GridPane;
 
 /**
  * FXML Controller class
  *
  * @author KMY
  */
-public class StoryDatePicker extends HBox implements Initializable {
+public class StoryDatePicker extends GridPane implements Initializable {
 
 	private final StoryDatePickerPopup popup = new StoryDatePickerPopup();
 
@@ -51,7 +52,8 @@ public class StoryDatePicker extends HBox implements Initializable {
 		}
 
 		this.popupButton.setOnAction((e) -> {
-			this.popup.show(StoryCanvas.getMainStage());
+			Point mousePoint = MouseInfo.getPointerInfo().getLocation();
+			this.popup.show(this.popupButton, mousePoint.x, mousePoint.y);
 		});
 	}
 

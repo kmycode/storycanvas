@@ -20,10 +20,14 @@ package storycanvas.view.control.date;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.binding.Bindings;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Popup;
+import net.kmycode.javafx.IntegerNumberStringConverter;
 
 /**
  * FXML Controller class
@@ -31,6 +35,18 @@ import javafx.stage.Popup;
  * @author KMY
  */
 public class StoryDatePickerPopup extends Popup implements Initializable {
+
+	@FXML
+	private TextField yearInput;
+
+	@FXML
+	private TextField monthInput;
+
+	@FXML
+	private TextField dayInput;
+
+	@FXML
+	private CalendarControl calendar;
 
 	public StoryDatePickerPopup() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("StoryDatePickerPopup.fxml"));
@@ -48,6 +64,11 @@ public class StoryDatePickerPopup extends Popup implements Initializable {
 
 		// 範囲外のマウスクリックで自動的に閉じるようにする
 		this.setAutoHide(true);
+
+		// テキストインプットを、カレンダーにバインドさせる
+		Bindings.bindBidirectional(this.yearInput.textProperty(), this.calendar.yearProperty(), new IntegerNumberStringConverter());
+		Bindings.bindBidirectional(this.monthInput.textProperty(), this.calendar.monthProperty(), new IntegerNumberStringConverter());
+		this.calendar.dayProperty().addListener((e) -> this.dayInput.setText(Integer.toString(this.calendar.getDay())));
 	}
 
 	/**
