@@ -22,6 +22,7 @@
 }
 .table-view .table-row-cell:selected:filled .table-cell {
 	-fx-border-color: transparent transparent transparent transparent;
+	-fx-text-fill: black;
 }
 
 /* 大きなアイコンを使ったタブ */

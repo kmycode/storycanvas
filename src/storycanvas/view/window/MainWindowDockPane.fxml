@@ -15,9 +15,9 @@
 				<fx:include source="/storycanvas/view/node/StoryMainNode.fxml"/>
 			</content>
 		</DockNode>
-		<DockNode title="編集" prefWidth="300" dockPos="RIGHT"  >
+		<DockNode title="編集" prefWidth="300" dockPos="RIGHT" maxWidth="300.0" >
 			<content>
-				<Label minHeight="16" minWidth="69" text="TODO: 編集画面" />
+				<fx:include source="/storycanvas/view/node/EntityEditorNode.fxml"/>
 			</content>
 		</DockNode>
 	</children>

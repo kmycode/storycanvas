@@ -6,10 +6,29 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.cell.*?>
 
-<TableView VBox.vgrow="ALWAYS" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="storycanvas.view.part.table.PersonTableViewController">
+<TableView fx:id="personTable" VBox.vgrow="ALWAYS" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="storycanvas.view.part.table.PersonTableViewController">
   <columns>
-    <TableColumn prefWidth="75.0" text="姓" />
-    <TableColumn prefWidth="75.0" text="名" />
+    <TableColumn fx:id="iconColumn" prefWidth="32.0" text="" sortable="false" resizable="false">
+		<cellValueFactory>
+			<PropertyValueFactory property="icon"/>
+		</cellValueFactory>
+	</TableColumn>
+    <TableColumn prefWidth="75.0" text="姓">
+		<cellValueFactory>
+			<PropertyValueFactory property="lastName"/> 
+		</cellValueFactory>
+	</TableColumn>
+    <TableColumn prefWidth="75.0" text="名">
+		<cellValueFactory>
+			<PropertyValueFactory property="firstName"/> 
+		</cellValueFactory>
+	</TableColumn>
+    <TableColumn fx:id="birthDayColumn" prefWidth="90.0" text="誕生日">
+		<cellValueFactory>
+			<PropertyValueFactory property="birthDay"/> 
+		</cellValueFactory>
+	</TableColumn>
   </columns>
 </TableView>

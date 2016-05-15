@@ -18,6 +18,8 @@ import org.dockfx.DockPane;
  */
 public class StoryCanvas extends Application {
 
+	private static Stage mainStage;
+
 	@Override
 	public void start (Stage stage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("view/window/MainWindow.fxml"));
@@ -26,9 +28,14 @@ public class StoryCanvas extends Application {
 
 		stage.setScene(scene);
 		stage.show();
+		mainStage = stage;
 
 		// DockPaneのスタイルシートを初期化
 		DockPane.initializeDefaultUserAgentStylesheet();
+	}
+
+	public static Stage getMainStage() {
+		return mainStage;
 	}
 
 	/**

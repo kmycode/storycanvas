@@ -15,36 +15,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package storycanvas.viewmodel;
-
-import javafx.collections.ObservableList;
-import storycanvas.model.entity.Person;
-import storycanvas.model.story.Story;
+package storycanvas.model.entity;
 
 /**
- * メインのビューモデルです。
- * このクラスはシングルトンです
+ * 編集画面で編集可能なエンティティ
  *
  * @author KMY
  */
-public class MainViewModel {
-
-	private final Story story = new Story();
-
-//<editor-fold defaultstate="collapsed" desc="コンストラクタ">
-	private static final MainViewModel instance = new MainViewModel();
-
-	public static MainViewModel getDefault() {
-		return instance;
-	}
-
-	private MainViewModel() {}
-//</editor-fold>
-
-//<editor-fold defaultstate="collapsed" desc="ゲッター">
-	public ObservableList<Person> getPersonsClone () {
-		return this.story.getPersonsClone();
-	}
-//</editor-fold>
+public abstract class EditableEntity extends Entity {
 
 }

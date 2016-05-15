@@ -12,11 +12,11 @@
 	<tabs>
 		<Tab fx:id="personTab" text="">
 			<graphic>
-			  <ImageView pickOnBounds="true" preserveRatio="true" fitWidth="32" fitHeight="32">
-				<image>
-					<Image url="@/storycanvas/resource/icon/person_large.png" />
-				</image>
-			  </ImageView>
+				<ImageView pickOnBounds="true" preserveRatio="true" fitWidth="32" fitHeight="32">
+					<image>
+						<Image url="@/storycanvas/resource/icon/person_large.png" />
+					</image>
+				</ImageView>
 			</graphic>
 			<content>
 				<VBox minHeight="0.0" minWidth="0.0">
@@ -29,11 +29,11 @@
 		</Tab>
 		<Tab fx:id="placeTab" text="">
 			<graphic>
-			  <ImageView pickOnBounds="true" preserveRatio="true" fitWidth="32" fitHeight="32">
-				<image>
-					<Image url="@/storycanvas/resource/icon/place_large.png" />
-				</image>
-			  </ImageView>
+				<ImageView pickOnBounds="true" preserveRatio="true" fitWidth="32" fitHeight="32">
+					<image>
+						<Image url="@/storycanvas/resource/icon/place_large.png" />
+					</image>
+				</ImageView>
 			</graphic>
 			<content>
 				<VBox minHeight="0.0" minWidth="0.0">

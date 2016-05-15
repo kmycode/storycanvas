@@ -15,48 +15,52 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package storycanvas.view.part.table;
+package storycanvas.view.control.date;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.image.Image;
-import net.kmycode.javafx.ImageTableCell;
-import storycanvas.model.date.StoryDate;
-import storycanvas.model.entity.Person;
-import storycanvas.view.control.StoryDateTableCell;
-import storycanvas.viewmodel.MainViewModel;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+import storycanvas.StoryCanvas;
 
 /**
- * 人物一覧のテーブルのコントローラクラス
+ * FXML Controller class
  *
  * @author KMY
  */
-public class PersonTableViewController implements Initializable {
+public class StoryDatePicker extends HBox implements Initializable {
+
+	private final StoryDatePickerPopup popup = new StoryDatePickerPopup();
 
 	@FXML
-	private TableView<Person> personTable;
+	private Button popupButton;
 
-	@FXML
-	private TableColumn<Person, Image> iconColumn;
+	public StoryDatePicker() {
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("StoryDatePicker.fxml"));
+		fxmlLoader.setRoot(this);
+		fxmlLoader.setController(this);
 
-	@FXML
-	private TableColumn<Person, StoryDate> birthDayColumn;
+		try {
+			fxmlLoader.load();
+		} catch (IOException exception) {
+			throw new RuntimeException(exception);
+		}
+
+		this.popupButton.setOnAction((e) -> {
+			this.popup.show(StoryCanvas.getMainStage());
+		});
+	}
 
 	/**
 	 * Initializes the controller class.
 	 */
 	@Override
 	public void initialize (URL url, ResourceBundle rb) {
-		// データを設定
-		this.personTable.setItems(MainViewModel.getDefault().getPersonsClone());
-
-		// セルファクトリを設定
-		this.iconColumn.setCellFactory((TableColumn<Person, Image> param) -> new ImageTableCell<Person>(16, 16));
-		this.birthDayColumn.setCellFactory((TableColumn<Person, StoryDate> param) -> new StoryDateTableCell<Person>());
+		// TODO
 	}
 
 }

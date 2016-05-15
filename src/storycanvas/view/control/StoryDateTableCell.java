@@ -15,36 +15,26 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package storycanvas.viewmodel;
+package storycanvas.view.control;
 
-import javafx.collections.ObservableList;
-import storycanvas.model.entity.Person;
-import storycanvas.model.story.Story;
+import javafx.scene.control.TableCell;
+import storycanvas.model.date.StoryDate;
 
 /**
- * メインのビューモデルです。
- * このクラスはシングルトンです
+ * ストーリーの日付を表示するテーブルセル
  *
  * @author KMY
  */
-public class MainViewModel {
+public class StoryDateTableCell<E> extends TableCell<E, StoryDate> {
 
-	private final Story story = new Story();
-
-//<editor-fold defaultstate="collapsed" desc="コンストラクタ">
-	private static final MainViewModel instance = new MainViewModel();
-
-	public static MainViewModel getDefault() {
-		return instance;
+	@Override
+	protected void updateItem (StoryDate item, boolean empty) {
+		super.updateItem(item, empty);
+		if (item != null) {
+			this.setText(item.getYear() + "/" + item.getMonth() + "/" + item.getDay());
+		} else {
+			this.setText("");
+		}
 	}
-
-	private MainViewModel() {}
-//</editor-fold>
-
-//<editor-fold defaultstate="collapsed" desc="ゲッター">
-	public ObservableList<Person> getPersonsClone () {
-		return this.story.getPersonsClone();
-	}
-//</editor-fold>
 
 }

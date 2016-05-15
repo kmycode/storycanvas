@@ -47,6 +47,10 @@ public class Resources {
 		return imageView;
 	}
 
+	public static Image getLargeIcon (String resourceKey) {
+		return new Image(Resources.class.getResource("/storycanvas/resource/icon/" + resourceKey + "_large.png").toExternalForm());
+	}
+
 	public static ImageView getLargeIconNode (String resourceKey) {
 		return new ImageView(new Image(Resources.class.getResource("/storycanvas/resource/icon/" + resourceKey + "_large.png").toExternalForm()));
 	}

@@ -15,36 +15,25 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package storycanvas.viewmodel;
+package storycanvas.view.node;
 
-import javafx.collections.ObservableList;
-import storycanvas.model.entity.Person;
-import storycanvas.model.story.Story;
+import java.net.URL;
+import java.util.ResourceBundle;
+import javafx.fxml.Initializable;
 
 /**
- * メインのビューモデルです。
- * このクラスはシングルトンです
+ * エンティティの編集画面のノード
  *
  * @author KMY
  */
-public class MainViewModel {
+public class EntityEditorNodeController implements Initializable {
 
-	private final Story story = new Story();
-
-//<editor-fold defaultstate="collapsed" desc="コンストラクタ">
-	private static final MainViewModel instance = new MainViewModel();
-
-	public static MainViewModel getDefault() {
-		return instance;
+	/**
+	 * Initializes the controller class.
+	 */
+	@Override
+	public void initialize (URL url, ResourceBundle rb) {
+		// TODO
 	}
-
-	private MainViewModel() {}
-//</editor-fold>
-
-//<editor-fold defaultstate="collapsed" desc="ゲッター">
-	public ObservableList<Person> getPersonsClone () {
-		return this.story.getPersonsClone();
-	}
-//</editor-fold>
 
 }
