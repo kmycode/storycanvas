@@ -168,7 +168,7 @@ public class StoryCalendar implements Serializable {
 	 */
 	public static StoryDate current() {
 		Calendar curr = Calendar.getInstance();
-		return ANNO_DOMINI.date(curr.get(Calendar.YEAR), curr.get(Calendar.MONTH), curr.get(Calendar.DAY_OF_MONTH));
+		return ANNO_DOMINI.date(curr.get(Calendar.YEAR), curr.get(Calendar.MONTH) + 1, curr.get(Calendar.DAY_OF_MONTH));
 	}
 
 	/**
