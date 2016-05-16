@@ -22,11 +22,14 @@ import java.awt.Point;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import storycanvas.model.date.StoryDate;
 
 /**
  * FXML Controller class
@@ -37,8 +40,28 @@ public class StoryDatePicker extends GridPane implements Initializable {
 
 	private final StoryDatePickerPopup popup = new StoryDatePickerPopup();
 
+//<editor-fold defaultstate="collapsed" desc="プロパティ">
+	/**
+	 * 選択結果の日付.
+	 */
+	public StoryDate getDate () {
+		return this.popup.getDate();
+	}
+
+	public void setDate (StoryDate value) {
+		this.popup.setDate(value);
+	}
+
+	public ObjectProperty<StoryDate> dateProperty () {
+		return this.popup.dateProperty();
+	}
+//</editor-fold>
+
 	@FXML
 	private Button popupButton;
+
+	@FXML
+	private TextField dateFormat;
 
 	public StoryDatePicker() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("StoryDatePicker.fxml"));
@@ -52,9 +75,18 @@ public class StoryDatePicker extends GridPane implements Initializable {
 		}
 
 		this.popupButton.setOnAction((e) -> {
+			// 日付選択ポップアップを表示
 			Point mousePoint = MouseInfo.getPointerInfo().getLocation();
 			this.popup.show(this.popupButton, mousePoint.x, mousePoint.y);
 		});
+
+		// カレンダーでの日付指定を、テキストボックスの表示に反映
+		this.popup.setOnAutoHide(e -> this.readDate());
+	}
+
+	private void readDate() {
+		StoryDate date = this.popup.getDate();
+		this.dateFormat.setText(date.getYear() + "/" + date.getMonth() + "/" + date.getDay());
 	}
 
 	/**

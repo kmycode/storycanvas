@@ -12,12 +12,24 @@
 			style="-fx-background-color:#e5e5ff;-fx-padding:10px"
 			vgap="1.0" hgap="4.0">
 	<children>
-		<Label text="年" />
-		<TextField fx:id="yearInput"  prefWidth="60.0" GridPane.columnIndex="1" />
-		<Label text="月" GridPane.columnIndex="2" />
-		<TextField fx:id="monthInput" prefWidth="60.0" GridPane.columnIndex="3" />
-		<Label text="日" GridPane.columnIndex="4" />
-		<TextField fx:id="dayInput"   prefWidth="60.0" GridPane.columnIndex="5" />
-		<storycanvas.view.control.date.CalendarControl fx:id="calendar" GridPane.columnSpan="6" GridPane.rowIndex="1" />
+		<Label text="年"                               GridPane.columnIndex="0" GridPane.rowIndex="0" />
+		<TextField fx:id="yearInput"  prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+		<Label text="月"                               GridPane.columnIndex="2" GridPane.rowIndex="0" />
+		<TextField fx:id="monthInput" prefWidth="60.0" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+		<Label text="日"                               GridPane.columnIndex="4" GridPane.rowIndex="0" />
+		<TextField fx:id="dayInput"   prefWidth="60.0" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+		<HBox GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+			<children>
+				<Button fx:id="prevYear" text="&lt;" />
+				<Button fx:id="nextYear" text="&gt;" />
+			</children>
+		</HBox>
+		<HBox GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1">
+			<children>
+				<Button fx:id="prevMonth" text="&lt;" />
+				<Button fx:id="nextMonth" text="&gt;" />
+			</children>
+		</HBox>
+		<storycanvas.view.control.date.CalendarControl fx:id="calendar" GridPane.columnSpan="6" GridPane.rowIndex="2" />
 	</children>
 </fx:root>

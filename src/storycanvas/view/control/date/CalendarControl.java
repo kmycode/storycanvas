@@ -121,6 +121,7 @@ public class CalendarControl extends GridPane implements Initializable {
 
 //</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="メソッド">
 	/**
 	 * 暦を設定し、それに応じてカレンダーの枠組みを生成
 	 * @param calendar 暦
@@ -202,6 +203,7 @@ public class CalendarControl extends GridPane implements Initializable {
 
 		// 月の日数を取得する
 		int monthDayCount = calendar.getMonths().get(mon - 1).getDayCount();
+		monthDayCount += calendar.getLeapSize(year, mon);
 
 		// カレンダーを作成
 		int day = 1;
@@ -225,6 +227,45 @@ public class CalendarControl extends GridPane implements Initializable {
 			b.setVisible(false);
 		}
 	}
+
+	/**
+	 * 次の年にする.
+	 */
+	public void nextYear() {
+		this.setYear(this.getYear() + 1);
+	}
+
+	/**
+	 * 前の年にする.
+	 */
+	public void prevYear() {
+		this.setYear(this.getYear() - 1);
+	}
+
+	/**
+	 * 次の月にする.
+	 */
+	public void nextMonth() {
+		int m = this.getMonth() + 1;
+		if (m > this.getCalendar().getMonths().size()) {
+			m = 1;
+			this.nextYear();
+		}
+		this.setMonth(m);
+	}
+
+	/**
+	 * 前の月にする.
+	 */
+	public void prevMonth() {
+		int m = this.getMonth() - 1;
+		if (m <= 0) {
+			m = this.getCalendar().getMonths().size();
+			this.prevYear();
+		}
+		this.setMonth(m);
+	}
+//</editor-fold>
 
 	/**
 	 * Initializes the controller class.
