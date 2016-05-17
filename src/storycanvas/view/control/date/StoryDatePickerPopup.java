@@ -116,6 +116,13 @@ public class StoryDatePickerPopup extends Popup implements Initializable {
 		this.calendar.yearProperty().addListener(e -> this.getDate().setYear(this.calendar.getYear()));
 		this.calendar.monthProperty().addListener(e -> this.getDate().setMonth(this.calendar.getMonth()));
 		this.calendar.dayProperty().addListener(e -> this.getDate().setDay(this.calendar.getDay()));
+
+		// ポップアップ表示時、保存されている値を表示に反映
+		this.setOnShown(e -> {
+			this.calendar.setYear(this.getDate().getYear());
+			this.calendar.setMonth(this.getDate().getMonth());
+			this.calendar.setDay(this.getDate().getDay());
+		});
 	}
 
 	/**

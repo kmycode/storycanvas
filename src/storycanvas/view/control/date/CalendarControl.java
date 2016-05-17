@@ -115,6 +115,10 @@ public class CalendarControl extends GridPane implements Initializable {
 		return day.get();
 	}
 
+	public void setDay (int day) {
+		this.day.set(day);
+	}
+
 	public ReadOnlyIntegerProperty dayProperty () {
 		return day;
 	}
@@ -189,7 +193,7 @@ public class CalendarControl extends GridPane implements Initializable {
 		StoryCalendar calendar = this.getCalendar();
 
 		// 設定値が無効な数字ならば戻る
-		if (mon < 1 || mon >= calendar.getMonths().size()) {
+		if (mon < 1 || mon > calendar.getMonths().size()) {
 			return;
 		}
 
