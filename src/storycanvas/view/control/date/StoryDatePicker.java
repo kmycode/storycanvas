@@ -17,12 +17,12 @@
  */
 package storycanvas.view.control.date;
 
+import storycanvas.model.date.DateFormatException;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.regex.Pattern;
 import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -76,18 +76,21 @@ public class StoryDatePicker extends GridPane implements Initializable {
 		}
 
 		this.popupButton.setOnAction((e) -> {
-			// テキストボックスの日付を取得
-			Pattern p = Pattern.compile("\\d+/\\d+/\\d+");
-			if (p.matcher(this.dateFormat.getText()).matches()) {
-				String[] nums = this.dateFormat.getText().split("/");
-				this.getDate().setYear(Integer.parseInt(nums[0]));
-				this.getDate().setMonth(Integer.parseInt(nums[1]));
-				this.getDate().setDay(Integer.parseInt(nums[2]));
-			}
-
 			// 日付選択ポップアップを表示
 			Point mousePoint = MouseInfo.getPointerInfo().getLocation();
 			this.popup.show(this.popupButton, mousePoint.x, mousePoint.y);
+		});
+
+		this.dateFormat.textProperty().addListener(e -> {
+			// テキストボックスの日付を取得。エラーなく取得できれば文字色を黒に、そうでなければ赤にする
+			StoryDate date = null;
+			try {
+				date = this.getDate().getCalendar().fromString(this.dateFormat.getText());
+				this.setDate(date);
+				this.dateFormat.setStyle("-fx-text-fill:black");
+			} catch (DateFormatException ex) {
+				this.dateFormat.setStyle("-fx-text-fill:red");
+			}
 		});
 
 		// カレンダーでの日付指定を、テキストボックスの表示に反映

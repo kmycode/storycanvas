@@ -65,6 +65,10 @@ public class StoryDate implements Serializable, Comparable<StoryDate> {
 		this.day = day;
 	}
 
+	public StoryCalendar getCalendar() {
+		return this.calendar;
+	}
+
 	/**
 	 * 有効な日付であるか確認
 	 * @return 有効であればtrue

@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.List;
+import java.util.regex.Pattern;
 import javafx.scene.paint.Color;
 
 /**
@@ -184,6 +185,31 @@ public class StoryCalendar implements Serializable {
 		d.setMonth(month);
 		d.setDay(day);
 		return d;
+	}
+
+	/**
+	 * 文字列から日付のオブジェクトを作成する
+	 * @param str 日付。yyyy/mm/ddでフォーマットされている必要あり
+	 * @return 日付のオブジェクト
+	 */
+	public StoryDate fromString(String str) throws DateFormatException {
+		StoryDate d = new StoryDate(this);
+		Pattern p = Pattern.compile("\\d+/\\d+/\\d+");
+		if (p.matcher(str).matches()) {
+			String[] nums = str.split("/");
+			d.setYear(Integer.parseInt(nums[0]));
+			d.setMonth(Integer.parseInt(nums[1]));
+			d.setDay(Integer.parseInt(nums[2]));
+
+			// 有効な日付でなければ例外を出す
+			if (!d.isValid()) {
+				throw new DateFormatException("Invalid date! for example, 12/32...");
+			}
+
+			return d;
+		} else {
+			throw new DateFormatException("Invalid date format! yyyy/mm/dd");
+		}
 	}
 
 	/**

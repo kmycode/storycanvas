@@ -6,11 +6,18 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
 
 
 <fx:root type="javafx.scene.layout.GridPane" xmlns:fx="http://javafx.com/fxml">
 	<children>
 		<TextField fx:id="dateFormat" GridPane.hgrow="ALWAYS" />
-		<Button fx:id="popupButton" mnemonicParsing="false" text="Button" GridPane.columnIndex="1" />
+		<Button fx:id="popupButton" mnemonicParsing="false" GridPane.columnIndex="1">
+			<graphic>
+				<ImageView fitWidth="16" fitHeight="16" >
+					<Image url="/storycanvas/resource/icon/datepicker.png"/>
+				</ImageView>
+			</graphic>
+		</Button>
 	</children>
 </fx:root>

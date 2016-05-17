@@ -14,7 +14,7 @@
 			<graphic>
 				<ImageView pickOnBounds="true" preserveRatio="true">
 					<image>
-						<Image url="@/storycanvas/resource/icon/new.png" />
+						<Image url="@/storycanvas/resource/icon/create.png" />
 					</image>
 				</ImageView>
 			</graphic>
