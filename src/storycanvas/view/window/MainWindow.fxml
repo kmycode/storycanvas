@@ -16,6 +16,19 @@
 		<!-- メニューバー -->
 		<fx:include source="MainMenu.fxml"/>
 		<!-- ドッキング可能なエリア -->
-		<fx:include source="MainWindowDockPane.fxml"/>
+		<DockPane xmlns:fx="http://javafx.com/fxml/1" id="DockPane" VBox.vgrow="ALWAYS">
+			<children>
+				<DockNode title="メイン" prefWidth="300" dockPos="CENTER" dockTitleBarVisible="false">
+					<content>
+						<fx:include source="/storycanvas/view/node/StoryMainNode.fxml"/>
+					</content>
+				</DockNode>
+				<DockNode title="編集" prefWidth="300" dockPos="RIGHT" maxWidth="300.0" >
+					<content>
+						<storycanvas.view.node.EntityEditorNode fx:id="entityEditor" />
+					</content>
+				</DockNode>
+			</children>
+		</DockPane>
 	</children>
 </VBox>

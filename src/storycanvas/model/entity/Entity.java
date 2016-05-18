@@ -21,6 +21,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
 import storycanvas.resource.Resources;
 
@@ -47,6 +49,23 @@ public abstract class Entity {
 
 	public IntegerProperty idProperty () {
 		return id;
+	}
+
+	/**
+	 * エンティティの名前.
+	 */
+	private final StringProperty name = new SimpleStringProperty();
+
+	public String getName () {
+		return name.get();
+	}
+
+	public void setName (String value) {
+		name.set(value);
+	}
+
+	public StringProperty nameProperty () {
+		return name;
 	}
 
 	/**

@@ -94,6 +94,19 @@ public class Person extends EditableEntity {
 	}
 //</editor-fold>
 
+	public Person() {
+		this.setNameBinding();
+	}
+
+	/**
+	 * 人物の名前を変更したら、Entity.nameプロパティに影響するようにする。
+	 * デシリアライズのことを考慮し、処理をコンストラクタから分離.
+	 */
+	private void setNameBinding() {
+		this.firstName.addListener(e -> this.nameProperty().set(this.getLastName() + this.getFirstName()));
+		this.lastName.addListener(e -> this.nameProperty().set(this.getLastName() + this.getFirstName()));
+	}
+
 	@Override
 	protected String getResourceName () {
 		return "person";

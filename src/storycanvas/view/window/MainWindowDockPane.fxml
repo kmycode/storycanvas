@@ -17,7 +17,7 @@
 		</DockNode>
 		<DockNode title="編集" prefWidth="300" dockPos="RIGHT" maxWidth="300.0" >
 			<content>
-				<fx:include source="/storycanvas/view/node/EntityEditorNode.fxml"/>
+				<storycanvas.view.node.EntityEditorNode />
 			</content>
 		</DockNode>
 	</children>

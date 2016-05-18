@@ -7,10 +7,11 @@ package storycanvas.view.window;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import storycanvas.model.story.Story;
+import storycanvas.view.node.EntityEditorNode;
 
 /**
  * メインウィンドウのコントローラクラス
@@ -22,14 +23,12 @@ public class MainWindowController implements Initializable {
 	private Label label;
 
 	@FXML
-	private void handleButtonAction (ActionEvent event) {
-		System.out.println("You clicked me!");
-		label.setText("Hello World!");
-	}
+	private EntityEditorNode entityEditor;
 
 	@Override
 	public void initialize (URL url, ResourceBundle rb) {
-		// TODO
+		// TODO: ビジネスロジック部からリスナーを送る処理に置き換える予定
+		this.entityEditor.editEntity(Story.getCurrent().getPersons().get(0));
 	}
 
 }
