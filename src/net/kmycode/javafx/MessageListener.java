@@ -15,38 +15,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package storycanvas.view.node;
+package net.kmycode.javafx;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Tab;
-import storycanvas.view.part.table.PersonTableViewController;
+import java.util.EventListener;
 
 /**
- * メインとなるノードのコントローラ
+ * メッセンジャ用のリスナ
  *
  * @author KMY
  */
-public class StoryMainNodeController implements Initializable {
-
-	@FXML
-	private Tab personTab;
-
-	@FXML
-	private Tab placeTab;
-
-	@FXML
-	private PersonTableViewController mainPersonTableController;
-
-	/**
-	 * Initializes the controller class.
-	 */
-	@Override
-	public void initialize (URL url, ResourceBundle rb) {
-		// メインのビューを設定
-		this.mainPersonTableController.toMain();
-	}
-
+public interface MessageListener<T extends Message> extends EventListener {
+	public void call(T message);
 }

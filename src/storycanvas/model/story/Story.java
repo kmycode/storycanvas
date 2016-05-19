@@ -18,10 +18,15 @@
 package storycanvas.model.story;
 
 import javafx.beans.property.ListProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import net.kmycode.javafx.ListUtil;
+import net.kmycode.javafx.Messenger;
+import storycanvas.message.entity.edit.PersonEditMessage;
+import storycanvas.message.entity.list.MainPersonListInitializeMessage;
 import storycanvas.model.date.StoryCalendar;
 import storycanvas.model.date.StoryDate;
 import storycanvas.model.entity.Person;
@@ -38,6 +43,13 @@ public class Story {
 
 	public Story() {
 		setCurrent(this);
+
+		// リストで登場人物が選択された時
+		this.selectedPerson.addListener(e -> {
+			if (this.selectedPerson.get() != null) {
+				Messenger.getInstance().send(new PersonEditMessage(this.selectedPerson.get()));
+			}
+		});
 		
 		// TODO: テスト用データ
 		Person p1 = new Person();
@@ -63,18 +75,30 @@ public class Story {
 	}
 
 //<editor-fold defaultstate="collapsed" desc="事実上のシングルトンを実現する部分">
-	private static Story current;
+	private static final ObjectProperty<Story> current = new SimpleObjectProperty<>();
 
 	public static Story getCurrent() {
-		return current;
+		return current.get();
 	}
 
 	public static void setCurrent(Story s) {
-		current = s;
+		current.set(s);
+	}
+	
+	static {
+		current.addListener(e -> {
+			Story mainStory = getCurrent();
+			if (mainStory != null) {
+				mainStory.reloadView();
+			}
+		});
 	}
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="プロパティ">
+	/**
+	 * 登場人物一覧
+	 */
 	private final ListProperty<Person> persons = new SimpleListProperty<>(FXCollections.observableArrayList());
 
 	public ObservableList<Person> getPersons () {
@@ -88,6 +112,19 @@ public class Story {
 	public ListProperty<Person> personsProperty () {
 		return persons;
 	}
+	
+	/**
+	 * 現在選択されている登場人物.
+	 */
+	private final ObjectProperty<Person> selectedPerson = new SimpleObjectProperty<>();
 //</editor-fold>
+
+	/**
+	 * 画面全体の表示を更新.
+	 */
+	private void reloadView() {
+		// 画面表示を更新するメッセージを送信
+		Messenger.getInstance().send(new MainPersonListInitializeMessage(this.getPersons(), this.selectedPerson));
+	}
 
 }

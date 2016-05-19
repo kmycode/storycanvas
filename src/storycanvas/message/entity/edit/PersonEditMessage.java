@@ -15,38 +15,26 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package storycanvas.view.node;
+package storycanvas.message.entity.edit;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Tab;
-import storycanvas.view.part.table.PersonTableViewController;
+import net.kmycode.javafx.Message;
+import storycanvas.model.entity.Person;
 
 /**
- * メインとなるノードのコントローラ
+ * 人物を編集するメッセージ
  *
  * @author KMY
  */
-public class StoryMainNodeController implements Initializable {
+public class PersonEditMessage extends Message {
 
-	@FXML
-	private Tab personTab;
+	private final Person entity;
 
-	@FXML
-	private Tab placeTab;
+	public PersonEditMessage(Person e) {
+		this.entity = e;
+	}
 
-	@FXML
-	private PersonTableViewController mainPersonTableController;
-
-	/**
-	 * Initializes the controller class.
-	 */
-	@Override
-	public void initialize (URL url, ResourceBundle rb) {
-		// メインのビューを設定
-		this.mainPersonTableController.toMain();
+	public Person getPerson() {
+		return this.entity;
 	}
 
 }

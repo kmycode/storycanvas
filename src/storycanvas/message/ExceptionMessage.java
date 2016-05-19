@@ -15,38 +15,25 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package storycanvas.view.node;
+package storycanvas.message;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Tab;
-import storycanvas.view.part.table.PersonTableViewController;
+import net.kmycode.javafx.Message;
 
 /**
- * メインとなるノードのコントローラ
+ * 例外が発生した時に送信するメッセージ
  *
  * @author KMY
  */
-public class StoryMainNodeController implements Initializable {
+public class ExceptionMessage extends Message {
 
-	@FXML
-	private Tab personTab;
+	private final Throwable exception;
 
-	@FXML
-	private Tab placeTab;
+	public ExceptionMessage(Throwable ex) {
+		this.exception = ex;
+	}
 
-	@FXML
-	private PersonTableViewController mainPersonTableController;
-
-	/**
-	 * Initializes the controller class.
-	 */
-	@Override
-	public void initialize (URL url, ResourceBundle rb) {
-		// メインのビューを設定
-		this.mainPersonTableController.toMain();
+	public Throwable getException() {
+		return this.exception;
 	}
 
 }

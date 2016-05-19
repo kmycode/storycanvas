@@ -10,7 +10,6 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import storycanvas.model.story.Story;
 import storycanvas.view.node.EntityEditorNode;
 
 /**
@@ -27,8 +26,8 @@ public class MainWindowController implements Initializable {
 
 	@Override
 	public void initialize (URL url, ResourceBundle rb) {
-		// TODO: ビジネスロジック部からリスナーを送る処理に置き換える予定
-		this.entityEditor.editEntity(Story.getCurrent().getPersons().get(0));
+		// 自分がメインのエディタであることを教える
+		this.entityEditor.toMain();
 	}
 
 }

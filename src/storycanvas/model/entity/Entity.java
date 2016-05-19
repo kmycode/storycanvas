@@ -31,7 +31,7 @@ import storycanvas.resource.Resources;
  * 
  * @author KMY
  */
-public abstract class Entity {
+public abstract class Entity implements Comparable<Entity> {
 
 //<editor-fold defaultstate="collapsed" desc="プロパティ">
 	/**
@@ -88,6 +88,23 @@ public abstract class Entity {
 	public ObjectProperty<Image> iconProperty () {
 		return icon;
 	}
+
+	/**
+	 * エンティティの順番.
+	 */
+	private final IntegerProperty order = new SimpleIntegerProperty();
+
+	public int getOrder () {
+		return order.get();
+	}
+
+	public void setOrder (int value) {
+		order.set(value);
+	}
+
+	public IntegerProperty orderProperty () {
+		return order;
+	}
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="メソッド">
@@ -97,6 +114,16 @@ public abstract class Entity {
 	 * @return リソース上の名前
 	 */
 	protected abstract String getResourceName();
+
+	/**
+	 * エンティティ同士の比較。一覧表示するときの初期配置に影響することを想定します。
+	 * @param other 比較対象
+	 * @return 比較結果
+	 */
+	@Override
+	public int compareTo(Entity other) {
+		return this.getOrder() > other.getOrder() ? 1 : this.getOrder() == other.getOrder() ? 0 : -1;
+	}
 //</editor-fold>
 
 }

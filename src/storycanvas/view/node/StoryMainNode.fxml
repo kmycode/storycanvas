@@ -21,7 +21,7 @@
 			<content>
 				<VBox minHeight="0.0" minWidth="0.0">
 					<children>
-						<fx:include source="/storycanvas/view/part/table/PersonTableView.fxml"/>
+						<fx:include fx:id="mainPersonTable" source="/storycanvas/view/part/table/PersonTableView.fxml"/>
 						<fx:include source="/storycanvas/view/part/EntityListButtonBox.fxml"/>
 					</children>
 				</VBox>

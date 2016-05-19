@@ -15,38 +15,33 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package storycanvas.view.node;
+package storycanvas.message.entity.list;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Tab;
-import storycanvas.view.part.table.PersonTableViewController;
+import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
+import net.kmycode.javafx.Message;
+import storycanvas.model.entity.Person;
 
 /**
- * メインとなるノードのコントローラ
+ * メイン画面の人物一覧を初期化するメッセージ
  *
  * @author KMY
  */
-public class StoryMainNodeController implements Initializable {
+public class MainPersonListInitializeMessage extends Message {
 
-	@FXML
-	private Tab personTab;
+	private final ObservableList<Person> list;
+	private final ObjectProperty<Person> selectedItem;
 
-	@FXML
-	private Tab placeTab;
-
-	@FXML
-	private PersonTableViewController mainPersonTableController;
-
-	/**
-	 * Initializes the controller class.
-	 */
-	@Override
-	public void initialize (URL url, ResourceBundle rb) {
-		// メインのビューを設定
-		this.mainPersonTableController.toMain();
+	public MainPersonListInitializeMessage(ObservableList<Person> list, ObjectProperty<Person> selectedItem) {
+		this.list = list;
+		this.selectedItem = selectedItem;
 	}
 
+	public ObservableList<Person> getList() {
+		return this.list;
+	}
+
+	public ObjectProperty<Person> selectedItemProperty() {
+		return this.selectedItem;
+	}
 }

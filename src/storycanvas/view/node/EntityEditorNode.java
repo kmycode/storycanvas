@@ -19,6 +19,8 @@ package storycanvas.view.node;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,6 +29,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import net.kmycode.javafx.Messenger;
+import storycanvas.message.entity.edit.PersonEditMessage;
 import storycanvas.model.entity.Entity;
 import storycanvas.model.entity.Person;
 
@@ -36,6 +40,12 @@ import storycanvas.model.entity.Person;
  * @author KMY
  */
 public class EntityEditorNode extends ScrollPane implements Initializable {
+
+	/**
+	 * 生成されているノード一覧.
+	 */
+	private static final List<EntityEditorNode> nodes = new ArrayList<>();
+	private static EntityEditorNode mainNode;
 
 	@FXML
 	private ImageView entityIcon;
@@ -59,6 +69,20 @@ public class EntityEditorNode extends ScrollPane implements Initializable {
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
+	}
+
+	/**
+	 * 自分がメインのノードであることを示すメソッド。
+	 * メインのノードには、エンティティ編集などの様々なメッセージがやってくる.
+	 */
+	public void toMain() {
+		if (mainNode != null) {
+			// 古いメインノードのメッセージ登録を全削除
+			Messenger.getInstance().remove(mainNode);
+		}
+
+		// エンティティを編集するメッセージ
+		Messenger.getInstance().apply(PersonEditMessage.class, this, m -> this.editEntity(m.getPerson()));
 	}
 	
 	/**

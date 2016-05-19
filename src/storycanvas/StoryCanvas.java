@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.dockfx.DockPane;
+import storycanvas.model.story.Story;
 
 /**
  *
@@ -32,6 +33,9 @@ public class StoryCanvas extends Application {
 
 		// DockPaneのスタイルシートを初期化
 		DockPane.initializeDefaultUserAgentStylesheet();
+
+		// TODO: ストーリーを新規作成
+		Story.setCurrent(new Story());
 	}
 
 	public static Stage getMainStage() {

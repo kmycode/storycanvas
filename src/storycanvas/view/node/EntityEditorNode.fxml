@@ -15,7 +15,7 @@
 		<URL value="@/storycanvas/view/default.css"/>
 	</stylesheets>
 	<content>
-		<VBox>
+		<VBox prefWidth="295.0">
 			<children>
 				<HBox spacing="5.0">
 					<children>
@@ -30,10 +30,12 @@
 					</children>
 				</HBox>
 				<!-- エディタ本体 -->
-				<StackPane>
-					<AnchorPane fx:id="personEditor" visible="false">
-						<fx:include source="/storycanvas/view/part/editor/PersonEditor.fxml"/>
-					</AnchorPane>
+				<StackPane VBox.vgrow="ALWAYS" >
+					<children>
+						<AnchorPane fx:id="personEditor" visible="false" >
+							<fx:include source="/storycanvas/view/part/editor/PersonEditor.fxml"/>
+						</AnchorPane>
+					</children>
 				</StackPane>
 			</children>
 		</VBox>

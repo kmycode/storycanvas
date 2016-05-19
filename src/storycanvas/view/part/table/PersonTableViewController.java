@@ -25,10 +25,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import net.kmycode.javafx.ImageTableCell;
+import net.kmycode.javafx.Messenger;
+import storycanvas.message.entity.list.MainPersonListInitializeMessage;
 import storycanvas.model.date.StoryDate;
 import storycanvas.model.entity.Person;
 import storycanvas.view.control.StoryDateTableCell;
-import storycanvas.viewmodel.MainViewModel;
 
 /**
  * 人物一覧のテーブルのコントローラクラス
@@ -36,6 +37,8 @@ import storycanvas.viewmodel.MainViewModel;
  * @author KMY
  */
 public class PersonTableViewController implements Initializable {
+
+	private static PersonTableViewController mainController = null;
 
 	@FXML
 	private TableView<Person> personTable;
@@ -52,11 +55,29 @@ public class PersonTableViewController implements Initializable {
 	@Override
 	public void initialize (URL url, ResourceBundle rb) {
 		// データを設定
-		this.personTable.setItems(MainViewModel.getDefault().getPersonsClone());
+		//this.personTable.setItems(Story.getCurrent().getPersonsClone());
 
 		// セルファクトリを設定
 		this.iconColumn.setCellFactory((TableColumn<Person, Image> param) -> new ImageTableCell<Person>(16, 16));
 		this.birthDayColumn.setCellFactory((TableColumn<Person, StoryDate> param) -> new StoryDateTableCell<Person>());
+
+		// 選択時のイベント
+		//this.personTable.selectionModelProperty().addListener();
+	}
+
+	/**
+	 * 自分をメインのリストとして設定します.
+	 */
+	public void toMain() {
+		if (mainController == null) {
+			mainController = this;
+
+			// メッセンジャにイベントを登録
+			Messenger.getInstance().apply(MainPersonListInitializeMessage.class, this, (m) -> {
+				this.personTable.setItems(m.getList());
+				m.selectedItemProperty().bind(this.personTable.getSelectionModel().selectedItemProperty());
+			});
+		}
 	}
 
 }
