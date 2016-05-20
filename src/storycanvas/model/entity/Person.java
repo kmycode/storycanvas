@@ -64,7 +64,27 @@ public class Person extends EditableEntity {
 	public StringProperty firstNameProperty () {
 		return firstName;
 	}
+	
+	/**
+	 * 性別.
+	 */
+	private final ObjectProperty<Sex> sex = new SimpleObjectProperty<>();
 
+	public Sex getSex () {
+		return sex.get();
+	}
+
+	public void setSex (Sex value) {
+		sex.set(value);
+	}
+
+	public ObjectProperty<Sex> sexProperty () {
+		return sex;
+	}
+
+	/**
+	 * 誕生日.
+	 */
 	private final ObjectProperty<StoryDate> birthDay = new SimpleObjectProperty<>();
 
 	public StoryDate getBirthDay () {
@@ -79,6 +99,9 @@ public class Person extends EditableEntity {
 		return birthDay;
 	}
 
+	/**
+	 * 死亡日.
+	 */
 	private final ObjectProperty<StoryDate> deathDay = new SimpleObjectProperty<>();
 
 	public StoryDate getDeathDay () {

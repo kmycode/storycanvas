@@ -24,6 +24,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import storycanvas.resource.Resources;
 
 /**
@@ -43,7 +44,7 @@ public abstract class Entity implements Comparable<Entity> {
 		return id.get();
 	}
 
-	public void setId (int value) {
+	protected void setId (int value) {
 		id.set(value);
 	}
 
@@ -104,6 +105,40 @@ public abstract class Entity implements Comparable<Entity> {
 
 	public IntegerProperty orderProperty () {
 		return order;
+	}
+	
+	/**
+	 * 色.
+	 */
+	private final ObjectProperty<Color> color = new SimpleObjectProperty<>();
+
+	public Color getColor () {
+		return color.get();
+	}
+
+	public void setColor (Color value) {
+		color.set(value);
+	}
+
+	public ObjectProperty<Color> colorProperty () {
+		return color;
+	}
+	
+	/**
+	 * メモ.
+	 */
+	private final StringProperty memo = new SimpleStringProperty();
+
+	public String getMemo () {
+		return memo.get();
+	}
+
+	public void setMemo (String value) {
+		memo.set(value);
+	}
+
+	public StringProperty memoProperty () {
+		return memo;
 	}
 //</editor-fold>
 

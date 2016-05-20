@@ -30,6 +30,7 @@ import storycanvas.message.entity.list.MainPersonListInitializeMessage;
 import storycanvas.model.date.StoryCalendar;
 import storycanvas.model.date.StoryDate;
 import storycanvas.model.entity.Person;
+import storycanvas.model.entity.Sex;
 
 /**
  * ひとつのストーリーをあらわすモデル。
@@ -56,7 +57,8 @@ public class Story {
 		p1.setLastName("中村");
 		p1.setFirstName("翠");
 		StoryDate p1d = StoryCalendar.ANNO_DOMINI.date(2004, 11, 30);
-		//p1.setBirthDay(p1d);
+		p1.setBirthDay(p1d);
+		p1.setSex(Sex.FEMALE);
 		this.persons.add(p1);
 
 		// TODO: 日付計算テスト

@@ -17,17 +17,32 @@
 		</TableColumn>
 		<TableColumn prefWidth="75.0" text="姓">
 			<cellValueFactory>
-				<PropertyValueFactory property="lastName"/> 
+				<PropertyValueFactory property="lastName"/>
 			</cellValueFactory>
 		</TableColumn>
 		<TableColumn prefWidth="75.0" text="名">
-		<cellValueFactory>
-			<PropertyValueFactory property="firstName"/> 
-		</cellValueFactory>
+			<cellValueFactory>
+				<PropertyValueFactory property="firstName"/>
+			</cellValueFactory>
+		</TableColumn>
+		<TableColumn fx:id="sexColumn" prefWidth="35.0" text="性">
+			<cellValueFactory>
+				<PropertyValueFactory property="sex"/>
+			</cellValueFactory>
+		</TableColumn>
+		<TableColumn fx:id="colorColumn" prefWidth="55.0" text="色">
+			<cellValueFactory>
+				<PropertyValueFactory property="color"/>
+			</cellValueFactory>
 		</TableColumn>
 		<TableColumn fx:id="birthDayColumn" prefWidth="90.0" text="誕生日">
 			<cellValueFactory>
-				<PropertyValueFactory property="birthDay"/> 
+				<PropertyValueFactory property="birthDay"/>
+			</cellValueFactory>
+		</TableColumn>
+		<TableColumn fx:id="deathDayColumn" prefWidth="90.0" text="死亡日">
+			<cellValueFactory>
+				<PropertyValueFactory property="deathDay"/>
 			</cellValueFactory>
 		</TableColumn>
 	</columns>
