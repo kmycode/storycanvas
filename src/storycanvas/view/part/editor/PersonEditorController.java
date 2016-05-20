@@ -19,7 +19,11 @@ package storycanvas.view.part.editor;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TextField;
+import storycanvas.model.entity.Person;
+import storycanvas.view.control.date.StoryDatePicker;
 
 /**
  * 人物の編集画面のコントローラ
@@ -27,6 +31,39 @@ import javafx.fxml.Initializable;
  * @author KMY
  */
 public class PersonEditorController implements Initializable {
+	
+	private Person editingEntity;
+
+	@FXML
+	private TextField lastNameInput;
+
+	@FXML
+	private TextField firstNameInput;
+
+	@FXML
+	private StoryDatePicker birthDayInput;
+
+	/**
+	 * 編集
+	 * @param entity 編集する人物
+	 */
+	public void edit(Person entity) {
+		this.editingEntity = entity;
+		this.lastNameInput.textProperty().bindBidirectional(entity.lastNameProperty());
+		this.firstNameInput.textProperty().bindBidirectional(entity.firstNameProperty());
+		this.birthDayInput.dateProperty().bindBidirectional(entity.birthDayProperty());
+	}
+
+	/**
+	 * 編集を終了.
+	 */
+	public void exitEdit() {
+		if (this.editingEntity != null) {
+			this.lastNameInput.textProperty().unbindBidirectional(this.editingEntity.lastNameProperty());
+			this.firstNameInput.textProperty().unbindBidirectional(this.editingEntity.firstNameProperty());
+			this.birthDayInput.dateProperty().unbindBidirectional(this.editingEntity.birthDayProperty());
+		}
+	}
 
 	/**
 	 * Initializes the controller class.

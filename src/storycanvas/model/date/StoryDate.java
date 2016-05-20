@@ -95,6 +95,14 @@ public class StoryDate implements Serializable, Comparable<StoryDate> {
 	}
 
 	/**
+	 * 日付を文字形式にします
+	 * @return 文字形式になった日付
+	 */
+	public String toString() {
+		return this.calendar.toString(this);
+	}
+
+	/**
 	 * ２つの時間を比較し、どちらが先か判定します
 	 * @param o
 	 * @return thisのほうが新しい時は1、そうでないときは-1

@@ -212,6 +212,10 @@ public class StoryCalendar implements Serializable {
 		}
 	}
 
+	public String toString(StoryDate date) {
+		return date.getYear() + "/" + date.getMonth() + "/" + date.getDay();
+	}
+
 	/**
 	 * 日付が有効かチェック
 	 * @return 有効ならtrue

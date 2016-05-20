@@ -33,6 +33,7 @@ import net.kmycode.javafx.Messenger;
 import storycanvas.message.entity.edit.PersonEditMessage;
 import storycanvas.model.entity.Entity;
 import storycanvas.model.entity.Person;
+import storycanvas.view.part.editor.PersonEditorController;
 
 /**
  * エンティティの編集画面のノード
@@ -54,7 +55,10 @@ public class EntityEditorNode extends ScrollPane implements Initializable {
 	private Label entityName;
 
 	@FXML
-	private Pane personEditor;
+	private Pane personEditorPane;
+
+	@FXML
+	private PersonEditorController personEditorController;
 
 	/**
 	 * 初期化.
@@ -90,6 +94,7 @@ public class EntityEditorNode extends ScrollPane implements Initializable {
 	 * @param entity 編集するエンティティ
 	 */
 	private void editAbstractEntity(Entity entity) {
+		this.exitEditEntity();
 		this.entityIcon.setImage(entity.getIcon());
 		this.entityName.textProperty().bind(entity.nameProperty());
 		this.hideAllEntityEditor();
@@ -99,16 +104,24 @@ public class EntityEditorNode extends ScrollPane implements Initializable {
 	 * すべての編集画面を隠す.
 	 */
 	private void hideAllEntityEditor() {
-		this.personEditor.setVisible(false);
+		this.personEditorPane.setVisible(false);
 	}
 
 	/**
 	 * 人物を編集
 	 * @param entity 編集する人物クラス
 	 */
-	public void editEntity(Person entity) {
+	private void editEntity(Person entity) {
 		this.editAbstractEntity(entity);
-		this.personEditor.setVisible(true);
+		this.personEditorPane.setVisible(true);
+		this.personEditorController.edit(entity);
+	}
+
+	/**
+	 * 編集を終了.
+	 */
+	private void exitEditEntity() {
+		this.personEditorController.exitEdit();
 	}
 
 	/**

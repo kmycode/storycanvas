@@ -32,8 +32,8 @@
 				<!-- エディタ本体 -->
 				<StackPane VBox.vgrow="ALWAYS" >
 					<children>
-						<AnchorPane fx:id="personEditor" visible="false" >
-							<fx:include source="/storycanvas/view/part/editor/PersonEditor.fxml"/>
+						<AnchorPane fx:id="personEditorPane" visible="false" >
+							<fx:include fx:id="personEditor" source="/storycanvas/view/part/editor/PersonEditor.fxml"/>
 						</AnchorPane>
 					</children>
 				</StackPane>

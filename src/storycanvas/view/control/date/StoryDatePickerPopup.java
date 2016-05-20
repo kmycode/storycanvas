@@ -119,6 +119,9 @@ public class StoryDatePickerPopup extends Popup implements Initializable {
 
 		// ポップアップ表示時、保存されている値を表示に反映
 		this.setOnShown(e -> {
+			if (this.getDate() == null) {
+				this.setDate(StoryCalendar.current());
+			}
 			this.calendar.setYear(this.getDate().getYear());
 			this.calendar.setMonth(this.getDate().getMonth());
 			this.calendar.setDay(this.getDate().getDay());

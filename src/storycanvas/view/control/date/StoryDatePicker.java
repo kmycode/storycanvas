@@ -17,7 +17,6 @@
  */
 package storycanvas.view.control.date;
 
-import storycanvas.model.date.DateFormatException;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.io.IOException;
@@ -30,6 +29,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import storycanvas.model.date.DateFormatException;
 import storycanvas.model.date.StoryDate;
 
 /**
@@ -62,7 +62,13 @@ public class StoryDatePicker extends GridPane implements Initializable {
 	private Button popupButton;
 
 	@FXML
+	private Button delButton;
+
+	@FXML
 	private TextField dateFormat;
+
+	// リスナーの中にいるフラグ（文字列と日付を相互変換するリスナがあるので、StackOverFlowを引き起こさないため）
+	private boolean inDateFormatListener;
 
 	public StoryDatePicker() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("StoryDatePicker.fxml"));
@@ -75,21 +81,43 @@ public class StoryDatePicker extends GridPane implements Initializable {
 			throw new RuntimeException(exception);
 		}
 
+		// 日付を設定したら、それをテキストフィールドに反映
+		this.dateProperty().addListener(e -> {
+			if (!this.inDateFormatListener) {
+				this.inDateFormatListener = true;
+				if (this.getDate() != null) {
+					this.dateFormat.setText(this.getDate().toString());
+				} else {
+					this.dateFormat.setText("");
+				}
+				this.inDateFormatListener = false;
+			}
+		});
+
 		this.popupButton.setOnAction((e) -> {
 			// 日付選択ポップアップを表示
 			Point mousePoint = MouseInfo.getPointerInfo().getLocation();
 			this.popup.show(this.popupButton, mousePoint.x, mousePoint.y);
 		});
 
+		this.delButton.setOnAction(e -> {
+			// 日付をクリア
+			this.setDate(null);
+		});
+
 		this.dateFormat.textProperty().addListener(e -> {
 			// テキストボックスの日付を取得。エラーなく取得できれば文字色を黒に、そうでなければ赤にする
-			StoryDate date = null;
-			try {
-				date = this.getDate().getCalendar().fromString(this.dateFormat.getText());
-				this.setDate(date);
-				this.dateFormat.setStyle("-fx-text-fill:black");
-			} catch (DateFormatException ex) {
-				this.dateFormat.setStyle("-fx-text-fill:red");
+			if (!this.inDateFormatListener) {
+				this.inDateFormatListener = true;
+				StoryDate date = null;
+				try {
+					date = this.getDate().getCalendar().fromString(this.dateFormat.getText());
+					this.setDate(date);
+					this.dateFormat.setStyle("-fx-text-fill:black");
+				} catch (DateFormatException ex) {
+					this.dateFormat.setStyle("-fx-text-fill:red");
+				}
+				this.inDateFormatListener = false;
 			}
 		});
 
@@ -99,7 +127,7 @@ public class StoryDatePicker extends GridPane implements Initializable {
 
 	private void readDate() {
 		StoryDate date = this.popup.getDate();
-		this.dateFormat.setText(date.getYear() + "/" + date.getMonth() + "/" + date.getDay());
+		this.dateFormat.setText(date.toString());
 	}
 
 	/**

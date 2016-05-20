@@ -19,5 +19,12 @@
 				</ImageView>
 			</graphic>
 		</Button>
+		<Button fx:id="delButton" mnemonicParsing="false" GridPane.columnIndex="2">
+			<graphic>
+				<ImageView fitWidth="16" fitHeight="16" >
+					<Image url="/storycanvas/resource/icon/cancel.png"/>
+				</ImageView>
+			</graphic>
+		</Button>
 	</children>
 </fx:root>
