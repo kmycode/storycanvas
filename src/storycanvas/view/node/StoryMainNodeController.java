@@ -22,6 +22,8 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Tab;
+import storycanvas.model.story.Story;
+import storycanvas.view.part.EntityListButtonBox;
 import storycanvas.view.part.table.PersonTableViewController;
 
 /**
@@ -40,6 +42,9 @@ public class StoryMainNodeController implements Initializable {
 	@FXML
 	private PersonTableViewController mainPersonTableController;
 
+	@FXML
+	private EntityListButtonBox personButtonBox;
+
 	/**
 	 * Initializes the controller class.
 	 */
@@ -47,6 +52,10 @@ public class StoryMainNodeController implements Initializable {
 	public void initialize (URL url, ResourceBundle rb) {
 		// メインのビューを設定
 		this.mainPersonTableController.toMain();
+
+		// コマンドボタンボックスのイベントを設定
+		this.personButtonBox.setOnNewAction(e -> Story.getCurrent().addPerson());
+		this.personButtonBox.setOnDeleteAction(e -> Story.getCurrent().deletePerson());
 	}
 
 }

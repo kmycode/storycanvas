@@ -132,4 +132,23 @@ public class Story {
 		Messenger.getInstance().send(new MainPersonListInitializeMessage(this.getPersons(), this.selectedPerson));
 	}
 
+	/**
+	 * 人物を追加.
+	 */
+	public void addPerson() {
+		Person entity = new Person();
+		this.persons.add(entity);
+		Messenger.getInstance().send(new PersonEditMessage(entity));
+	}
+
+	/**
+	 * 選択された人物を削除.
+	 */
+	public void deletePerson() {
+		if (this.selectedPerson.get() != null) {
+			Messenger.getInstance().send(new EmptyEditMessage());
+			this.persons.remove(this.selectedPerson.get());
+		}
+	}
+
 }

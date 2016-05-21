@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.image.*?>
 
-<HBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="storycanvas.view.part.EntityListButtonBoxController">
+<fx:root type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
-		<Button mnemonicParsing="false" text="新規" prefHeight="45" prefWidth="80">
+		<Button mnemonicParsing="false" text="新規" prefHeight="45" prefWidth="80" fx:id="newButton">
 			<graphic>
 				<ImageView pickOnBounds="true" preserveRatio="true">
 					<image>
@@ -19,7 +19,7 @@
 				</ImageView>
 			</graphic>
 		</Button>
-		<Button mnemonicParsing="false" text="削除" prefHeight="45" prefWidth="80">
+		<Button mnemonicParsing="false" text="削除" prefHeight="45" prefWidth="80" fx:id="deleteButton">
 			<graphic>
 				<ImageView pickOnBounds="true" preserveRatio="true">
 					<image>
@@ -28,7 +28,7 @@
 				</ImageView>
 			</graphic>
 		</Button>
-		<Button mnemonicParsing="false" text="" prefHeight="45" prefWidth="40">
+		<Button mnemonicParsing="false" text="" prefHeight="45" prefWidth="40" fx:id="upButton">
 			<graphic>
 				<ImageView pickOnBounds="true" preserveRatio="true">
 				<image>
@@ -37,7 +37,7 @@
 			</ImageView>
 			</graphic>
 		</Button>
-		<Button mnemonicParsing="false" text="" prefHeight="45" prefWidth="40">
+		<Button mnemonicParsing="false" text="" prefHeight="45" prefWidth="40" fx:id="downButton">
 			<graphic>
 				<ImageView pickOnBounds="true" preserveRatio="true">
 					<image>
@@ -46,7 +46,7 @@
 				</ImageView>
 			</graphic>
 		</Button>
-		<Button mnemonicParsing="false" text="" prefHeight="45" prefWidth="40" visible="false">
+		<Button mnemonicParsing="false" text="" prefHeight="45" prefWidth="40" visible="false" fx:id="leftButton">
 			<graphic>
 				<ImageView pickOnBounds="true" preserveRatio="true">
 					<image>
@@ -55,7 +55,7 @@
 				</ImageView>
 			</graphic>
 		</Button>
-		<Button mnemonicParsing="false" text="" prefHeight="45" prefWidth="40" visible="false">
+		<Button mnemonicParsing="false" text="" prefHeight="45" prefWidth="40" visible="false" fx:id="rightButton">
 			<graphic>
 				<ImageView pickOnBounds="true" preserveRatio="true">
 					<image>
@@ -65,4 +65,4 @@
 			</graphic>
 		</Button>
 	</children>
-</HBox>
+</fx:root>

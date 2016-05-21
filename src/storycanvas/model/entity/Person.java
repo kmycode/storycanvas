@@ -126,13 +126,27 @@ public class Person extends EditableEntity {
 	 * デシリアライズのことを考慮し、処理をコンストラクタから分離.
 	 */
 	private void setNameBinding() {
-		this.firstName.addListener(e -> this.nameProperty().set(this.getLastName() + this.getFirstName()));
-		this.lastName.addListener(e -> this.nameProperty().set(this.getLastName() + this.getFirstName()));
+		this.firstName.addListener(e -> this.nameProperty().set(this.toString()));
+		this.lastName.addListener(e -> this.nameProperty().set(this.toString()));
 	}
 
 	@Override
 	protected String getResourceName () {
 		return "person";
+	}
+
+	@Override
+	public String toString() {
+		String ln = this.getLastName();
+		String fn = this.getFirstName();
+		String s = "";
+		if (ln != null) {
+			s += ln;
+		}
+		if (fn != null) {
+			s += fn;
+		}
+		return s;
 	}
 
 }
