@@ -169,4 +169,22 @@ public class Story {
 	}
 //</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="場所の操作">
+	/**
+	 * 場所を追加.
+	 */
+	public void addPlace() {
+		Place entity = new Place();
+		this.places.add(entity);
+		Messenger.getInstance().send(new PlaceEditMessage(entity));
+	}
+
+	/**
+	 * 選択された場所を削除.
+	 */
+	public void deletePlace() {
+		Messenger.getInstance().send(new EmptyEditMessage());
+		this.places.delete();
+	}
+//</editor-fold>
 }

@@ -49,6 +49,9 @@ public class StoryMainNodeController implements Initializable {
 	@FXML
 	private PlaceTableViewController mainPlaceTableController;
 
+	@FXML
+	private EntityListButtonBox placeButtonBox;
+
 	/**
 	 * Initializes the controller class.
 	 */
@@ -63,6 +66,10 @@ public class StoryMainNodeController implements Initializable {
 		this.personButtonBox.setOnDeleteAction(e -> Story.getCurrent().deletePerson());
 		this.personButtonBox.setOnUpAction(e -> Story.getCurrent().upPerson());
 		this.personButtonBox.setOnDownAction(e -> Story.getCurrent().downPerson());
+
+		// 場所一覧のButtonBox
+		this.placeButtonBox.setOnNewAction(e -> Story.getCurrent().addPlace());
+		this.placeButtonBox.setOnDeleteAction(e -> Story.getCurrent().deletePlace());
 	}
 
 }
