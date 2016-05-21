@@ -15,46 +15,33 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package storycanvas.model.entity;
+package storycanvas.message.entity.list;
 
-import javafx.scene.paint.Color;
-import net.kmycode.javafx.ColorableTextItem;
+import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
+import net.kmycode.javafx.Message;
+import storycanvas.model.entity.Person;
 
 /**
- * 人物の性別
+ * メイン画面の人物一覧を初期化するメッセージ
  *
  * @author KMY
  */
-public class Sex extends Entity implements ColorableTextItem {
+public class MainPersonTableInitializeMessage extends Message {
 
-	public static final Sex MALE;
-	public static final Sex FEMALE;
+	private final ObservableList<Person> list;
+	private final ObjectProperty<Person> selectedItem;
 
-	static {
-		MALE = new Sex();
-		MALE.setName("男");
-		MALE.setColor(Color.BLUE);
-		MALE.setId(0L);
-		MALE.setOrder(0L);
-		FEMALE = new Sex();
-		FEMALE.setName("女");
-		FEMALE.setColor(Color.RED);
-		FEMALE.setId(1L);
-		FEMALE.setOrder(1L);
+	public MainPersonTableInitializeMessage(ObservableList<Person> list, ObjectProperty<Person> selectedItem) {
+		this.list = list;
+		this.selectedItem = selectedItem;
 	}
 
-	@Override
-	public String getText() {
-		return this.getName();
+	public ObservableList<Person> getList() {
+		return this.list;
 	}
 
-	/**
-	 * リソース名を取得
-	 * @return リソース名
-	 */
-	@Override
-	protected String getResourceName () {
-		return "empty";
+	public ObjectProperty<Person> selectedItemProperty() {
+		return this.selectedItem;
 	}
-
 }

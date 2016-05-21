@@ -25,6 +25,7 @@ import javafx.scene.control.Tab;
 import storycanvas.model.story.Story;
 import storycanvas.view.part.EntityListButtonBox;
 import storycanvas.view.part.table.PersonTableViewController;
+import storycanvas.view.part.table.PlaceTableViewController;
 
 /**
  * メインとなるノードのコントローラ
@@ -45,6 +46,9 @@ public class StoryMainNodeController implements Initializable {
 	@FXML
 	private EntityListButtonBox personButtonBox;
 
+	@FXML
+	private PlaceTableViewController mainPlaceTableController;
+
 	/**
 	 * Initializes the controller class.
 	 */
@@ -52,6 +56,7 @@ public class StoryMainNodeController implements Initializable {
 	public void initialize (URL url, ResourceBundle rb) {
 		// メインのビューを設定
 		this.mainPersonTableController.toMain();
+		this.mainPlaceTableController.toMain();
 
 		// 人物一覧のButtonBox
 		this.personButtonBox.setOnNewAction(e -> Story.getCurrent().addPerson());

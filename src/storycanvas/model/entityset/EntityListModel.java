@@ -98,7 +98,7 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 		index = this.entities.indexOf(target);
 
 		// 以降のエンティティの順番をリストアップ
-		Queue<Integer> orderStack = new ArrayDeque<Integer>();
+		Queue<Long> orderStack = new ArrayDeque<>();
 		for (int i = index; i < this.entities.size(); i++) {
 			orderStack.add(this.entities.get(i).getOrder());
 		}
@@ -138,7 +138,7 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 			}
 		}
 		if (target != null) {
-			int tmp = entity.getOrder();
+			long tmp = entity.getOrder();
 			entity.setOrder(target.getOrder());
 			target.setOrder(tmp);
 		}
@@ -170,7 +170,7 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 			}
 		}
 		if (target != null) {
-			int tmp = entity.getOrder();
+			long tmp = entity.getOrder();
 			entity.setOrder(target.getOrder());
 			target.setOrder(tmp);
 		}

@@ -15,33 +15,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package storycanvas.message.entity.list;
-
-import javafx.beans.property.ObjectProperty;
-import javafx.collections.ObservableList;
-import net.kmycode.javafx.Message;
-import storycanvas.model.entity.Person;
+package storycanvas.model.entity;
 
 /**
- * メイン画面の人物一覧を初期化するメッセージ
- *
+ * 場所を表すクラス
  * @author KMY
  */
-public class MainPersonListInitializeMessage extends Message {
+public class Place extends TreeEntity {
 
-	private final ObservableList<Person> list;
-	private final ObjectProperty<Person> selectedItem;
-
-	public MainPersonListInitializeMessage(ObservableList<Person> list, ObjectProperty<Person> selectedItem) {
-		this.list = list;
-		this.selectedItem = selectedItem;
+	@Override
+	protected String getResourceName () {
+		return "place";
 	}
 
-	public ObservableList<Person> getList() {
-		return this.list;
-	}
-
-	public ObjectProperty<Person> selectedItemProperty() {
-		return this.selectedItem;
-	}
 }

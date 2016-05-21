@@ -15,46 +15,34 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package storycanvas.model.entity;
+package storycanvas.message.entity.list;
 
-import javafx.scene.paint.Color;
-import net.kmycode.javafx.ColorableTextItem;
+import javafx.beans.property.ObjectProperty;
+import javafx.scene.control.TreeItem;
+import net.kmycode.javafx.Message;
+import storycanvas.model.entity.Place;
 
 /**
- * 人物の性別
+ * メイン画面の場所一覧を初期化するメッセージ
  *
  * @author KMY
  */
-public class Sex extends Entity implements ColorableTextItem {
+public class MainPlaceTableInitializeMessage extends Message {
 
-	public static final Sex MALE;
-	public static final Sex FEMALE;
+	private final TreeItem<Place> rootTreeItem;
+	private final ObjectProperty<Place> selectedItem;
 
-	static {
-		MALE = new Sex();
-		MALE.setName("男");
-		MALE.setColor(Color.BLUE);
-		MALE.setId(0L);
-		MALE.setOrder(0L);
-		FEMALE = new Sex();
-		FEMALE.setName("女");
-		FEMALE.setColor(Color.RED);
-		FEMALE.setId(1L);
-		FEMALE.setOrder(1L);
+	public MainPlaceTableInitializeMessage(TreeItem<Place> rootTreeItem, ObjectProperty<Place> selectedItem) {
+		this.rootTreeItem = rootTreeItem;
+		this.selectedItem = selectedItem;
 	}
 
-	@Override
-	public String getText() {
-		return this.getName();
+	public TreeItem<Place> getRootTreeItem() {
+		return this.rootTreeItem;
 	}
 
-	/**
-	 * リソース名を取得
-	 * @return リソース名
-	 */
-	@Override
-	protected String getResourceName () {
-		return "empty";
+	public ObjectProperty<Place> selectedItemProperty() {
+		return this.selectedItem;
 	}
 
 }

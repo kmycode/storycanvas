@@ -22,12 +22,15 @@ import javafx.beans.property.SimpleObjectProperty;
 import net.kmycode.javafx.Messenger;
 import storycanvas.message.entity.edit.EmptyEditMessage;
 import storycanvas.message.entity.edit.PersonEditMessage;
-import storycanvas.message.entity.list.MainPersonListInitializeMessage;
+import storycanvas.message.entity.list.MainPersonTableInitializeMessage;
+import storycanvas.message.entity.list.MainPlaceTableInitializeMessage;
 import storycanvas.model.date.StoryCalendar;
 import storycanvas.model.date.StoryDate;
 import storycanvas.model.entity.Person;
+import storycanvas.model.entity.Place;
 import storycanvas.model.entity.Sex;
 import storycanvas.model.entityset.EntityListModel;
+import storycanvas.model.entityset.EntityTreeModel;
 
 /**
  * ひとつのストーリーをあらわすモデル。
@@ -59,6 +62,10 @@ public class Story {
 		p1.setBirthDay(p1d);
 		p1.setSex(Sex.FEMALE);
 		this.persons.add(p1);
+
+		Place l1 = new Place();
+		l1.setName("学校");
+		this.places.add(l1);
 
 		// TODO: 日付計算テスト
 		/*
@@ -101,6 +108,11 @@ public class Story {
 	 * 登場人物一覧.
 	 */
 	private final EntityListModel<Person> persons = new EntityListModel<>();
+
+	/**
+	 * 場所一覧.
+	 */
+	private final EntityTreeModel<Place> places = new EntityTreeModel<>(new Place());
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="メソッド">
@@ -109,7 +121,8 @@ public class Story {
 	 */
 	private void reloadView() {
 		// 画面表示を更新するメッセージを送信
-		Messenger.getInstance().send(new MainPersonListInitializeMessage(this.persons.getEntities(), this.persons.selectedEntityProperty()));
+		Messenger.getInstance().send(new MainPersonTableInitializeMessage(this.persons.getEntities(), this.persons.selectedEntityProperty()));
+		Messenger.getInstance().send(new MainPlaceTableInitializeMessage(this.places.getRootTreeItem(), this.places.selectedEntityProperty()));
 	}
 //</editor-fold>
 

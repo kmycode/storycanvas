@@ -38,6 +38,8 @@
 			<content>
 				<VBox minHeight="0.0" minWidth="0.0">
 					<children>
+						<fx:include fx:id="mainPlaceTable" source="/storycanvas/view/part/table/PlaceTableView.fxml"/>
+						<storycanvas.view.part.EntityListButtonBox fx:id="placeButtonBox" />
 					</children>
 				</VBox>
 			</content>

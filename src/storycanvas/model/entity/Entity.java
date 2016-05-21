@@ -17,9 +17,9 @@
  */
 package storycanvas.model.entity;
 
-import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -34,23 +34,23 @@ import storycanvas.resource.Resources;
  */
 public abstract class Entity implements Comparable<Entity> {
 
-	private static int entityCount = 0;
+	private static long entityCount = 0;
 
 //<editor-fold defaultstate="collapsed" desc="プロパティ">
 	/**
 	 * エンティティのID.
 	 */
-	private final IntegerProperty id = new SimpleIntegerProperty();
+	private final LongProperty id = new SimpleLongProperty();
 
-	public int getId () {
+	public long getId () {
 		return id.get();
 	}
 
-	protected void setId (int value) {
+	protected void setId (long value) {
 		id.set(value);
 	}
 
-	public IntegerProperty idProperty () {
+	public LongProperty idProperty () {
 		return id;
 	}
 
@@ -95,17 +95,17 @@ public abstract class Entity implements Comparable<Entity> {
 	/**
 	 * エンティティの順番.
 	 */
-	private final IntegerProperty order = new SimpleIntegerProperty();
+	private final LongProperty order = new SimpleLongProperty();
 
-	public int getOrder () {
+	public long getOrder () {
 		return order.get();
 	}
 
-	public void setOrder (int value) {
+	public void setOrder (long value) {
 		order.set(value);
 	}
 
-	public IntegerProperty orderProperty () {
+	public LongProperty orderProperty () {
 		return order;
 	}
 	
@@ -150,7 +150,7 @@ public abstract class Entity implements Comparable<Entity> {
 	 * これは、シリアライズにあたってreadObjectメソッドから呼び出されることを想定しています。.
 	 */
 	protected void initialize() {
-		int id = this.getNextID();
+		long id = this.getNextID();
 		this.setId(id);
 		this.setOrder(id);
 	}
@@ -160,7 +160,7 @@ public abstract class Entity implements Comparable<Entity> {
 	 * この数値は、エンティティの順番（order）として使われる場合があります。
 	 * @return 新しいID
 	 */
-	private int getNextID() {
+	private long getNextID() {
 		return entityCount++;
 	}
 
