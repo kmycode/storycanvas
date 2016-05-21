@@ -17,6 +17,7 @@
  */
 package storycanvas.model.entity;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
@@ -73,10 +74,10 @@ public abstract class TreeEntity extends Entity {
 	/**
 	 * JavaFXのツリーで利用するアイテム.
 	 */
-	private TreeItem<TreeEntity> rootTreeItem = new TreeItem<>(this);
+	private WeakReference<TreeItem<TreeEntity>> rootTreeItem = new WeakReference<TreeItem<TreeEntity>>(new TreeItem<>(this));
 
 	public TreeItem<TreeEntity> getTreeItem() {
-		return this.rootTreeItem;
+		return this.rootTreeItem.get();
 	}
 //</editor-fold>
 
@@ -120,9 +121,9 @@ public abstract class TreeEntity extends Entity {
 	 * （再帰しないので、子エンティティのTreeItemの更新には別途呼出が必要）.
 	 */
 	private void updateTreeItemChildren() {
-		this.rootTreeItem.getChildren().clear();
+		this.getTreeItem().getChildren().clear();
 		for (TreeEntity el : this.getChildren()) {
-			this.rootTreeItem.getChildren().add(el.getTreeItem());
+			this.getTreeItem().getChildren().add(el.getTreeItem());
 		}
 	}
 
