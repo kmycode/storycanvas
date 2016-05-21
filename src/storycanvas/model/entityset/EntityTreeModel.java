@@ -17,8 +17,11 @@
  */
 package storycanvas.model.entityset;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.scene.control.TreeItem;
 import storycanvas.model.entity.TreeEntity;
 
@@ -76,7 +79,7 @@ public class EntityTreeModel<E extends TreeEntity> implements EntitySetModel<E> 
 	 * @return ルートアイテム
 	 */
 	public TreeItem<E> getRootTreeItem() {
-		return (TreeItem<E>)this.rootEntity.getRootTreeItem();
+		return (TreeItem<E>)this.rootEntity.getTreeItem();
 	}
 
 	/**
@@ -88,7 +91,12 @@ public class EntityTreeModel<E extends TreeEntity> implements EntitySetModel<E> 
 		if (this.getSelectedEntity() == null) {
 			this.add(entity, this.rootEntity);
 		} else {
-			this.add(entity, this.getSelectedEntity());
+			if (this.getSelectedEntity().getParent() != null) {
+				this.insert(this.getSelectedEntity().getParent().getChildren().indexOf(this.getSelectedEntity()),
+						entity, (E)this.getSelectedEntity().getParent());
+			} else {
+				this.add(entity, this.rootEntity);
+			}
 		}
 	}
 
@@ -102,6 +110,40 @@ public class EntityTreeModel<E extends TreeEntity> implements EntitySetModel<E> 
 	}
 
 	/**
+	 * エンティティを所定箇所に挿入。
+	 * このメソッドの呼出時点で、エンティティはparentのchildでなくてもよい。
+	 * メソッド内で親子の関連付け処理も行う
+	 * @param index 挿入するインデクス番号
+	 * @param entity 挿入するエンティティ
+	 * @param parent 親となるエンティティ
+	 */
+	public void insert(int index, E entity, E parent) {
+		// 並べ替える前のインデクス番号にあるオブジェクトを取得
+		E target = (E)parent.getChildren().get(index);
+
+		// エンティティを順番通りに並べ替える
+		FXCollections.sort(parent.getChildren());
+
+		// 並べ替えた後の新しいインデクス番号を取得
+		index = parent.getChildren().indexOf(target);
+
+		// 以降のエンティティの順番をリストアップ
+		Queue<Long> orderStack = new ArrayDeque<>();
+		for (int i = index; i < parent.getChildren().size(); i++) {
+			orderStack.add(parent.getChildren().get(i).getOrder());
+		}
+		orderStack.add(entity.getOrder());
+
+		// エンティティを挿入
+		parent.getChildren().add(index, entity);
+
+		// 以降のエンティティを１つずつ下にずらす
+		for (int i = index; i < parent.getChildren().size(); i++) {
+			parent.getChildren().get(i).setOrder(orderStack.poll());
+		}
+	}
+
+	/**
 	 * エンティティを削除
 	 * @param entity 削除するエンティティ
 	 */
@@ -112,4 +154,128 @@ public class EntityTreeModel<E extends TreeEntity> implements EntitySetModel<E> 
 		}
 	}
 
+	/**
+	 * 指定エンティティをリストの上へ移動
+	 * @param entity 指定エンティティ
+	 */
+	public void up(E entity) {
+		if (entity == null || entity.getParent() == null) {
+			return;
+		}
+
+		// エンティティを順番通りに並べ替える
+		FXCollections.sort(entity.getParent().getChildren());
+
+		// ひとつ順番が上のものを探す
+		E target = null;
+		for (TreeEntity e : entity.getParent().getChildren()) {
+			if (e.getOrder() < entity.getOrder() && (target == null || e.getOrder() > target.getOrder())) {
+				target = (E)e;
+			}
+		}
+		if (target != null) {
+			long tmp = entity.getOrder();
+			entity.setOrder(target.getOrder());
+			target.setOrder(tmp);
+		}
+
+		// エンティティを順番通りに並べ替える
+		FXCollections.sort(entity.getParent().getChildren());
+	}
+
+	/**
+	 * 現在選択されているエンティティを上へ移動.
+	 */
+	public void up() {
+		this.up(this.getSelectedEntity());
+	}
+
+	/**
+	 * 指定エンティティをリストの下へ移動
+	 * @param entity 指定エンティティ
+	 */
+	public void down(E entity) {
+		if (entity == null || entity.getParent() == null) {
+			return;
+		}
+
+		// エンティティを順番通りに並べ替える
+		FXCollections.sort(entity.getParent().getChildren());
+
+		// ひとつ順番が下のものを探す
+		E target = null;
+		for (TreeEntity e : entity.getParent().getChildren()) {
+			if (e.getOrder() > entity.getOrder() && (target == null || e.getOrder() < target.getOrder())) {
+				target = (E)e;
+			}
+		}
+		if (target != null) {
+			long tmp = entity.getOrder();
+			entity.setOrder(target.getOrder());
+			target.setOrder(tmp);
+		}
+
+		// エンティティを順番通りに並べ替える
+		FXCollections.sort(entity.getParent().getChildren());
+	}
+
+	/**
+	 * 現在選択されているエンティティを下へ移動.
+	 */
+	public void down() {
+		this.down(this.getSelectedEntity());
+	}
+
+	/**
+	 * 指定エンティティをリストの右へ移動。ひとつ兄上のエンティティの子にする
+	 * @param entity 指定エンティティ
+	 */
+	public void right(E entity) {
+		if (entity == null || entity.getParent() == null) {
+			return;
+		}
+
+		// エンティティのインデクス番号を取得
+		int index = entity.getParent().getChildren().indexOf(entity);
+		if (index < 1) {
+			return;
+		}
+
+		// ひとつ前のエンティティを取得して処理
+		E newParent = (E)entity.getParent().getChildren().get(index - 1);
+		newParent.getChildren().add(entity);
+	}
+
+	/**
+	 * 現在選択されているエンティティを左へ移動.
+	 */
+	public void right() {
+		this.right(this.getSelectedEntity());
+	}
+
+	/**
+	 * 指定エンティティをリストの左へ移動。祖父のエンティティの子にする
+	 * @param entity 指定エンティティ
+	 */
+	public void left(E entity) {
+		if (entity == null || entity.getParent() == null || entity.getParent().getParent() == null) {
+			return;
+		}
+
+		// 親エンティティのインデクス番号を取得
+		int index = entity.getParent().getParent().getChildren().indexOf(entity.getParent());
+		if (index < entity.getParent().getParent().getChildren().size() - 1) {
+			index++;
+		}
+
+		// 祖父のエンティティに挿入する処理
+		this.insert(index, entity, (E)entity.getParent().getParent());
+	}
+
+	/**
+	 * 現在選択されているエンティティを左へ移動.
+	 */
+	public void left() {
+		this.left(this.getSelectedEntity());
+	}
 }

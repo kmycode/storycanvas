@@ -68,8 +68,13 @@ public class StoryMainNodeController implements Initializable {
 		this.personButtonBox.setOnDownAction(e -> Story.getCurrent().downPerson());
 
 		// 場所一覧のButtonBox
+		this.placeButtonBox.setTree(true);
 		this.placeButtonBox.setOnNewAction(e -> Story.getCurrent().addPlace());
 		this.placeButtonBox.setOnDeleteAction(e -> Story.getCurrent().deletePlace());
+		this.placeButtonBox.setOnUpAction(e -> Story.getCurrent().upPlace());
+		this.placeButtonBox.setOnDownAction(e -> Story.getCurrent().downPlace());
+		this.placeButtonBox.setOnLeftAction(e -> Story.getCurrent().leftPlace());
+		this.placeButtonBox.setOnRightAction(e -> Story.getCurrent().rightPlace());
 	}
 
 }

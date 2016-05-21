@@ -75,14 +75,10 @@ public abstract class TreeEntity extends Entity {
 	 */
 	private TreeItem<TreeEntity> rootTreeItem = new TreeItem<>(this);
 
-	public TreeItem<TreeEntity> getRootTreeItem() {
+	public TreeItem<TreeEntity> getTreeItem() {
 		return this.rootTreeItem;
 	}
 //</editor-fold>
-
-	public TreeEntity() {
-		this.initialize();
-	}
 
 	/**
 	 * 初期化処理。子エンティティのリストを操作した時、親エンティティを設定するリスナ
@@ -110,6 +106,11 @@ public abstract class TreeEntity extends Entity {
 						el.removeParent();
 					}
 				}
+
+				// ソートされた時
+				else if (e.wasPermutated()) {
+					this.updateTreeItemChildren();
+				}
 			}
 		});
 	}
@@ -121,7 +122,7 @@ public abstract class TreeEntity extends Entity {
 	private void updateTreeItemChildren() {
 		this.rootTreeItem.getChildren().clear();
 		for (TreeEntity el : this.getChildren()) {
-			this.rootTreeItem.getChildren().add(el.getRootTreeItem());
+			this.rootTreeItem.getChildren().add(el.getTreeItem());
 		}
 	}
 
@@ -130,8 +131,9 @@ public abstract class TreeEntity extends Entity {
 	 */
 	private void removeParent() {
 		if (this.getParent() != null) {
+			TreeEntity oldParent = this.getParent();
 			this.getParent().getChildren().remove(this);
-			this.getParent().updateTreeItemChildren();
+			oldParent.updateTreeItemChildren();
 		}
 		this.setParent(null);
 	}

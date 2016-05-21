@@ -15,26 +15,27 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package storycanvas.model.entity;
+package storycanvas.message.entity.list.select;
+
+import javafx.scene.control.TreeItem;
+import net.kmycode.javafx.Message;
+import storycanvas.model.entity.Place;
 
 /**
- * 場所を表すクラス
+ * 場所のリストで特定のアイテムを選択するメッセージ
+ *
  * @author KMY
  */
-public class Place extends TreeEntity {
+public class MainPlaceTableSelectItemMessage extends Message {
 
-	public Place() {
-		this.initialize();
+	private final TreeItem<Place> item;
+
+	public MainPlaceTableSelectItemMessage(TreeItem<Place> item) {
+		this.item = item;
 	}
 
-	@Override
-	protected final void initialize() {
-		super.initialize();
-	}
-
-	@Override
-	protected String getResourceName () {
-		return "place";
+	public TreeItem<Place> getItem() {
+		return this.item;
 	}
 
 }

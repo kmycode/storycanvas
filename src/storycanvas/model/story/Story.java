@@ -19,12 +19,15 @@ package storycanvas.model.story;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.control.TreeItem;
 import net.kmycode.javafx.Messenger;
 import storycanvas.message.entity.edit.EmptyEditMessage;
 import storycanvas.message.entity.edit.PersonEditMessage;
 import storycanvas.message.entity.edit.PlaceEditMessage;
-import storycanvas.message.entity.list.MainPersonTableInitializeMessage;
-import storycanvas.message.entity.list.MainPlaceTableInitializeMessage;
+import storycanvas.message.entity.list.init.MainPersonTableInitializeMessage;
+import storycanvas.message.entity.list.init.MainPlaceTableInitializeMessage;
+import storycanvas.message.entity.list.select.MainPersonTableSelectItemMessage;
+import storycanvas.message.entity.list.select.MainPlaceTableSelectItemMessage;
 import storycanvas.model.date.StoryCalendar;
 import storycanvas.model.date.StoryDate;
 import storycanvas.model.entity.Person;
@@ -143,7 +146,7 @@ public class Story {
 	public void addPerson() {
 		Person entity = new Person();
 		this.persons.add(entity);
-		Messenger.getInstance().send(new PersonEditMessage(entity));
+		Messenger.getInstance().send(new MainPersonTableSelectItemMessage(entity));
 	}
 
 	/**
@@ -176,7 +179,7 @@ public class Story {
 	public void addPlace() {
 		Place entity = new Place();
 		this.places.add(entity);
-		Messenger.getInstance().send(new PlaceEditMessage(entity));
+		Messenger.getInstance().send(new MainPlaceTableSelectItemMessage((TreeItem)entity.getTreeItem()));
 	}
 
 	/**
@@ -185,6 +188,58 @@ public class Story {
 	public void deletePlace() {
 		Messenger.getInstance().send(new EmptyEditMessage());
 		this.places.delete();
+	}
+
+	/**
+	 * 選択された場所を上へ移動.
+	 */
+	public void upPlace() {
+		if (this.places.getSelectedEntity() != null) {
+			Place entity = this.places.getSelectedEntity();
+			this.places.up();
+			Messenger.getInstance().send(new MainPlaceTableSelectItemMessage((TreeItem)entity.getTreeItem()));
+		} else {
+			this.places.up();
+		}
+	}
+
+	/**
+	 * 選択された場所を下へ移動.
+	 */
+	public void downPlace() {
+		if (this.places.getSelectedEntity() != null) {
+			Place entity = this.places.getSelectedEntity();
+			this.places.down();
+			Messenger.getInstance().send(new MainPlaceTableSelectItemMessage((TreeItem)entity.getTreeItem()));
+		} else {
+			this.places.down();
+		}
+	}
+
+	/**
+	 * 選択された場所を左へ移動.
+	 */
+	public void leftPlace() {
+		if (this.places.getSelectedEntity() != null) {
+			Place entity = this.places.getSelectedEntity();
+			this.places.left();
+			Messenger.getInstance().send(new MainPlaceTableSelectItemMessage((TreeItem)entity.getTreeItem()));
+		} else {
+			this.places.left();
+		}
+	}
+
+	/**
+	 * 選択された場所を右へ移動.
+	 */
+	public void rightPlace() {
+		if (this.places.getSelectedEntity() != null) {
+			Place entity = this.places.getSelectedEntity();
+			this.places.right();
+			Messenger.getInstance().send(new MainPlaceTableSelectItemMessage((TreeItem)entity.getTreeItem()));
+		} else {
+			this.places.right();
+		}
 	}
 //</editor-fold>
 }

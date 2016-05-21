@@ -127,6 +127,10 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 	 * @param entity 指定エンティティ
 	 */
 	public void up(E entity) {
+		if (entity == null) {
+			return;
+		}
+
 		// エンティティを順番通りに並べ替える
 		FXCollections.sort(this.entities);
 
@@ -159,6 +163,10 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 	 * @param entity 指定エンティティ
 	 */
 	public void down(E entity) {
+		if (entity == null) {
+			return;
+		}
+
 		// エンティティを順番通りに並べ替える
 		FXCollections.sort(this.entities);
 		

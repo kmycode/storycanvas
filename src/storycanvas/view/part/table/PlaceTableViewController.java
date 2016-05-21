@@ -29,7 +29,8 @@ import javafx.scene.paint.Color;
 import net.kmycode.javafx.ColorTreeTableCell;
 import net.kmycode.javafx.ImageTreeTableCell;
 import net.kmycode.javafx.Messenger;
-import storycanvas.message.entity.list.MainPlaceTableInitializeMessage;
+import storycanvas.message.entity.list.init.MainPlaceTableInitializeMessage;
+import storycanvas.message.entity.list.select.MainPlaceTableSelectItemMessage;
 import storycanvas.model.entity.Place;
 
 /**
@@ -77,6 +78,11 @@ public class PlaceTableViewController implements Initializable {
 			Messenger.getInstance().apply(MainPlaceTableInitializeMessage.class, this, (m) -> {
 				this.placeTable.setRoot(m.getRootTreeItem());
 				m.selectedItemProperty().bind(this.placeTable.getSelectionModel().selectedItemProperty());
+			});
+
+			// 特定のアイテムを選択するメッセージが来た時の対応
+			Messenger.getInstance().apply(MainPlaceTableSelectItemMessage.class, this, (m) -> {
+				this.placeTable.getSelectionModel().select(m.getItem());
 			});
 		}
 	}

@@ -95,6 +95,16 @@ public class EntityListButtonBox extends HBox implements Initializable {
 	}
 
 	/**
+	 * 対象が階層をもったテーブルであるか
+	 * trueならば、右・左のボタンが使えるようになる
+	 * @param value 階層を持っていればtrue
+	 */
+	public void setTree(boolean value) {
+		this.leftButton.setVisible(value);
+		this.rightButton.setVisible(value);
+	}
+
+	/**
 	 * Initializes the controller class.
 	 */
 	@Override

@@ -28,7 +28,8 @@ import javafx.scene.paint.Color;
 import net.kmycode.javafx.ColorTableCell;
 import net.kmycode.javafx.ImageTableCell;
 import net.kmycode.javafx.Messenger;
-import storycanvas.message.entity.list.MainPersonTableInitializeMessage;
+import storycanvas.message.entity.list.init.MainPersonTableInitializeMessage;
+import storycanvas.message.entity.list.select.MainPersonTableSelectItemMessage;
 import storycanvas.model.date.StoryDate;
 import storycanvas.model.entity.Person;
 import storycanvas.model.entity.Sex;
@@ -86,6 +87,11 @@ public class PersonTableViewController implements Initializable {
 			Messenger.getInstance().apply(MainPersonTableInitializeMessage.class, this, (m) -> {
 				this.personTable.setItems(m.getList());
 				m.selectedItemProperty().bind(this.personTable.getSelectionModel().selectedItemProperty());
+			});
+
+			// 特定のアイテムを選択するメッセージが来た時の対応
+			Messenger.getInstance().apply(MainPersonTableSelectItemMessage.class, this, (m) -> {
+				this.personTable.getSelectionModel().select(m.getItem());
 			});
 		}
 	}
