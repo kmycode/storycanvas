@@ -14,7 +14,7 @@
 	</stylesheets>
 	<children>
 		<Label text="色" GridPane.rowIndex="1" GridPane.columnIndex="1" minWidth="60.0"/>
-		<ColorPicker fx:id="colorInput" GridPane.rowIndex="1" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" />
+		<storycanvas.view.control.SCColorPicker fx:id="colorInput" GridPane.rowIndex="1" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" />
 		<Label text="" GridPane.rowIndex="1" GridPane.columnIndex="3" prefWidth="1.0" /><!-- dummy -->
 	</children>
 </GridPane>

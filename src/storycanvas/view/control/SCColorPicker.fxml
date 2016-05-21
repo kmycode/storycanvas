@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<fx:root type="javafx.scene.layout.HBox" id="AnchorPane" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1">
+	<stylesheets>
+		<URL value="@/storycanvas/view/default.css"/>
+	</stylesheets>
+	<children>
+		<ColorPicker fx:id="colorPicker" />
+		<Button fx:id="delButton" mnemonicParsing="false" onAction="#deleteColorAction">
+			<graphic>
+				<ImageView fitWidth="16" fitHeight="16" >
+					<Image url="/storycanvas/resource/icon/cancel.png"/>
+				</ImageView>
+			</graphic>
+		</Button>
+	</children>
+</fx:root>

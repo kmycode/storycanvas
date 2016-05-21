@@ -21,9 +21,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ColorPicker;
 import javafx.scene.layout.GridPane;
 import storycanvas.model.entity.Entity;
+import storycanvas.view.control.SCColorPicker;
 
 /**
  * エンティティの共通情報が編集できるエディタ
@@ -38,7 +38,7 @@ public class EntityBaseEditorController implements Initializable {
 	private GridPane root;
 
 	@FXML
-	private ColorPicker colorInput;
+	private SCColorPicker colorInput;
 
 	/**
 	 * 編集
