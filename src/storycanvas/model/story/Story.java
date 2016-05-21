@@ -22,6 +22,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import net.kmycode.javafx.Messenger;
 import storycanvas.message.entity.edit.EmptyEditMessage;
 import storycanvas.message.entity.edit.PersonEditMessage;
+import storycanvas.message.entity.edit.PlaceEditMessage;
 import storycanvas.message.entity.list.MainPersonTableInitializeMessage;
 import storycanvas.message.entity.list.MainPlaceTableInitializeMessage;
 import storycanvas.model.date.StoryCalendar;
@@ -49,6 +50,15 @@ public class Story {
 		this.persons.selectedEntityProperty().addListener(e -> {
 			if (this.persons.getSelectedEntity() != null) {
 				Messenger.getInstance().send(new PersonEditMessage(this.persons.getSelectedEntity()));
+			} else {
+				Messenger.getInstance().send(new EmptyEditMessage());
+			}
+		});
+
+		// リストで場所が選択された時
+		this.places.selectedEntityProperty().addListener(e -> {
+			if (this.places.getSelectedEntity() != null) {
+				Messenger.getInstance().send(new PlaceEditMessage(this.places.getSelectedEntity()));
 			} else {
 				Messenger.getInstance().send(new EmptyEditMessage());
 			}
@@ -122,7 +132,7 @@ public class Story {
 	private void reloadView() {
 		// 画面表示を更新するメッセージを送信
 		Messenger.getInstance().send(new MainPersonTableInitializeMessage(this.persons.getEntities(), this.persons.selectedEntityProperty()));
-		Messenger.getInstance().send(new MainPlaceTableInitializeMessage(this.places.getRootTreeItem(), this.places.selectedEntityProperty()));
+		Messenger.getInstance().send(new MainPlaceTableInitializeMessage(this.places.getRootTreeItem(), this.places.selectedTreeItemEntityProperty()));
 	}
 //</editor-fold>
 

@@ -37,6 +37,7 @@
 								<StackPane VBox.vgrow="ALWAYS" >
 									<children>
 										<fx:include fx:id="personEditor" source="/storycanvas/view/part/editor/PersonEditor.fxml"/>
+										<fx:include fx:id="placeEditor" source="/storycanvas/view/part/editor/PlaceEditor.fxml"/>
 									</children>
 								</StackPane>
 							</content>

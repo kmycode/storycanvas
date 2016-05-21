@@ -17,5 +17,6 @@
 		<TreeTableColumn fx:id="orderColumn" prefWidth="40.0" text="順番"/>
 		<TreeTableColumn fx:id="iconColumn" prefWidth="32.0" text="" sortable="false" resizable="false"/>
 		<TreeTableColumn fx:id="nameColumn" prefWidth="200.0" text="名前"/>
+		<TreeTableColumn fx:id="colorColumn" prefWidth="55.0" text="色"/>
 	</columns>
 </TreeTableView>

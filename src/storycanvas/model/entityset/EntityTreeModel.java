@@ -49,6 +49,12 @@ public class EntityTreeModel<E extends TreeEntity> implements EntitySetModel<E> 
 	public ObjectProperty<E> selectedEntityProperty () {
 		return selectedEntity;
 	}
+
+	private final ObjectProperty<TreeItem<E>> selectedTreeItemEntity = new SimpleObjectProperty<>();
+
+	public ObjectProperty<TreeItem<E>> selectedTreeItemEntityProperty() {
+		return selectedTreeItemEntity;
+	}
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="コンストラクタ">
@@ -58,6 +64,10 @@ public class EntityTreeModel<E extends TreeEntity> implements EntitySetModel<E> 
 	 */
 	public EntityTreeModel(E root) {
 		this.rootEntity = root;
+
+		this.selectedTreeItemEntity.addListener(e -> this.selectedEntity.set(
+				this.selectedTreeItemEntity.get() != null ? this.selectedTreeItemEntity.get().getValue() : null
+		));
 	}
 //</editor-fold>
 

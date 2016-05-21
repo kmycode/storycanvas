@@ -28,6 +28,7 @@ public class StoryCanvas extends Application {
 		Scene scene = new Scene(root);
 
 		stage.setScene(scene);
+		stage.setTitle("StoryCanvas 1.0.0.dev");
 		stage.show();
 		mainStage = stage;
 

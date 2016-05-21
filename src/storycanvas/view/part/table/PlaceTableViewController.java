@@ -25,6 +25,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import net.kmycode.javafx.ColorTreeTableCell;
 import net.kmycode.javafx.ImageTreeTableCell;
 import net.kmycode.javafx.Messenger;
 import storycanvas.message.entity.list.MainPlaceTableInitializeMessage;
@@ -51,6 +53,9 @@ public class PlaceTableViewController implements Initializable {
 	@FXML
 	private TreeTableColumn<Place, String> nameColumn;
 
+	@FXML
+	private TreeTableColumn<Place, Color> colorColumn;
+
 	/**
 	 * 自分をメインのリストとして設定します.
 	 */
@@ -62,14 +67,16 @@ public class PlaceTableViewController implements Initializable {
 			this.orderColumn.setCellValueFactory(f -> new SimpleStringProperty(Long.toString(f.getValue().getValue().getOrder())));
 			this.iconColumn.setCellValueFactory(f -> f.getValue().getValue().iconProperty());
 			this.nameColumn.setCellValueFactory(f -> f.getValue().getValue().nameProperty());
+			this.colorColumn.setCellValueFactory(f -> f.getValue().getValue().colorProperty());
 
 			// セルファクトリを設定
 			this.iconColumn.setCellFactory((TreeTableColumn<Place, Image> param) -> new ImageTreeTableCell<Place>(16, 16));
+			this.colorColumn.setCellFactory((TreeTableColumn<Place, Color> param) -> new ColorTreeTableCell<Place>());
 
 			// メッセンジャにイベントを登録
 			Messenger.getInstance().apply(MainPlaceTableInitializeMessage.class, this, (m) -> {
 				this.placeTable.setRoot(m.getRootTreeItem());
-				//m.selectedItemProperty().bind(this.placeTable.getSelectionModel().selectedItemProperty());
+				m.selectedItemProperty().bind(this.placeTable.getSelectionModel().selectedItemProperty());
 			});
 		}
 	}

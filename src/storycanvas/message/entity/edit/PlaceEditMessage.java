@@ -15,34 +15,26 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package storycanvas.message.entity.list;
+package storycanvas.message.entity.edit;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.scene.control.TreeItem;
 import net.kmycode.javafx.Message;
 import storycanvas.model.entity.Place;
 
 /**
- * メイン画面の場所一覧を初期化するメッセージ
+ * 場所を編集するメッセージ
  *
  * @author KMY
  */
-public class MainPlaceTableInitializeMessage extends Message {
+public class PlaceEditMessage extends Message {
 
-	private final TreeItem<Place> rootTreeItem;
-	private final ObjectProperty<TreeItem<Place>> selectedItem;
+	private final Place entity;
 
-	public MainPlaceTableInitializeMessage(TreeItem<Place> rootTreeItem, ObjectProperty<TreeItem<Place>> selectedItem) {
-		this.rootTreeItem = rootTreeItem;
-		this.selectedItem = selectedItem;
+	public PlaceEditMessage(Place e) {
+		this.entity = e;
 	}
 
-	public TreeItem<Place> getRootTreeItem() {
-		return this.rootTreeItem;
-	}
-
-	public ObjectProperty<TreeItem<Place>> selectedItemProperty() {
-		return this.selectedItem;
+	public Place getPlace() {
+		return this.entity;
 	}
 
 }

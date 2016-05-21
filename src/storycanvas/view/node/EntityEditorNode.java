@@ -33,11 +33,14 @@ import javafx.scene.image.ImageView;
 import net.kmycode.javafx.Messenger;
 import storycanvas.message.entity.edit.EmptyEditMessage;
 import storycanvas.message.entity.edit.PersonEditMessage;
+import storycanvas.message.entity.edit.PlaceEditMessage;
 import storycanvas.model.entity.Entity;
 import storycanvas.model.entity.Person;
+import storycanvas.model.entity.Place;
 import storycanvas.view.part.editor.EntityBaseEditorController;
 import storycanvas.view.part.editor.EntityMemoEditorController;
 import storycanvas.view.part.editor.PersonEditorController;
+import storycanvas.view.part.editor.PlaceEditorController;
 
 /**
  * エンティティの編集画面のノード
@@ -73,6 +76,9 @@ public class EntityEditorNode extends ScrollPane implements Initializable {
 	@FXML
 	private PersonEditorController personEditorController;
 
+	@FXML
+	private PlaceEditorController placeEditorController;
+
 	/**
 	 * 初期化.
 	 */
@@ -104,6 +110,7 @@ public class EntityEditorNode extends ScrollPane implements Initializable {
 		// エンティティを編集するメッセージ
 		Messenger.getInstance().apply(EmptyEditMessage.class, this, m -> this.exitEditEntity());
 		Messenger.getInstance().apply(PersonEditMessage.class, this, m -> this.editEntity(m.getPerson()));
+		Messenger.getInstance().apply(PlaceEditMessage.class, this, m -> this.editEntity(m.getPlace()));
 	}
 	
 	/**
@@ -128,12 +135,22 @@ public class EntityEditorNode extends ScrollPane implements Initializable {
 	}
 
 	/**
+	 * 場所を編集
+	 * @param entity 編集する場所クラス
+	 */
+	private void editEntity(Place entity) {
+		this.editAbstractEntity(entity);
+		this.placeEditorController.edit(entity);
+	}
+
+	/**
 	 * 編集を終了.
 	 */
 	private void exitEditEntity() {
 		this.entityBaseEditorController.exitEdit();
 		this.entityMemoEditorController.exitEdit();
 		this.personEditorController.exitEdit();
+		this.placeEditorController.exitEdit();
 
 		// 編集画面の上部分に表示されるアイコン、エンティティ名の表示を消す
 		this.entityIcon.setImage(null);
