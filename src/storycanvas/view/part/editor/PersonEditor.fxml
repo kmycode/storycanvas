@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml/1" id="AnchorPane" vgap="10" hgap="10" prefWidth="295.0" 
-			styleClass="mainFxmlClass" fx:controller="storycanvas.view.part.editor.PersonEditorController">
+			styleClass="mainFxmlClass" fx:controller="storycanvas.view.part.editor.PersonEditorController" fx:id="root" visible="false">
 	<stylesheets>
 		<URL value="@/storycanvas/view/default.css"/>
 	</stylesheets>
@@ -21,14 +21,12 @@
 		<TextField fx:id="firstNameInput" text="" GridPane.rowIndex="2" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" />
 		
 		<Label text="性" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-				
-		<Label text="色" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-		<ColorPicker fx:id="colorInput" GridPane.rowIndex="4" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" />
+		<storycanvas.view.control.SexPicker fx:id="sexInput" GridPane.rowIndex="3" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" />
 		
-		<Label text="誕生日" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
-		<storycanvas.view.control.date.StoryDatePicker fx:id="birthDayInput" GridPane.rowIndex="5" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" />
+		<Label text="誕生日" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+		<storycanvas.view.control.date.StoryDatePicker fx:id="birthDayInput" GridPane.rowIndex="4" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" />
 		
-		<Label text="死亡日" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
-		<storycanvas.view.control.date.StoryDatePicker fx:id="deathDayInput" GridPane.rowIndex="6" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" />
+		<Label text="死亡日" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+		<storycanvas.view.control.date.StoryDatePicker fx:id="deathDayInput" GridPane.rowIndex="5" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" />
 	</children>
 </GridPane>

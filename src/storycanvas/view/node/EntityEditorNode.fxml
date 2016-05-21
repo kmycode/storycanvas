@@ -20,23 +20,33 @@
 				<HBox spacing="5.0">
 					<children>
 						<!-- アイコン -->
-						<ImageView fx:id="entityIcon" fitWidth="64" fitHeight="64">
-							<image>
-								<Image url="/storycanvas/resource/icon/create.png"/>
-							</image>
-						</ImageView>
+						<ImageView fx:id="entityIcon" fitWidth="64" fitHeight="64"/>
 						<!-- タイトル -->
-						<Label fx:id="entityName" text="エンティティ" maxWidth="221" maxHeight="64" wrapText="true" alignment="CENTER_LEFT" style="-fx-font-size:18px;-fx-font-weight:bold;"/>
+						<Label fx:id="entityName" text="エンティティの編集" maxWidth="221" maxHeight="64" wrapText="true" alignment="CENTER_LEFT" style="-fx-font-size:18px;-fx-font-weight:bold;"/>
 					</children>
 				</HBox>
-				<!-- エディタ本体 -->
-				<StackPane VBox.vgrow="ALWAYS" >
-					<children>
-						<AnchorPane fx:id="personEditorPane" visible="false" >
-							<fx:include fx:id="personEditor" source="/storycanvas/view/part/editor/PersonEditor.fxml"/>
-						</AnchorPane>
-					</children>
-				</StackPane>
+				<TabPane tabClosingPolicy="UNAVAILABLE" fx:id="editorTabPane">
+					<tabs>
+						<Tab text="基本">
+							<!-- エンティティの基本情報を編集するエディタ -->
+							<fx:include fx:id="entityBaseEditor" source="/storycanvas/view/part/editor/EntityBaseEditor.fxml"/>
+						</Tab>
+						<Tab text="情報" fx:id="informationTab">
+							<content>
+								<!-- エディタ本体 -->
+								<StackPane VBox.vgrow="ALWAYS" >
+									<children>
+										<fx:include fx:id="personEditor" source="/storycanvas/view/part/editor/PersonEditor.fxml"/>
+									</children>
+								</StackPane>
+							</content>
+						</Tab>
+						<Tab text="メモ">
+							<!-- エンティティのメモを編集するエディタ -->
+							<fx:include fx:id="entityMemoEditor" source="/storycanvas/view/part/editor/EntityMemoEditor.fxml"/>
+						</Tab>
+					</tabs>
+				</TabPane>
 			</children>
 		</VBox>
 	</content>

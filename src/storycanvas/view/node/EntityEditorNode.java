@@ -27,12 +27,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import net.kmycode.javafx.Messenger;
+import storycanvas.message.entity.edit.EmptyEditMessage;
 import storycanvas.message.entity.edit.PersonEditMessage;
 import storycanvas.model.entity.Entity;
 import storycanvas.model.entity.Person;
+import storycanvas.view.part.editor.EntityBaseEditorController;
+import storycanvas.view.part.editor.EntityMemoEditorController;
 import storycanvas.view.part.editor.PersonEditorController;
 
 /**
@@ -49,13 +53,22 @@ public class EntityEditorNode extends ScrollPane implements Initializable {
 	private static EntityEditorNode mainNode;
 
 	@FXML
+	private TabPane editorTabPane;
+
+	@FXML
+	private Tab informationTab;
+
+	@FXML
 	private ImageView entityIcon;
 
 	@FXML
 	private Label entityName;
 
 	@FXML
-	private Pane personEditorPane;
+	private EntityBaseEditorController entityBaseEditorController;
+
+	@FXML
+	private EntityMemoEditorController entityMemoEditorController;
 
 	@FXML
 	private PersonEditorController personEditorController;
@@ -73,6 +86,9 @@ public class EntityEditorNode extends ScrollPane implements Initializable {
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
+
+		// デフォルトで表示されるタブ
+		this.editorTabPane.getSelectionModel().select(this.informationTab);
 	}
 
 	/**
@@ -86,6 +102,7 @@ public class EntityEditorNode extends ScrollPane implements Initializable {
 		}
 
 		// エンティティを編集するメッセージ
+		Messenger.getInstance().apply(EmptyEditMessage.class, this, m -> this.exitEditEntity());
 		Messenger.getInstance().apply(PersonEditMessage.class, this, m -> this.editEntity(m.getPerson()));
 	}
 	
@@ -97,14 +114,8 @@ public class EntityEditorNode extends ScrollPane implements Initializable {
 		this.exitEditEntity();
 		this.entityIcon.setImage(entity.getIcon());
 		this.entityName.textProperty().bind(entity.nameProperty());
-		this.hideAllEntityEditor();
-	}
-
-	/**
-	 * すべての編集画面を隠す.
-	 */
-	private void hideAllEntityEditor() {
-		this.personEditorPane.setVisible(false);
+		this.entityBaseEditorController.edit(entity);
+		this.entityMemoEditorController.edit(entity);
 	}
 
 	/**
@@ -113,7 +124,6 @@ public class EntityEditorNode extends ScrollPane implements Initializable {
 	 */
 	private void editEntity(Person entity) {
 		this.editAbstractEntity(entity);
-		this.personEditorPane.setVisible(true);
 		this.personEditorController.edit(entity);
 	}
 
@@ -121,7 +131,14 @@ public class EntityEditorNode extends ScrollPane implements Initializable {
 	 * 編集を終了.
 	 */
 	private void exitEditEntity() {
+		this.entityBaseEditorController.exitEdit();
+		this.entityMemoEditorController.exitEdit();
 		this.personEditorController.exitEdit();
+
+		// 編集画面の上部分に表示されるアイコン、エンティティ名の表示を消す
+		this.entityIcon.setImage(null);
+		this.entityName.textProperty().unbind();
+		this.entityName.setText("エンティティの編集");
 	}
 
 	/**

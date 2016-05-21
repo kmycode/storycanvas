@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml/1" id="AnchorPane" vgap="10" hgap="10" prefWidth="295.0" 
+			styleClass="mainFxmlClass" fx:controller="storycanvas.view.part.editor.EntityMemoEditorController" fx:id="root" visible="false">
+   	<stylesheets>
+		<URL value="@/storycanvas/view/default.css"/>
+	</stylesheets>
+	<children>
+		<TextArea fx:id="memoInput" promptText="メモをここに入力" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+		<Label text="" GridPane.rowIndex="1" GridPane.columnIndex="2" prefWidth="1.0" /><!-- dummy -->
+	</children>
+</GridPane>

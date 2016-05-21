@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root xmlns:fx="http://javafx.com/fxml/1" type="javafx.scene.layout.FlowPane" orientation="HORIZONTAL">
+	<stylesheets>
+		<URL value="@/storycanvas/view/default.css"/>
+	</stylesheets>
+	<children>
+		<fx:define>
+			<ToggleGroup fx:id="sexGroup"/>
+		</fx:define>
+		<ToggleButton fx:id="maleButton" text="男" textFill="blue" toggleGroup="$sexGroup" />
+		<ToggleButton fx:id="femaleButton" text="女" textFill="red" toggleGroup="$sexGroup" />
+	</children>
+</fx:root>

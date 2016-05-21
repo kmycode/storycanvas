@@ -21,9 +21,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import storycanvas.model.entity.Person;
+import storycanvas.view.control.SexPicker;
 import storycanvas.view.control.date.StoryDatePicker;
 
 /**
@@ -36,13 +37,16 @@ public class PersonEditorController implements Initializable {
 	private Person editingEntity;
 
 	@FXML
+	private GridPane root;
+
+	@FXML
 	private TextField lastNameInput;
 
 	@FXML
 	private TextField firstNameInput;
 
 	@FXML
-	private ColorPicker colorInput;
+	private SexPicker sexInput;
 
 	@FXML
 	private StoryDatePicker birthDayInput;
@@ -58,9 +62,10 @@ public class PersonEditorController implements Initializable {
 		this.editingEntity = entity;
 		this.lastNameInput.textProperty().bindBidirectional(entity.lastNameProperty());
 		this.firstNameInput.textProperty().bindBidirectional(entity.firstNameProperty());
-		this.colorInput.valueProperty().bindBidirectional(entity.colorProperty());
+		this.sexInput.valueProperty().bindBidirectional(entity.sexProperty());
 		this.birthDayInput.dateProperty().bindBidirectional(entity.birthDayProperty());
 		this.deathDayInput.dateProperty().bindBidirectional(entity.deathDayProperty());
+		this.root.setVisible(true);
 	}
 
 	/**
@@ -70,10 +75,11 @@ public class PersonEditorController implements Initializable {
 		if (this.editingEntity != null) {
 			this.lastNameInput.textProperty().unbindBidirectional(this.editingEntity.lastNameProperty());
 			this.firstNameInput.textProperty().unbindBidirectional(this.editingEntity.firstNameProperty());
-			this.colorInput.valueProperty().unbindBidirectional(this.editingEntity.colorProperty());
+			this.sexInput.valueProperty().unbindBidirectional(this.editingEntity.sexProperty());
 			this.birthDayInput.dateProperty().unbindBidirectional(this.editingEntity.birthDayProperty());
 			this.deathDayInput.dateProperty().unbindBidirectional(this.editingEntity.deathDayProperty());
 		}
+		this.root.setVisible(false);
 	}
 
 	/**

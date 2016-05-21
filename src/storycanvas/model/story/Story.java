@@ -25,6 +25,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import net.kmycode.javafx.ListUtil;
 import net.kmycode.javafx.Messenger;
+import storycanvas.message.entity.edit.EmptyEditMessage;
 import storycanvas.message.entity.edit.PersonEditMessage;
 import storycanvas.message.entity.list.MainPersonListInitializeMessage;
 import storycanvas.model.date.StoryCalendar;
@@ -49,6 +50,8 @@ public class Story {
 		this.selectedPerson.addListener(e -> {
 			if (this.selectedPerson.get() != null) {
 				Messenger.getInstance().send(new PersonEditMessage(this.selectedPerson.get()));
+			} else {
+				Messenger.getInstance().send(new EmptyEditMessage());
 			}
 		});
 		
