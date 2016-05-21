@@ -118,6 +118,15 @@ public class Person extends EditableEntity {
 //</editor-fold>
 
 	public Person() {
+		this.initialize();
+	}
+
+	/**
+	 * 初期化。事実上のコンストラクタ.
+	 */
+	@Override
+	protected final void initialize() {
+		super.initialize();
 		this.setNameBinding();
 	}
 

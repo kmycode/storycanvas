@@ -17,13 +17,8 @@
  */
 package storycanvas.model.story;
 
-import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import net.kmycode.javafx.ListUtil;
 import net.kmycode.javafx.Messenger;
 import storycanvas.message.entity.edit.EmptyEditMessage;
 import storycanvas.message.entity.edit.PersonEditMessage;
@@ -32,6 +27,7 @@ import storycanvas.model.date.StoryCalendar;
 import storycanvas.model.date.StoryDate;
 import storycanvas.model.entity.Person;
 import storycanvas.model.entity.Sex;
+import storycanvas.model.entityset.EntityListModel;
 
 /**
  * ひとつのストーリーをあらわすモデル。
@@ -47,9 +43,9 @@ public class Story {
 		setCurrent(this);
 
 		// リストで登場人物が選択された時
-		this.selectedPerson.addListener(e -> {
-			if (this.selectedPerson.get() != null) {
-				Messenger.getInstance().send(new PersonEditMessage(this.selectedPerson.get()));
+		this.persons.selectedEntityProperty().addListener(e -> {
+			if (this.persons.getSelectedEntity() != null) {
+				Messenger.getInstance().send(new PersonEditMessage(this.persons.getSelectedEntity()));
 			} else {
 				Messenger.getInstance().send(new EmptyEditMessage());
 			}
@@ -102,36 +98,22 @@ public class Story {
 
 //<editor-fold defaultstate="collapsed" desc="プロパティ">
 	/**
-	 * 登場人物一覧
+	 * 登場人物一覧.
 	 */
-	private final ListProperty<Person> persons = new SimpleListProperty<>(FXCollections.observableArrayList());
-
-	public ObservableList<Person> getPersons () {
-		return persons.get();
-	}
-
-	public ObservableList<Person> getPersonsClone () {
-		return ListUtil.getClone(persons);
-	}
-
-	public ListProperty<Person> personsProperty () {
-		return persons;
-	}
-	
-	/**
-	 * 現在選択されている登場人物.
-	 */
-	private final ObjectProperty<Person> selectedPerson = new SimpleObjectProperty<>();
+	private final EntityListModel<Person> persons = new EntityListModel<>();
 //</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="メソッド">
 	/**
 	 * 画面全体の表示を更新.
 	 */
 	private void reloadView() {
 		// 画面表示を更新するメッセージを送信
-		Messenger.getInstance().send(new MainPersonListInitializeMessage(this.getPersons(), this.selectedPerson));
+		Messenger.getInstance().send(new MainPersonListInitializeMessage(this.persons.getEntities(), this.persons.selectedEntityProperty()));
 	}
+//</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="人物の操作">
 	/**
 	 * 人物を追加.
 	 */
@@ -145,10 +127,23 @@ public class Story {
 	 * 選択された人物を削除.
 	 */
 	public void deletePerson() {
-		if (this.selectedPerson.get() != null) {
-			Messenger.getInstance().send(new EmptyEditMessage());
-			this.persons.remove(this.selectedPerson.get());
-		}
+		Messenger.getInstance().send(new EmptyEditMessage());
+		this.persons.delete();
 	}
+
+	/**
+	 * 選択された人物を上へ移動.
+	 */
+	public void upPerson() {
+		this.persons.up();
+	}
+
+	/**
+	 * 選択された人物を下へ移動.
+	 */
+	public void downPerson() {
+		this.persons.down();
+	}
+//</editor-fold>
 
 }

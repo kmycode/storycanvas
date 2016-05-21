@@ -53,9 +53,11 @@ public class StoryMainNodeController implements Initializable {
 		// メインのビューを設定
 		this.mainPersonTableController.toMain();
 
-		// コマンドボタンボックスのイベントを設定
+		// 人物一覧のButtonBox
 		this.personButtonBox.setOnNewAction(e -> Story.getCurrent().addPerson());
 		this.personButtonBox.setOnDeleteAction(e -> Story.getCurrent().deletePerson());
+		this.personButtonBox.setOnUpAction(e -> Story.getCurrent().upPerson());
+		this.personButtonBox.setOnDownAction(e -> Story.getCurrent().downPerson());
 	}
 
 }

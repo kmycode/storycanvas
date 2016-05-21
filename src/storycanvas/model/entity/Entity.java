@@ -34,6 +34,8 @@ import storycanvas.resource.Resources;
  */
 public abstract class Entity implements Comparable<Entity> {
 
+	private static int entityCount = 0;
+
 //<editor-fold defaultstate="collapsed" desc="プロパティ">
 	/**
 	 * エンティティのID.
@@ -143,6 +145,25 @@ public abstract class Entity implements Comparable<Entity> {
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="メソッド">
+	/**
+	 * 事実上のコンストラクタです。
+	 * これは、シリアライズにあたってreadObjectメソッドから呼び出されることを想定しています。.
+	 */
+	protected void initialize() {
+		int id = this.getNextID();
+		this.setId(id);
+		this.setOrder(id);
+	}
+
+	/**
+	 * エンティティを新規作成する時、新しいIDを取得します。
+	 * この数値は、エンティティの順番（order）として使われる場合があります。
+	 * @return 新しいID
+	 */
+	private int getNextID() {
+		return entityCount++;
+	}
+
 	/**
 	 * そのエンティティの、リソース上の名前を取得します。
 	 * 例えば人物の場合、「person」が返ります。
