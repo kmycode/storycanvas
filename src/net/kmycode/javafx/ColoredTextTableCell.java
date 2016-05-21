@@ -11,16 +11,27 @@
  * あなたがこのプログラムを再配布するときは、GPLライセンスに同意しなければいけません。
  *  <http://www.gnu.org/licenses/>.
  */
-package storycanvas.view.control;
+package net.kmycode.javafx;
 
-import net.kmycode.javafx.ColoredTextTableCell;
-import storycanvas.model.entity.Sex;
+import javafx.scene.control.TableCell;
 
 /**
- * TableViewで性を表示する
+ * TableViewで色付きテキストを表示する
  *
  * @author KMY
  */
-public class SexTableCell<E> extends ColoredTextTableCell<E, Sex> {
-	
+public class ColoredTextTableCell<E, T extends ColorableTextItem> extends TableCell<E, T> {
+
+	@Override
+	protected void updateItem (T item, boolean empty) {
+		super.updateItem(item, empty);
+		if (item == null || empty) {
+			this.setText("");
+		}
+		else {
+			this.setText(item.getText());
+			String colorString = "#" + item.getColor().toString().substring(2, 8);
+			this.setStyle("-fx-text-fill:" + colorString);
+		}
+	}
 }

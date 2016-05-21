@@ -15,46 +15,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package storycanvas.model.entity;
+package net.kmycode.javafx;
 
 import javafx.scene.paint.Color;
-import net.kmycode.javafx.ColorableTextItem;
 
 /**
- * 人物の性別
+ * 色情報が付加されたテキスト
  *
  * @author KMY
  */
-public class Sex extends Entity implements ColorableTextItem {
+public interface ColorableTextItem {
 
-	public static final Sex MALE;
-	public static final Sex FEMALE;
+	public String getText();
 
-	static {
-		MALE = new Sex();
-		MALE.setName("男");
-		MALE.setColor(Color.BLUE);
-		MALE.setId(0);
-		MALE.setOrder(0);
-		FEMALE = new Sex();
-		FEMALE.setName("女");
-		FEMALE.setColor(Color.RED);
-		FEMALE.setId(1);
-		FEMALE.setOrder(1);
-	}
-
-	@Override
-	public String getText() {
-		return this.getName();
-	}
-
-	/**
-	 * リソース名を取得
-	 * @return リソース名
-	 */
-	@Override
-	protected String getResourceName () {
-		return "empty";
-	}
+	public Color getColor();
 
 }
