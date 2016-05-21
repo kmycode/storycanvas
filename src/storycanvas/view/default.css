@@ -5,22 +5,27 @@
 
 // jStorybookのスタイルシートをそのまま転用
 
-.table-view .table-row-cell {
+.table-view .table-row-cell, .tree-table-row-cell {
 	-fx-background-color: white;
 }
-.table-view .table-row-cell:even:filled {
+.table-view .table-row-cell:even:filled,
+.tree-table-row-cell:even:filled {
     -fx-background-color: white;
 }
-.table-view .table-row-cell:odd:filled {
+.table-view .table-row-cell:odd:filled,
+.tree-table-row-cell:odd:filled {
     -fx-background-color: #e6eef6;
 }
-.table-view .table-row-cell:selected:filled {
+.table-view .table-row-cell:selected:filled,
+.tree-table-row-cell:selected:filled {
 	-fx-background-color: #dedede;
 }
-.table-view:focused .table-row-cell:selected:filled {
+.table-view:focused .table-row-cell:selected:filled,
+.tree-table-view:focused .tree-table-row-cell:selected:filled {
 	-fx-background-color: #b8cfe5;
 }
-.table-view .table-row-cell:selected:filled .table-cell {
+.table-view .table-row-cell:selected:filled .table-cell,
+.tree-table-row-cell:selected:filled .tree-table-cell {
 	-fx-border-color: transparent transparent transparent transparent;
 	-fx-text-fill: black;
 }
