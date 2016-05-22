@@ -10,6 +10,22 @@
 
 <TabPane xmlns:fx="http://javafx.com/fxml/1" side="LEFT" styleClass="icon-tab-pane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/8" fx:controller="storycanvas.view.node.StoryMainNodeController">
 	<tabs>
+		<Tab fx:id="storylineTab" text="">
+			<graphic>
+				<ImageView pickOnBounds="true" preserveRatio="true" fitWidth="32" fitHeight="32">
+					<image>
+						<Image url="@/storycanvas/resource/icon/storyline_large.png" />
+					</image>
+				</ImageView>
+			</graphic>
+			<content>
+				<VBox minHeight="0.0" minWidth="0.0">
+					<children>
+						<storycanvas.view.view.StorylineDesigner fx:id="storylineDesigner" VBox.vgrow="ALWAYS" />
+					</children>
+				</VBox>
+			</content>
+		</Tab>
 		<Tab fx:id="personTab" text="">
 			<graphic>
 				<ImageView pickOnBounds="true" preserveRatio="true" fitWidth="32" fitHeight="32">

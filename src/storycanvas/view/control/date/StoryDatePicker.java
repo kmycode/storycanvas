@@ -111,7 +111,7 @@ public class StoryDatePicker extends GridPane implements Initializable {
 				this.inDateFormatListener = true;
 				StoryDate date = null;
 				try {
-					date = this.getDate().getCalendar().fromString(this.dateFormat.getText());
+					date = this.getDate().getCalendar().fromDateString(this.dateFormat.getText());
 					this.setDate(date);
 					this.dateFormat.setStyle("-fx-text-fill:black");
 				} catch (DateFormatException ex) {

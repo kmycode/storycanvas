@@ -167,9 +167,18 @@ public class StoryCalendar implements Serializable {
 	 * 西暦における現在日付をStoryDateに変換して返す
 	 * @return 西暦における現在日付
 	 */
-	public static StoryDate current() {
+	public static StoryDate currentDate() {
 		Calendar curr = Calendar.getInstance();
 		return ANNO_DOMINI.date(curr.get(Calendar.YEAR), curr.get(Calendar.MONTH) + 1, curr.get(Calendar.DAY_OF_MONTH));
+	}
+
+	/**
+	 * 西暦における現在時刻をStoryTimeに変換して返す
+	 * @return 西暦における現在時刻
+	 */
+	public static StoryTime currentTime() {
+		Calendar curr = Calendar.getInstance();
+		return ANNO_DOMINI.time(curr.get(Calendar.HOUR_OF_DAY), curr.get(Calendar.MINUTE), curr.get(Calendar.SECOND));
 	}
 
 	/**
@@ -188,11 +197,26 @@ public class StoryCalendar implements Serializable {
 	}
 
 	/**
+	 * 現在の暦に基づいた、指定した時刻のオブジェクトを生成する
+	 * @param hour 時
+	 * @param minute 分
+	 * @param second 秒
+	 * @return 時刻のオブジェクト
+	 */
+	public StoryTime time(int hour, int minute, int second) {
+		StoryTime t = new StoryTime(this);
+		t.setHour(hour);
+		t.setMinute(minute);
+		t.setSecond(second);
+		return t;
+	}
+
+	/**
 	 * 文字列から日付のオブジェクトを作成する
 	 * @param str 日付。yyyy/mm/ddでフォーマットされている必要あり
 	 * @return 日付のオブジェクト
 	 */
-	public StoryDate fromString(String str) throws DateFormatException {
+	public StoryDate fromDateString(String str) throws DateFormatException {
 		StoryDate d = new StoryDate(this);
 		Pattern p = Pattern.compile("\\d+/\\d+/\\d+");
 		if (p.matcher(str).matches()) {
@@ -203,7 +227,7 @@ public class StoryCalendar implements Serializable {
 
 			// 有効な日付でなければ例外を出す
 			if (!d.isValid()) {
-				throw new DateFormatException("Invalid date! for example, 12/32...");
+				throw new DateFormatException("Invalid date! for example, 2015/12/32...");
 			}
 
 			return d;
@@ -212,8 +236,47 @@ public class StoryCalendar implements Serializable {
 		}
 	}
 
+	/**
+	 * 指定日付を文字列に変換する
+	 * @param date 日付
+	 * @return 文字列
+	 */
 	public String toString(StoryDate date) {
 		return date.getYear() + "/" + date.getMonth() + "/" + date.getDay();
+	}
+
+	/**
+	 * 文字列から時刻のオブジェクトを作成する
+	 * @param str 時刻。hh:mm:ssでフォーマットされている必要あり
+	 * @return 時刻のオブジェクト
+	 */
+	public StoryTime fromTimeString(String str) throws DateFormatException {
+		StoryTime t = new StoryTime(this);
+		Pattern p = Pattern.compile("\\d+:\\d+:\\d+");
+		if (p.matcher(str).matches()) {
+			String[] nums = str.split(":");
+			t.setHour(Integer.parseInt(nums[0]));
+			t.setMinute(Integer.parseInt(nums[1]));
+			t.setSecond(Integer.parseInt(nums[2]));
+
+			// 有効な日付でなければ例外を出す
+			if (!t.isValid()) {
+				throw new DateFormatException("Invalid time! for example, 27:00:00...");
+			}
+
+			return t;
+		} else {
+			throw new DateFormatException("Invalid date format! hh:mm:ss");
+		}
+	}
+
+	/**
+	 * 指定時刻を文字列に変換する
+	 * @param time 時刻
+	 * @return 文字列
+	 */
+	public String toString(StoryTime time) {
+		return time.getHour() + ":" + time.getMinute() + ":" + time.getSecond();
 	}
 
 	/**
@@ -234,7 +297,34 @@ public class StoryCalendar implements Serializable {
 
 		return true;
 	}
-	
+
+	/**
+	 * 時刻が有効かチェック
+	 * @param time チェックする時刻
+	 * @return 有効ならtrue
+	 */
+	public boolean isValid(StoryTime time) {
+
+		// 整合性チェック
+		if (time.getHour() < 0 || time.getHour() >= this.hourMax) {
+			return false;
+		}
+		if (time.getMinute() < 0 || time.getMinute() >= this.minuteMax) {
+			return false;
+		}
+		if (time.getSecond() < 0 || time.getSecond() >= this.secondMax) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * ２つの日付間の日数差を取得する
+	 * @param from 古い日付
+	 * @param to 新しい日付
+	 * @return 日数差。古い日付として渡された日付が新しい日付より新しければ、負の数として返される
+	 */
 	public int getDayDistance(StoryDate from, StoryDate to) {
 
 		// 古い方を古い方にする
@@ -311,6 +401,33 @@ public class StoryCalendar implements Serializable {
 		}
 		
 		return isReplaced ? -days : days;
+	}
+
+	/**
+	 * ２つの時刻間の秒数差を取得する
+	 * @param from 古い時刻
+	 * @param to 新しい時刻
+	 * @return 時刻差を秒数で。古い時刻として渡された時刻が新しい時刻より新しければ、負の数として返される
+	 */
+	public int getTimeDistance(StoryTime from, StoryTime to) {
+
+		// 古い方を古い方にする
+		boolean isReplaced = false;
+		if (from.compareTo(to) > 0) {
+			StoryTime tmp = from;
+			from = to;
+			to = tmp;
+			isReplaced = true;
+		}
+
+		int seconds = 0;
+		
+		// 秒数差
+		seconds += (to.getHour() - from.getHour()) * this.minuteMax * this.secondMax;
+		seconds += (to.getMinute() - from.getMinute()) * this.secondMax;
+		seconds += (to.getSecond() - from.getSecond());
+
+		return isReplaced ? -seconds : seconds;
 	}
 
 	/**

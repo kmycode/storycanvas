@@ -87,6 +87,11 @@ public abstract class TreeEntity extends Entity {
 	@Override
 	protected void initialize() {
 		super.initialize();
+		
+		// ツリーが最初から開かれているようにする
+		this.rootTreeItem.get().setExpanded(true);
+
+		// エンティティの子リストと、TreeItemの子リストを自動的に連動させる
 		this.children.addListener((ListChangeListener.Change<? extends TreeEntity> e) -> {
 
 			while (e.next()) {

@@ -45,7 +45,7 @@ public class StoryDatePickerPopup extends Popup implements Initializable {
 	/**
 	 * 選択結果の日付.
 	 */
-	private final ObjectProperty<StoryDate> date = new SimpleObjectProperty<>(StoryCalendar.current());
+	private final ObjectProperty<StoryDate> date = new SimpleObjectProperty<>(StoryCalendar.currentDate());
 
 	public StoryDate getDate () {
 		return date.get();
@@ -120,7 +120,7 @@ public class StoryDatePickerPopup extends Popup implements Initializable {
 		// ポップアップ表示時、保存されている値を表示に反映
 		this.setOnShown(e -> {
 			if (this.getDate() == null) {
-				this.setDate(StoryCalendar.current());
+				this.setDate(StoryCalendar.currentDate());
 			}
 			this.calendar.setYear(this.getDate().getYear());
 			this.calendar.setMonth(this.getDate().getMonth());
