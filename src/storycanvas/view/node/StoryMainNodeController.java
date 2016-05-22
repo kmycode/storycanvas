@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TabPane;
 import storycanvas.model.story.Story;
 import storycanvas.view.part.EntityListButtonBox;
 import storycanvas.view.part.table.PersonTableViewController;
@@ -33,6 +34,9 @@ import storycanvas.view.view.StorylineDesigner;
  * @author KMY
  */
 public class StoryMainNodeController implements Initializable {
+
+	@FXML
+	private TabPane mainTabPane;
 
 	@FXML
 	private StorylineDesigner mainStorylineDesigner;
@@ -58,6 +62,13 @@ public class StoryMainNodeController implements Initializable {
 		this.mainPersonTableController.toMain();
 		this.mainPlaceTableController.toMain();
 		this.mainStorylineDesigner.toMain();
+
+		// タブ切り替え時、各タブで選択されているエンティティをクリア
+		this.mainTabPane.getSelectionModel().selectedItemProperty().addListener(e -> {
+			this.mainPersonTableController.unselect();
+			this.mainPlaceTableController.unselect();
+			this.mainStorylineDesigner.unselect();
+		});
 
 		// 人物一覧のButtonBox
 		this.personButtonBox.setOnNewAction(e -> Story.getCurrent().addPerson());

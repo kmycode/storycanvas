@@ -38,6 +38,8 @@
 									<children>
 										<fx:include fx:id="personEditor" source="/storycanvas/view/part/editor/PersonEditor.fxml"/>
 										<fx:include fx:id="placeEditor" source="/storycanvas/view/part/editor/PlaceEditor.fxml"/>
+										<fx:include fx:id="storylineEditor" source="/storycanvas/view/part/editor/StorylineEditor.fxml"/>
+										<fx:include fx:id="sceneEditor" source="/storycanvas/view/part/editor/SceneEditor.fxml"/>
 									</children>
 								</StackPane>
 							</content>

@@ -96,4 +96,11 @@ public class PersonTableViewController implements Initializable {
 		}
 	}
 
+	/**
+	 * 何も選んでいない状態にします.
+	 */
+	public void unselect() {
+		this.personTable.getSelectionModel().clearSelection();
+	}
+
 }

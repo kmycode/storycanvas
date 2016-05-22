@@ -88,6 +88,13 @@ public class PlaceTableViewController implements Initializable {
 	}
 
 	/**
+	 * 何も選んでいない状態にします.
+	 */
+	public void unselect() {
+		this.placeTable.getSelectionModel().clearSelection();
+	}
+
+	/**
 	 * Initializes the controller class.
 	 */
 	@Override

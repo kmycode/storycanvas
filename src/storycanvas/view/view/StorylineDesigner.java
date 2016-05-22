@@ -19,6 +19,7 @@ package storycanvas.view.view;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -32,6 +33,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -47,6 +49,7 @@ import javafx.scene.text.FontWeight;
 import net.kmycode.javafx.FontUtil;
 import net.kmycode.javafx.Messenger;
 import storycanvas.message.entity.list.init.MainStorylineViewInitializeMessage;
+import storycanvas.model.entity.Scene;
 import storycanvas.model.entity.Storyline;
 import storycanvas.resource.Resources;
 
@@ -58,9 +61,15 @@ import storycanvas.resource.Resources;
 public class StorylineDesigner extends HBox implements Initializable {
 
 	/**
-	 * ストーリーライン１つ分を表示する上でのの高さ.
+	 * ストーリーライン１つ分を表示する上での高さ.
 	 */
 	private static final double STORYLINE_HEIGHT = 100.0;
+
+	/**
+	 * シーンノードの横幅.
+	 */
+	private static final double SCENE_WIDTH = 85.0;
+	private static final double SCENE_H_MARGIN = 10.0;
 
 	@FXML
 	private ScrollPane storylineTitlePaneScroll;
@@ -74,7 +83,8 @@ public class StorylineDesigner extends HBox implements Initializable {
 	@FXML
 	private VBox mainPane;
 
-	private final ObservableList<StorylineShape> shapes = FXCollections.observableArrayList();
+	private final ObservableList<StorylineShape> storylines = FXCollections.observableArrayList();
+	private final ObservableList<SceneShape> scenes = FXCollections.observableArrayList();
 
 //<editor-fold defaultstate="collapsed" desc="プロパティ">
 	/**
@@ -92,6 +102,23 @@ public class StorylineDesigner extends HBox implements Initializable {
 
 	public ObjectProperty<Storyline> selectedStorylineProperty () {
 		return selectedStoryline;
+	}
+	
+	/**
+	 * 現在選択されているシーン.
+	 */
+	private final ObjectProperty<Scene> selectedScene = new SimpleObjectProperty<>();
+
+	public Scene getSelectedScene () {
+		return selectedScene.get();
+	}
+
+	public void setSelectedScene (Scene value) {
+		selectedScene.set(value);
+	}
+
+	public ObjectProperty<Scene> selectedSceneProperty () {
+		return selectedScene;
 	}
 //</editor-fold>
 
@@ -123,6 +150,7 @@ public class StorylineDesigner extends HBox implements Initializable {
 			}
 		});
 
+		this.setSceneShapeListener();
 		this.setStorylineShapeListener();
 	}
 
@@ -144,6 +172,7 @@ public class StorylineDesigner extends HBox implements Initializable {
 
 			// 選択されているシーンをバインド
 			m.selectedItemProperty().bind(this.selectedStoryline);
+			m.selectedSceneProperty().bind(this.selectedScene);
 		});
 	}
 
@@ -152,7 +181,7 @@ public class StorylineDesigner extends HBox implements Initializable {
 	 * それを画面に描画する処理を行う.
 	 */
 	private void setStorylineShapeListener() {
-		this.shapes.addListener((ListChangeListener.Change<? extends StorylineShape> e) -> {
+		this.storylines.addListener((ListChangeListener.Change<? extends StorylineShape> e) -> {
 
 			while (e.next()) {
 
@@ -169,11 +198,60 @@ public class StorylineDesigner extends HBox implements Initializable {
 				else if (e.wasRemoved()) {
 					List<? extends StorylineShape> subList = e.getRemoved();
 					for(StorylineShape el : subList) {
+						this.storylineTitlePane.getChildren().remove(el.title);
+						this.mainPane.getChildren().remove(el.view);
 					}
 				}
 
 				// ソートされたら、新しく最初からやり直す
 				else if (e.wasPermutated()) {
+					// TODO
+				}
+			}
+		});
+	}
+
+	/**
+	 * シーンのシェイプがリストに追加されたり削除されたりしたときに、
+	 * それを画面に描画する処理を行う.
+	 */
+	private void setSceneShapeListener() {
+		this.scenes.addListener((ListChangeListener.Change<? extends SceneShape> e) -> {
+
+			while (e.next()) {
+
+				// 追加されたシェイプを画面に表示する
+				if (e.wasAdded()) {
+					List<? extends SceneShape> subList = e.getAddedSubList();
+					for(SceneShape el : subList) {
+						if (el.scene.getStoryline() != null) {
+							StorylineShape storylineShape = this.findStorylineShape(el.scene.getStoryline());
+							if (storylineShape != null) {
+								el.sceneNode.setLayoutX(e.getList().indexOf(el) * (SCENE_WIDTH + SCENE_H_MARGIN / 2));
+								storylineShape.addSceneShape(el);
+							}
+						}
+					}
+				}
+
+				// 削除されたシーンシェイプを表示から除去
+				else if (e.wasRemoved()) {
+					List<? extends SceneShape> subList = e.getRemoved();
+					for(SceneShape el : subList) {
+						if (el.scene.getStoryline() != null) {
+							StorylineShape storylineShape = this.findStorylineShape(el.scene.getStoryline());
+							if (storylineShape != null) {
+								storylineShape.removeSceneShape(el);
+							}
+						}
+					}
+				}
+
+				// ソートされたら、新しく最初からやり直す
+				else if (e.wasPermutated()) {
+					List<? extends SceneShape> clone = new ArrayList<>(e.getList());
+					e.getList().clear();
+					((List<SceneShape>)e.getList()).addAll(clone);
 				}
 			}
 		});
@@ -200,11 +278,23 @@ public class StorylineDesigner extends HBox implements Initializable {
 				else if (e.wasRemoved()) {
 					List<? extends Storyline> subList = e.getRemoved();
 					for(Storyline el : subList) {
+						this.deleteStoryline(el);
 					}
 				}
 
-				// ソートされたら、新しく最初からやり直す
+				// ソートされたら、順番が変わったものだけとりかえる
 				else if (e.wasPermutated()) {
+					for (int oldIndex = 0; oldIndex < e.getList().size(); oldIndex++) {
+						int newIndex = e.getPermutation(oldIndex);
+						if (newIndex != oldIndex) {
+							Node oldS = this.mainPane.getChildren().get(newIndex);
+							Node newS = this.mainPane.getChildren().get(oldIndex);
+							this.mainPane.getChildren().remove(oldS);
+							this.mainPane.getChildren().add(oldIndex > newIndex ? oldIndex - 1 : oldIndex, oldS);
+							this.mainPane.getChildren().remove(newS);
+							this.mainPane.getChildren().add(oldIndex < newIndex ? newIndex - 1 : newIndex, newS);
+						}
+					}
 				}
 			}
 		});
@@ -212,12 +302,110 @@ public class StorylineDesigner extends HBox implements Initializable {
 //</editor-fold>
 
 	/**
+	 * ストーリーライン（model.entity）内のシーンリストに変更があった時に呼び出されるリスナ
+	 * モデルとしてのストーリーラインに直接設定する.
+	 */
+	private final ListChangeListener<? super Scene> storylineSceneChangeListener = (ListChangeListener.Change<? extends Scene> e) -> {
+
+		while (e.next()) {
+
+			// シーンを画面に追加する
+			if (e.wasAdded()) {
+				List<? extends Scene> subList = e.getAddedSubList();
+				for(Scene el : subList) {
+					this.scenes.add(new SceneShape(el));
+				}
+				FXCollections.sort(this.scenes);
+			}
+
+			// 削除されたシーンを表示から除去
+			else if (e.wasRemoved()) {
+				List<? extends Scene> subList = e.getRemoved();
+				for(Scene el : subList) {
+					this.scenes.remove(this.findSceneShape(el));
+				}
+			}
+
+			// Storyline.scenesのほうの配列をソートされても、
+			// Sceneのorderが変わらないかぎり表示に直接影響はないので無視する
+			else if (e.wasPermutated()) {
+			}
+		}
+	};
+
+	/**
 	 * ストーリーラインをビューに追加する
 	 * @param storyline 追加するストーリーライン
 	 */
 	private void addStoryline(Storyline storyline) {
 		StorylineShape shape = new StorylineShape(storyline);
-		this.shapes.add(shape);
+		this.storylines.add(shape);
+
+		// ストーリーラインに含まれるシーンを作成
+		for (Scene sc : storyline.getScenes()) {
+			this.scenes.add(new SceneShape(sc));
+		}
+		FXCollections.sort(this.scenes);
+
+		// シーンが追加削除された時に教えてくれるリスナを追加
+		storyline.getScenes().addListener(this.storylineSceneChangeListener);
+	}
+
+	private void deleteStoryline(Storyline storyline) {
+		this.storylines.remove(this.findStorylineShape(storyline));
+
+		// ストーリーラインに含まれるシーンを削除
+		List<SceneShape> delss = new ArrayList<>();
+		for (SceneShape sc : this.scenes) {
+			if (sc.scene.getStoryline() == storyline) {
+				delss.add(sc);
+			}
+		}
+		this.scenes.removeAll(delss);
+
+		// シーンが追加削除された時に教えてくれるリスナを削除
+		storyline.getScenes().removeListener(this.storylineSceneChangeListener);
+	}
+
+	/**
+	 * 指定したストーリーラインが含まれているシェイプを取得する
+	 * @param storyline 検索するストーリーライン
+	 * @return 検索するストーリーラインが含まれたシェイプ
+	 */
+	private StorylineShape findStorylineShape(Storyline storyline) {
+		StorylineShape shape = null;
+		for (StorylineShape s : this.storylines) {
+			if (s.storyline == storyline) {
+				shape = s;
+				break;
+			}
+		}
+		return shape;
+	}
+
+
+	/**
+	 * 指定したシーンが含まれているシェイプを取得する
+	 * @param scene 検索するシーン
+	 * @return 検索するシーンが含まれたシェイプ
+	 */
+	private SceneShape findSceneShape(Scene scene) {
+		SceneShape shape = null;
+		for (SceneShape s : this.scenes) {
+			if (s.scene == scene) {
+				shape = s;
+				break;
+			}
+		}
+		return shape;
+	}
+
+	/**
+	 * 何も選んでいない状態にします.
+	 */
+	public void unselect() {
+		this.selectedScene.set(null);
+		this.selectedStoryline.set(null);
 	}
 
 	/**
@@ -229,6 +417,7 @@ public class StorylineDesigner extends HBox implements Initializable {
 
 		private final Group title;
 		private final Group view;
+		private final Line viewLine;
 
 		public StorylineShape(Storyline line) {
 			this.storyline = line;
@@ -244,6 +433,7 @@ public class StorylineDesigner extends HBox implements Initializable {
 					STORYLINE_HEIGHT - titleRectBorderWidth * 2);
 			titleRect.setOpacity(0.9);
 			titleRect.setFill(Color.WHITE);
+			titleRect.setCursor(Cursor.HAND);
 			ImageView sceneIcon = Resources.getMiniIconNode("storyline");
 			sceneIcon.setLayoutX(20);
 			sceneIcon.setLayoutY(20);
@@ -257,18 +447,103 @@ public class StorylineDesigner extends HBox implements Initializable {
 			titleText.setUnderline(true);
 			titleText.setFont(FontUtil.toBold(titleText.getFont(), FontWeight.EXTRA_BOLD));
 			this.title = new Group(titleRectBack, titleRect, sceneIcon, titleText);
-			this.title.setOnMouseClicked(e -> setSelectedStoryline(this.storyline));
+
+			// イベントを設定
+			this.title.setOnMouseClicked(e -> {
+				setSelectedScene(null);
+				setSelectedStoryline(this.storyline);
+			});
 			this.title.setOnMouseEntered(e -> titleText.setTextFill(Color.BLUE));
 			this.title.setOnMouseExited(e -> titleText.setTextFill(Color.BLACK));
 
 			// ビュー部分を作成
 			Rectangle viewBackground = new Rectangle(50, STORYLINE_HEIGHT);
 			viewBackground.setFill(Color.TRANSPARENT);
-			Line viewLine = new Line(0, STORYLINE_HEIGHT - 30, 50, STORYLINE_HEIGHT - 30);
-			viewLine.setStrokeWidth(5);
-			viewLine.strokeProperty().bind(line.colorProperty());
-			this.view = new Group(viewBackground, viewLine);
+			this.viewLine = new Line(0, STORYLINE_HEIGHT - 30, 50, STORYLINE_HEIGHT - 30);
+			this.viewLine.setStrokeWidth(5);
+			this.viewLine.strokeProperty().bind(line.colorProperty());
+			this.view = new Group(viewBackground, this.viewLine);
 		}
+
+		public void addSceneShape(SceneShape s) {
+			this.view.getChildren().add(s.sceneNode);
+			this.updateLine();
+		}
+
+		public void removeSceneShape(SceneShape s) {
+			this.view.getChildren().remove(s.sceneNode);
+			this.updateLine();
+		}
+
+		private void updateLine() {
+			int firstSceneIndex = -1;
+			int lastSceneIndex = 0;
+			int i = 0;
+			for (SceneShape ss : scenes) {
+				if (ss.scene.getStoryline() == this.storyline) {
+					if (firstSceneIndex < 0) {
+						firstSceneIndex = i;
+						lastSceneIndex = i;
+					} else {
+						lastSceneIndex = i;
+					}
+				}
+				i++;
+			}
+
+			double startX = (SCENE_WIDTH + SCENE_H_MARGIN) * firstSceneIndex - 10;
+			double endX = (SCENE_WIDTH + SCENE_H_MARGIN) * (lastSceneIndex) + 10;
+			if (startX < 0) {
+				startX = 0;
+				endX += SCENE_WIDTH + 5;
+			}
+			this.viewLine.setLayoutX(startX);
+			this.viewLine.setEndX(endX);
+		}
+	}
+
+	/**
+	 * １つのシーンのシェイプをまとめる内部クラス.
+	 */
+	private class SceneShape implements Comparable<SceneShape> {
+
+		private final Scene scene;
+
+		private final Group sceneNode;
+
+		public SceneShape(Scene scene) {
+			this.scene = scene;
+
+			// シーンノードを作成
+			Rectangle sceneNodeBack = new Rectangle(5, 5, SCENE_WIDTH, STORYLINE_HEIGHT - 10);
+			sceneNodeBack.setFill(Color.BLACK);
+			Rectangle sceneNodeFor = new Rectangle(6, 6, SCENE_WIDTH - 2, STORYLINE_HEIGHT - 12);
+			sceneNodeFor.setFill(Color.WHITE);
+			sceneNodeFor.setCursor(Cursor.HAND);
+			ImageView sceneIcon = Resources.getMiniIconNode("scene");
+			sceneIcon.setLayoutX(10);
+			sceneIcon.setLayoutY(8);
+			Label sceneText = new Label();
+			sceneText.setWrapText(true);
+			sceneText.setLayoutX(10);
+			sceneText.setLayoutY(20);
+			sceneText.textProperty().bind(this.scene.nameProperty());
+			sceneText.setMaxWidth(SCENE_WIDTH - 10);
+			sceneText.setMaxHeight(80);
+			this.sceneNode = new Group(sceneNodeBack, sceneNodeFor, sceneIcon, sceneText);
+
+			// イベントを設定
+			this.sceneNode.setOnMouseClicked(e -> {
+				setSelectedStoryline(null);
+				setSelectedScene(this.scene);
+			});
+		}
+
+		@Override
+		public int compareTo(SceneShape o) {
+			return this.scene.compareTo(o.scene);
+		}
+
 	}
 
 //<editor-fold defaultstate="collapsed" desc="その他のメソッド">

@@ -12,7 +12,7 @@
 		<URL value="@/storycanvas/view/default.css"/>
 	</stylesheets>
 	<children>
-		<ScrollPane fx:id="storylineTitlePaneScroll" prefWidth="200.0" hbarPolicy="ALWAYS" vbarPolicy="NEVER">
+		<ScrollPane fx:id="storylineTitlePaneScroll" minWidth="200.0" maxWidth="200.0" hbarPolicy="ALWAYS" vbarPolicy="NEVER">
 			<content>
 				<VBox fx:id="storylineTitlePane" prefWidth="198.0">
 				</VBox>

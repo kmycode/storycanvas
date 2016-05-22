@@ -25,6 +25,8 @@ import net.kmycode.javafx.Messenger;
 import storycanvas.message.entity.edit.EmptyEditMessage;
 import storycanvas.message.entity.edit.PersonEditMessage;
 import storycanvas.message.entity.edit.PlaceEditMessage;
+import storycanvas.message.entity.edit.SceneEditMessage;
+import storycanvas.message.entity.edit.StorylineEditMessage;
 import storycanvas.message.entity.list.init.MainPersonTableInitializeMessage;
 import storycanvas.message.entity.list.init.MainPlaceTableInitializeMessage;
 import storycanvas.message.entity.list.init.MainStorylineViewInitializeMessage;
@@ -34,6 +36,7 @@ import storycanvas.model.date.StoryCalendar;
 import storycanvas.model.date.StoryDate;
 import storycanvas.model.entity.Person;
 import storycanvas.model.entity.Place;
+import storycanvas.model.entity.Scene;
 import storycanvas.model.entity.Sex;
 import storycanvas.model.entity.Storyline;
 import storycanvas.model.entityset.EntityListModel;
@@ -50,6 +53,7 @@ import storycanvas.model.entityset.EntityTreeModel;
 public class Story {
 
 	public Story() {
+
 		setCurrent(this);
 
 		// リストで登場人物が選択された時
@@ -65,6 +69,24 @@ public class Story {
 		this.places.selectedEntityProperty().addListener(e -> {
 			if (this.places.getSelectedEntity() != null) {
 				Messenger.getInstance().send(new PlaceEditMessage(this.places.getSelectedEntity()));
+			} else {
+				Messenger.getInstance().send(new EmptyEditMessage());
+			}
+		});
+
+		// 画面でストーリーラインが選択された時
+		this.storylines.selectedEntityProperty().addListener(e -> {
+			if (this.storylines.getSelectedEntity() != null) {
+				Messenger.getInstance().send(new StorylineEditMessage(this.storylines.getSelectedEntity()));
+			} else {
+				Messenger.getInstance().send(new EmptyEditMessage());
+			}
+		});
+
+		// 画面でシーンが選択された時
+		this.selectedScene.addListener(e -> {
+			if (this.selectedScene.get() != null) {
+				Messenger.getInstance().send(new SceneEditMessage(this.selectedScene.get()));
 			} else {
 				Messenger.getInstance().send(new EmptyEditMessage());
 			}
@@ -88,10 +110,20 @@ public class Story {
 		s1.setColor(Color.GREEN);
 		this.storylines.add(s1);
 
+		Scene c1 = new Scene();
+		c1.setName("主人公が女の子に会う");
+		c1.setOrder(50);
+		s1.getScenes().add(c1);
+
 		Storyline s2 = new Storyline();
 		s2.setName("別の場面");
 		s2.setColor(Color.BLUE);
 		this.storylines.add(s2);
+
+		Scene c2 = new Scene();
+		c2.setName("女の子たちが殺しあう");
+		c2.setOrder(30);
+		s2.getScenes().add(c2);
 
 		// TODO: 日付計算テスト
 		/*
@@ -144,6 +176,8 @@ public class Story {
 	 * ストーリーライン一覧.
 	 */
 	private final EntityListModel<Storyline> storylines = new EntityListModel<>();
+
+	private final ObjectProperty<Scene> selectedScene = new SimpleObjectProperty<>();
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="メソッド">
@@ -154,7 +188,7 @@ public class Story {
 		// 画面表示を更新するメッセージを送信
 		Messenger.getInstance().send(new MainPersonTableInitializeMessage(this.persons.getEntities(), this.persons.selectedEntityProperty()));
 		Messenger.getInstance().send(new MainPlaceTableInitializeMessage(this.places.getRootTreeItem(), this.places.selectedTreeItemEntityProperty()));
-		Messenger.getInstance().send(new MainStorylineViewInitializeMessage(this.storylines.getEntities(), this.storylines.selectedEntityProperty()));
+		Messenger.getInstance().send(new MainStorylineViewInitializeMessage(this.storylines.getEntities(), this.storylines.selectedEntityProperty(), this.selectedScene));
 	}
 //</editor-fold>
 

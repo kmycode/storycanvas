@@ -20,6 +20,7 @@ package storycanvas.message.entity.list.init;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import net.kmycode.javafx.Message;
+import storycanvas.model.entity.Scene;
 import storycanvas.model.entity.Storyline;
 
 /**
@@ -31,10 +32,13 @@ public class MainStorylineViewInitializeMessage extends Message {
 
 	private final ObservableList<Storyline> list;
 	private final ObjectProperty<Storyline> selectedItem;
+	private final ObjectProperty<Scene> selectedScene;
 
-	public MainStorylineViewInitializeMessage(ObservableList<Storyline> list, ObjectProperty<Storyline> selectedItem) {
+	public MainStorylineViewInitializeMessage(ObservableList<Storyline> list, ObjectProperty<Storyline> selectedItem,
+																			  ObjectProperty<Scene> selectedScene) {
 		this.list = list;
 		this.selectedItem = selectedItem;
+		this.selectedScene = selectedScene;
 	}
 
 	public ObservableList<Storyline> getList() {
@@ -43,5 +47,9 @@ public class MainStorylineViewInitializeMessage extends Message {
 
 	public ObjectProperty<Storyline> selectedItemProperty() {
 		return this.selectedItem;
+	}
+
+	public ObjectProperty<Scene> selectedSceneProperty() {
+		return this.selectedScene;
 	}
 }
