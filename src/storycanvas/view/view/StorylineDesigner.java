@@ -34,17 +34,21 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
+import javafx.scene.text.FontWeight;
+import net.kmycode.javafx.FontUtil;
 import net.kmycode.javafx.Messenger;
 import storycanvas.message.entity.list.init.MainStorylineViewInitializeMessage;
 import storycanvas.model.entity.Storyline;
+import storycanvas.resource.Resources;
 
 /**
  * ストーリーラインのデザイナ
@@ -137,6 +141,9 @@ public class StorylineDesigner extends HBox implements Initializable {
 
 			// リストの内容が変更されたらこっちの表示も変わるよう、リスナを生成する
 			this.setListener(m.getList());
+
+			// 選択されているシーンをバインド
+			m.selectedItemProperty().bind(this.selectedStoryline);
 		});
 	}
 
@@ -237,11 +244,22 @@ public class StorylineDesigner extends HBox implements Initializable {
 					STORYLINE_HEIGHT - titleRectBorderWidth * 2);
 			titleRect.setOpacity(0.9);
 			titleRect.setFill(Color.WHITE);
-			Text titleText = new Text(20, STORYLINE_HEIGHT / 2, "");
+			ImageView sceneIcon = Resources.getMiniIconNode("storyline");
+			sceneIcon.setLayoutX(20);
+			sceneIcon.setLayoutY(20);
+			Label titleText = new Label();
+			titleText.setWrapText(true);
+			titleText.setLayoutX(20);
+			titleText.setLayoutY(40);
 			titleText.textProperty().bind(line.nameProperty());
-			titleText.setWrappingWidth(titleWidth - 40);
-			this.title = new Group(titleRectBack, titleRect, titleText);
+			titleText.setMaxWidth(titleWidth - 40);
+			titleText.setMaxHeight(40);
+			titleText.setUnderline(true);
+			titleText.setFont(FontUtil.toBold(titleText.getFont(), FontWeight.EXTRA_BOLD));
+			this.title = new Group(titleRectBack, titleRect, sceneIcon, titleText);
 			this.title.setOnMouseClicked(e -> setSelectedStoryline(this.storyline));
+			this.title.setOnMouseEntered(e -> titleText.setTextFill(Color.BLUE));
+			this.title.setOnMouseExited(e -> titleText.setTextFill(Color.BLACK));
 
 			// ビュー部分を作成
 			Rectangle viewBackground = new Rectangle(50, STORYLINE_HEIGHT);

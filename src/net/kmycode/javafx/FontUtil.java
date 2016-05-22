@@ -10,6 +10,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 /**
  * JavaFXのフォントを取り扱うためのユーティリティクラス
@@ -66,6 +67,15 @@ public class FontUtil {
 	 */
 	public static Font getFont(double size) {
 		return Font.font(fontFamily.get(), size);
+	}
+
+	/**
+	 * 指定されたフォントを太字にして返します。
+	 * @param f 太字にするフォント
+	 * @return 太字になったフォント
+	 */
+	public static Font toBold(Font f, FontWeight weight) {
+		return Font.font(f.getFamily(), weight, f.getSize());
 	}
 //</editor-fold>
 
