@@ -21,7 +21,7 @@
 			<content>
 				<VBox minHeight="0.0" minWidth="0.0">
 					<children>
-						<storycanvas.view.view.StorylineDesigner fx:id="storylineDesigner" VBox.vgrow="ALWAYS" />
+						<storycanvas.view.view.StorylineDesigner fx:id="mainStorylineDesigner" VBox.vgrow="ALWAYS" />
 					</children>
 				</VBox>
 			</content>

@@ -20,12 +20,14 @@ package storycanvas.model.story;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.TreeItem;
+import javafx.scene.paint.Color;
 import net.kmycode.javafx.Messenger;
 import storycanvas.message.entity.edit.EmptyEditMessage;
 import storycanvas.message.entity.edit.PersonEditMessage;
 import storycanvas.message.entity.edit.PlaceEditMessage;
 import storycanvas.message.entity.list.init.MainPersonTableInitializeMessage;
 import storycanvas.message.entity.list.init.MainPlaceTableInitializeMessage;
+import storycanvas.message.entity.list.init.MainStorylineViewInitializeMessage;
 import storycanvas.message.entity.list.select.MainPersonTableSelectItemMessage;
 import storycanvas.message.entity.list.select.MainPlaceTableSelectItemMessage;
 import storycanvas.model.date.StoryCalendar;
@@ -33,6 +35,7 @@ import storycanvas.model.date.StoryDate;
 import storycanvas.model.entity.Person;
 import storycanvas.model.entity.Place;
 import storycanvas.model.entity.Sex;
+import storycanvas.model.entity.Storyline;
 import storycanvas.model.entityset.EntityListModel;
 import storycanvas.model.entityset.EntityTreeModel;
 
@@ -80,6 +83,16 @@ public class Story {
 		l1.setName("学校");
 		this.places.add(l1);
 
+		Storyline s1 = new Storyline();
+		s1.setName("本筋");
+		s1.setColor(Color.GREEN);
+		this.storylines.add(s1);
+
+		Storyline s2 = new Storyline();
+		s2.setName("別の場面");
+		s2.setColor(Color.BLUE);
+		this.storylines.add(s2);
+
 		// TODO: 日付計算テスト
 		/*
 		StoryDate from = new StoryDate();
@@ -126,6 +139,11 @@ public class Story {
 	 * 場所一覧.
 	 */
 	private final EntityTreeModel<Place> places = new EntityTreeModel<>(new Place());
+
+	/**
+	 * ストーリーライン一覧.
+	 */
+	private final EntityListModel<Storyline> storylines = new EntityListModel<>();
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="メソッド">
@@ -136,6 +154,7 @@ public class Story {
 		// 画面表示を更新するメッセージを送信
 		Messenger.getInstance().send(new MainPersonTableInitializeMessage(this.persons.getEntities(), this.persons.selectedEntityProperty()));
 		Messenger.getInstance().send(new MainPlaceTableInitializeMessage(this.places.getRootTreeItem(), this.places.selectedTreeItemEntityProperty()));
+		Messenger.getInstance().send(new MainStorylineViewInitializeMessage(this.storylines.getEntities(), this.storylines.selectedEntityProperty()));
 	}
 //</editor-fold>
 

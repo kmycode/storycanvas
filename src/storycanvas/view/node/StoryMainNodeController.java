@@ -21,11 +21,11 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Tab;
 import storycanvas.model.story.Story;
 import storycanvas.view.part.EntityListButtonBox;
 import storycanvas.view.part.table.PersonTableViewController;
 import storycanvas.view.part.table.PlaceTableViewController;
+import storycanvas.view.view.StorylineDesigner;
 
 /**
  * メインとなるノードのコントローラ
@@ -35,10 +35,7 @@ import storycanvas.view.part.table.PlaceTableViewController;
 public class StoryMainNodeController implements Initializable {
 
 	@FXML
-	private Tab personTab;
-
-	@FXML
-	private Tab placeTab;
+	private StorylineDesigner mainStorylineDesigner;
 
 	@FXML
 	private PersonTableViewController mainPersonTableController;
@@ -60,6 +57,7 @@ public class StoryMainNodeController implements Initializable {
 		// メインのビューを設定
 		this.mainPersonTableController.toMain();
 		this.mainPlaceTableController.toMain();
+		this.mainStorylineDesigner.toMain();
 
 		// 人物一覧のButtonBox
 		this.personButtonBox.setOnNewAction(e -> Story.getCurrent().addPerson());

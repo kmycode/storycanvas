@@ -7,14 +7,22 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root xmlns:fx="http://javafx.com/fxml/1" type="javafx.scene.control.ScrollPane">
+<fx:root xmlns:fx="http://javafx.com/fxml/1" type="javafx.scene.layout.HBox">
 	<stylesheets>
 		<URL value="@/storycanvas/view/default.css"/>
 	</stylesheets>
-	<content>
-		<AnchorPane fx:id="mainPane" prefWidth="400.0" prefHeight="400.0">
-			<children>
-			</children>
-		</AnchorPane>
-	</content>
+	<children>
+		<ScrollPane fx:id="storylineTitlePaneScroll" prefWidth="200.0" hbarPolicy="ALWAYS" vbarPolicy="NEVER">
+			<content>
+				<VBox fx:id="storylineTitlePane" prefWidth="198.0">
+				</VBox>
+			</content>
+		</ScrollPane>
+		<ScrollPane fx:id="mainPaneScroll" HBox.hgrow="ALWAYS" hbarPolicy="ALWAYS" vbarPolicy="ALWAYS">
+			<content>
+				<VBox fx:id="mainPane">
+				</VBox>
+			</content>
+		</ScrollPane>
+	</children>
 </fx:root>
