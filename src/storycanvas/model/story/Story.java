@@ -27,6 +27,7 @@ import storycanvas.message.entity.edit.PersonEditMessage;
 import storycanvas.message.entity.edit.PlaceEditMessage;
 import storycanvas.message.entity.edit.SceneEditMessage;
 import storycanvas.message.entity.edit.StorylineEditMessage;
+import storycanvas.message.entity.list.SceneOrderChangeMessage;
 import storycanvas.message.entity.list.init.MainPersonTableInitializeMessage;
 import storycanvas.message.entity.list.init.MainPlaceTableInitializeMessage;
 import storycanvas.message.entity.list.init.MainStorylineViewInitializeMessage;
@@ -124,6 +125,8 @@ public class Story {
 		c2.setName("女の子たちが殺しあう");
 		c2.setOrder(30);
 		s2.getScenes().add(c2);
+		c1.setOrder(10);
+		Messenger.getInstance().send(new SceneOrderChangeMessage());
 
 		// TODO: 日付計算テスト
 		/*
@@ -292,6 +295,27 @@ public class Story {
 			Messenger.getInstance().send(new MainPlaceTableSelectItemMessage((TreeItem)entity.getTreeItem()));
 		} else {
 			this.places.right();
+		}
+	}
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="シーンの操作">
+	/**
+	 * シーンの追加.
+	 */
+	public void addScene(Storyline storyLine) {
+		Scene entity = new Scene();
+		storyLine.getScenes().add(entity);
+		Messenger.getInstance().send(new SceneEditMessage(entity));
+	}
+
+	/**
+	 * シーンの削除.
+	 */
+	public void deleteScene() {
+		if (this.selectedScene.get() != null && this.selectedScene.get().getStoryline() != null) {
+			Messenger.getInstance().send(new EmptyEditMessage());
+			boolean r = this.selectedScene.get().getStoryline().getScenes().remove(this.selectedScene.get());
 		}
 	}
 //</editor-fold>

@@ -36,9 +36,12 @@ import javafx.geometry.Orientation;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -48,9 +51,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontWeight;
 import net.kmycode.javafx.FontUtil;
 import net.kmycode.javafx.Messenger;
+import storycanvas.message.entity.list.SceneOrderChangeMessage;
 import storycanvas.message.entity.list.init.MainStorylineViewInitializeMessage;
 import storycanvas.model.entity.Scene;
 import storycanvas.model.entity.Storyline;
+import storycanvas.model.story.Story;
 import storycanvas.resource.Resources;
 
 /**
@@ -174,6 +179,11 @@ public class StorylineDesigner extends HBox implements Initializable {
 			m.selectedItemProperty().bind(this.selectedStoryline);
 			m.selectedSceneProperty().bind(this.selectedScene);
 		});
+
+		// シーンの順番が変更されたことを示すメッセージ
+		// このメッセージは、今回のプログラミングの方針に反するが、特例的に存在する。
+		// 詳しくは SceneOrderChangeMessage.java を参照のこと
+		Messenger.getInstance().apply(SceneOrderChangeMessage.class, this, m -> FXCollections.sort(this.scenes));
 	}
 
 	/**
@@ -224,12 +234,12 @@ public class StorylineDesigner extends HBox implements Initializable {
 				if (e.wasAdded()) {
 					List<? extends SceneShape> subList = e.getAddedSubList();
 					for(SceneShape el : subList) {
+						StorylineShape storylineShape = null;
 						if (el.scene.getStoryline() != null) {
-							StorylineShape storylineShape = this.findStorylineShape(el.scene.getStoryline());
-							if (storylineShape != null) {
-								el.sceneNode.setLayoutX(e.getList().indexOf(el) * (SCENE_WIDTH + SCENE_H_MARGIN / 2));
-								storylineShape.addSceneShape(el);
-							}
+							storylineShape = this.findStorylineShape(el.scene.getStoryline());
+						}
+						if (storylineShape != null) {
+							storylineShape.addSceneShape(el);
 						}
 					}
 				}
@@ -238,11 +248,19 @@ public class StorylineDesigner extends HBox implements Initializable {
 				else if (e.wasRemoved()) {
 					List<? extends SceneShape> subList = e.getRemoved();
 					for(SceneShape el : subList) {
+						StorylineShape storylineShape = null;
 						if (el.scene.getStoryline() != null) {
-							StorylineShape storylineShape = this.findStorylineShape(el.scene.getStoryline());
-							if (storylineShape != null) {
-								storylineShape.removeSceneShape(el);
+							storylineShape = this.findStorylineShape(el.scene.getStoryline());
+						} else {
+							for (StorylineShape ssl : this.storylines) {
+								if (ssl.hasSceneShape(el)) {
+									storylineShape = ssl;
+									break;
+								}
 							}
+						}
+						if (storylineShape != null) {
+							storylineShape.removeSceneShape(el);
 						}
 					}
 				}
@@ -253,6 +271,12 @@ public class StorylineDesigner extends HBox implements Initializable {
 					e.getList().clear();
 					((List<SceneShape>)e.getList()).addAll(clone);
 				}
+			}
+
+			// 全シーンのX座標を調整
+			int i = 0;
+			for (SceneShape shape : e.getList()) {
+				shape.setSceneLayoutX(i++);
 			}
 		});
 	}
@@ -301,6 +325,7 @@ public class StorylineDesigner extends HBox implements Initializable {
 	}
 //</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="メソッド">
 	/**
 	 * ストーリーライン（model.entity）内のシーンリストに変更があった時に呼び出されるリスナ
 	 * モデルとしてのストーリーラインに直接設定する.
@@ -407,7 +432,9 @@ public class StorylineDesigner extends HBox implements Initializable {
 		this.selectedScene.set(null);
 		this.selectedStoryline.set(null);
 	}
+//</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="ストーリーラインシェイプ">
 	/**
 	 * ストーリーラインに関連付けられたシェイプをまとめる内部クラス.
 	 */
@@ -415,6 +442,7 @@ public class StorylineDesigner extends HBox implements Initializable {
 
 		private final Storyline storyline;
 
+		private final ContextMenu viewPopup;
 		private final Group title;
 		private final Group view;
 		private final Line viewLine;
@@ -463,6 +491,15 @@ public class StorylineDesigner extends HBox implements Initializable {
 			this.viewLine.setStrokeWidth(5);
 			this.viewLine.strokeProperty().bind(line.colorProperty());
 			this.view = new Group(viewBackground, this.viewLine);
+
+			// TODO: シーン部分を右クリックしたときのメニューを作成
+			/*
+			MenuItem sceneNewMenu = new MenuItem("新規シーン");
+			sceneNewMenu.setOnAction(e -> Story.getCurrent().addScene(this.storyline));
+			this.viewPopup = new ContextMenu(sceneNewMenu);
+			this.view.setOnContextMenuRequested(e -> this.viewPopup.show(this.view, e.getScreenX(), e.getScreenY()));
+			*/
+			this.viewPopup = new ContextMenu();
 		}
 
 		public void addSceneShape(SceneShape s) {
@@ -472,7 +509,13 @@ public class StorylineDesigner extends HBox implements Initializable {
 
 		public void removeSceneShape(SceneShape s) {
 			this.view.getChildren().remove(s.sceneNode);
-			this.updateLine();
+			for (StorylineShape sls : storylines) {
+				sls.updateLine();
+			}
+		}
+
+		public boolean hasSceneShape(SceneShape s) {
+			return this.view.getChildren().contains(s.sceneNode);
 		}
 
 		private void updateLine() {
@@ -492,16 +535,18 @@ public class StorylineDesigner extends HBox implements Initializable {
 			}
 
 			double startX = (SCENE_WIDTH + SCENE_H_MARGIN) * firstSceneIndex - 10;
-			double endX = (SCENE_WIDTH + SCENE_H_MARGIN) * (lastSceneIndex) + 10;
+			double endX = (SCENE_WIDTH + SCENE_H_MARGIN) * (lastSceneIndex + 1) + 10;
 			if (startX < 0) {
 				startX = 0;
 				endX += SCENE_WIDTH + 5;
 			}
 			this.viewLine.setLayoutX(startX);
-			this.viewLine.setEndX(endX);
+			this.viewLine.setEndX(endX - startX);
 		}
 	}
+//</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="シーンシェイプ">
 	/**
 	 * １つのシーンのシェイプをまとめる内部クラス.
 	 */
@@ -509,6 +554,7 @@ public class StorylineDesigner extends HBox implements Initializable {
 
 		private final Scene scene;
 
+		private final ContextMenu scenePopup;
 		private final Group sceneNode;
 
 		public SceneShape(Scene scene) {
@@ -537,6 +583,18 @@ public class StorylineDesigner extends HBox implements Initializable {
 				setSelectedStoryline(null);
 				setSelectedScene(this.scene);
 			});
+
+			// シーンノードを右クリックしたときのメニューを作成
+			MenuItem sceneLeftMenu = new MenuItem("左へ移動");
+			MenuItem sceneRightMenu = new MenuItem("右へ移動");
+			MenuItem sceneDelMenu = new MenuItem("削除");
+			sceneDelMenu.setOnAction(e -> Story.getCurrent().deleteScene());
+			this.scenePopup = new ContextMenu(sceneLeftMenu, sceneRightMenu, new SeparatorMenuItem(), sceneDelMenu);
+			this.sceneNode.setOnContextMenuRequested(e -> this.scenePopup.show(this.sceneNode, e.getScreenX(), e.getScreenY()));
+		}
+
+		public void setSceneLayoutX(int index) {
+			this.sceneNode.setLayoutX(index * (SCENE_WIDTH + SCENE_H_MARGIN / 2));
 		}
 
 		@Override
@@ -545,6 +603,7 @@ public class StorylineDesigner extends HBox implements Initializable {
 		}
 
 	}
+//</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="その他のメソッド">
 	// TODO: staticメソッドへ移動
