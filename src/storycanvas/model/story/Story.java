@@ -35,6 +35,7 @@ import storycanvas.message.entity.list.select.MainPersonTableSelectItemMessage;
 import storycanvas.message.entity.list.select.MainPlaceTableSelectItemMessage;
 import storycanvas.model.date.StoryCalendar;
 import storycanvas.model.date.StoryDate;
+import storycanvas.model.entity.Entity;
 import storycanvas.model.entity.Person;
 import storycanvas.model.entity.Place;
 import storycanvas.model.entity.Scene;
@@ -113,7 +114,6 @@ public class Story {
 
 		Scene c1 = new Scene();
 		c1.setName("主人公が女の子に会う");
-		c1.setOrder(50);
 		s1.getScenes().add(c1);
 
 		Storyline s2 = new Storyline();
@@ -123,10 +123,7 @@ public class Story {
 
 		Scene c2 = new Scene();
 		c2.setName("女の子たちが殺しあう");
-		c2.setOrder(30);
 		s2.getScenes().add(c2);
-		c1.setOrder(10);
-		Messenger.getInstance().send(new SceneOrderChangeMessage());
 
 		// TODO: 日付計算テスト
 		/*
@@ -299,6 +296,33 @@ public class Story {
 	}
 //</editor-fold>
 
+	/**
+	 * ストーリーラインの追加.
+	 */
+	public void addStoryline() {
+		Storyline line = this.createStoryline();
+		this.storylines.add(line);
+		Messenger.getInstance().send(new StorylineEditMessage(line));
+	}
+
+	/**
+	 * 現在選択されているストーリーラインを削除.
+	 */
+	public void deleteStoryline() {
+		Messenger.getInstance().send(new EmptyEditMessage());
+		this.storylines.delete();
+	}
+
+	/**
+	 * デフォルトのストーリーラインを生成。実質ファクトリメソッド
+	 * @return 生成されたストーリーライン
+	 */
+	private Storyline createStoryline() {
+		Storyline line = new Storyline();
+		line.setColor(Color.GRAY);
+		return line;
+	}
+
 //<editor-fold defaultstate="collapsed" desc="シーンの操作">
 	/**
 	 * シーンの追加.
@@ -317,6 +341,145 @@ public class Story {
 			Messenger.getInstance().send(new EmptyEditMessage());
 			boolean r = this.selectedScene.get().getStoryline().getScenes().remove(this.selectedScene.get());
 		}
+	}
+
+	/**
+	 * シーンを、現在選択されているシーンの次へ追加。
+	 * 現在選択されているストーリーラインの中のシーンとして追加される.
+	 */
+	public void addNextScene() {
+		if (this.selectedScene.get() != null && this.selectedScene.get().getStoryline() != null) {
+			Scene entity = new Scene();
+			entity.setOrder(this.selectedScene.get().getOrder());
+			this.shiftSceneOrder(this.selectedScene.get());
+			this.replaceEntityOrder(entity, this.selectedScene.get());
+			this.selectedScene.get().getStoryline().getScenes().add(entity);
+			Messenger.getInstance().send(new SceneEditMessage(entity));
+		}
+	}
+
+	/**
+	 * シーンを、現在選択されているシーンの前へ追加。
+	 * 現在選択されているストーリーラインの中のシーンとして追加される.
+	 */
+	public void addBackScene() {
+		if (this.selectedScene.get() != null && this.selectedScene.get().getStoryline() != null) {
+			Scene entity = new Scene();
+			entity.setOrder(this.selectedScene.get().getOrder());
+			this.shiftSceneOrder(entity);
+			this.selectedScene.get().getStoryline().getScenes().add(entity);
+			Messenger.getInstance().send(new SceneEditMessage(entity));
+		}
+	}
+
+	/**
+	 * シーンを、現在選択されているシーンの左へ移動.
+	 */
+	public void leftScene() {
+		if (this.selectedScene.get() != null && this.selectedScene.get().getStoryline() != null) {
+			Scene scene = this.selectedScene.get();
+			Scene backScene = this.findBackScene(scene);
+			if (backScene != null) {
+				this.replaceEntityOrder(scene, backScene);
+				Messenger.getInstance().send(new SceneOrderChangeMessage());
+			}
+		}
+	}
+
+	/**
+	 * シーンを、現在選択されているシーンの右へ移動.
+	 */
+	public void rightScene() {
+		if (this.selectedScene.get() != null && this.selectedScene.get().getStoryline() != null) {
+			Scene scene = this.selectedScene.get();
+			Scene nextScene = this.findNextScene(scene);
+			if (nextScene != null) {
+				this.replaceEntityOrder(scene, nextScene);
+				Messenger.getInstance().send(new SceneOrderChangeMessage());
+			}
+		}
+	}
+
+	/**
+	 * 指定したシーンの順番を入れ替えます
+	 * @param s1 シーン１
+	 * @param s2 シーン２
+	 */
+	private void replaceEntityOrder(Entity s1, Entity s2) {
+		long tmp = s2.getOrder();
+		s2.setOrder(s1.getOrder());
+		s1.setOrder(tmp);
+	}
+
+	/**
+	 * orderが指定したシーン以上であるシーンの順番を1つずつ足し算してずらす
+	 * （引き算するメソッドは、orderの仕様上意味が無いので作らない）
+	 * ただし、指定したシーンがStorylineに登録されていない場合、そのシーンに対しては処理を行わない
+	 * @param startScene 指定するシーン
+	 */
+	private void shiftSceneOrder(Scene startScene) {
+		long baseOrder = startScene.getOrder();
+		for (Storyline storyline : this.storylines.getEntities()) {
+			for (Scene scene : storyline.getScenes()) {
+				if (scene.getOrder() >= baseOrder) {
+					scene.setOrder(scene.getOrder() + 1);
+				}
+			}
+		}
+	}
+
+	/**
+	 * 次のシーンを取得
+	 * @param scene 基準となるシーン
+	 * @return 次のシーン。なければnull
+	 */
+	private Scene findNextScene(Scene scene) {
+		Scene ret = null;
+		long baseOrder = scene.getOrder();
+		long lastOrder = -1;
+
+		outside:
+		for (Storyline storyline : this.storylines.getEntities()) {
+			for (Scene s : storyline.getScenes()) {
+				long order = s.getOrder();
+				if (order > baseOrder && (order < lastOrder || lastOrder < 0)) {
+					ret = s;
+					lastOrder = order;
+					if (baseOrder == lastOrder - 1) {
+						break outside;
+					}
+				}
+			}
+		}
+
+		return ret;
+	}
+
+	/**
+	 * 前のシーンを取得
+	 * @param scene 基準となるシーン
+	 * @return 前のシーン。なければnull
+	 */
+	private Scene findBackScene(Scene scene) {
+		Scene ret = null;
+		long baseOrder = scene.getOrder();
+		long lastOrder = -1;
+
+		outside:
+		for (Storyline storyline : this.storylines.getEntities()) {
+			for (Scene s : storyline.getScenes()) {
+				long order = s.getOrder();
+				if (order < baseOrder && (lastOrder < 0 || order > lastOrder)) {
+					ret = s;
+					lastOrder = order;
+					if (baseOrder == lastOrder + 1) {
+						break outside;
+					}
+				}
+			}
+		}
+
+		return ret;
 	}
 //</editor-fold>
 }

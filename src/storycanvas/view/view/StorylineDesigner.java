@@ -363,17 +363,19 @@ public class StorylineDesigner extends HBox implements Initializable {
 	 * @param storyline 追加するストーリーライン
 	 */
 	private void addStoryline(Storyline storyline) {
-		StorylineShape shape = new StorylineShape(storyline);
-		this.storylines.add(shape);
+		if (this.findStorylineShape(storyline) == null) {
+			StorylineShape shape = new StorylineShape(storyline);
+			this.storylines.add(shape);
 
-		// ストーリーラインに含まれるシーンを作成
-		for (Scene sc : storyline.getScenes()) {
-			this.scenes.add(new SceneShape(sc));
+			// ストーリーラインに含まれるシーンを作成
+			for (Scene sc : storyline.getScenes()) {
+				this.scenes.add(new SceneShape(sc));
+			}
+			FXCollections.sort(this.scenes);
+
+			// シーンが追加削除された時に教えてくれるリスナを追加
+			storyline.getScenes().addListener(this.storylineSceneChangeListener);
 		}
-		FXCollections.sort(this.scenes);
-
-		// シーンが追加削除された時に教えてくれるリスナを追加
-		storyline.getScenes().addListener(this.storylineSceneChangeListener);
 	}
 
 	private void deleteStoryline(Storyline storyline) {
@@ -492,14 +494,17 @@ public class StorylineDesigner extends HBox implements Initializable {
 			this.viewLine.strokeProperty().bind(line.colorProperty());
 			this.view = new Group(viewBackground, this.viewLine);
 
-			// TODO: シーン部分を右クリックしたときのメニューを作成
-			/*
+			// ストーリーラインのタイトル部分を右クリックしたときのメニューを作成
 			MenuItem sceneNewMenu = new MenuItem("新規シーン");
 			sceneNewMenu.setOnAction(e -> Story.getCurrent().addScene(this.storyline));
-			this.viewPopup = new ContextMenu(sceneNewMenu);
-			this.view.setOnContextMenuRequested(e -> this.viewPopup.show(this.view, e.getScreenX(), e.getScreenY()));
-			*/
-			this.viewPopup = new ContextMenu();
+			MenuItem addStorylineMenu = new MenuItem("ストーリーラインを末尾に追加");
+			addStorylineMenu.setOnAction(e -> Story.getCurrent().addStoryline());
+			MenuItem deleteStorylineMenu = new MenuItem("ストーリーラインを削除");
+			deleteStorylineMenu.setOnAction(e -> Story.getCurrent().deleteStoryline());
+			this.viewPopup = new ContextMenu(sceneNewMenu, new SeparatorMenuItem(),
+						addStorylineMenu, new SeparatorMenuItem(),
+						deleteStorylineMenu);
+			this.title.setOnContextMenuRequested(e -> this.viewPopup.show(this.title, e.getScreenX(), e.getScreenY()));
 		}
 
 		public void addSceneShape(SceneShape s) {
@@ -585,11 +590,19 @@ public class StorylineDesigner extends HBox implements Initializable {
 			});
 
 			// シーンノードを右クリックしたときのメニューを作成
-			MenuItem sceneLeftMenu = new MenuItem("左へ移動");
-			MenuItem sceneRightMenu = new MenuItem("右へ移動");
+			MenuItem addNextSceneMenu = new MenuItem("次のシーンを追加");
+			addNextSceneMenu.setOnAction(e -> Story.getCurrent().addNextScene());
+			MenuItem addBackSceneMenu = new MenuItem("前のシーンを追加");
+			addBackSceneMenu.setOnAction(e -> Story.getCurrent().addBackScene());
+			MenuItem sceneLeftMenu = new MenuItem("前へ移動");
+			sceneLeftMenu.setOnAction(e -> Story.getCurrent().leftScene());
+			MenuItem sceneRightMenu = new MenuItem("次へ移動");
+			sceneRightMenu.setOnAction(e -> Story.getCurrent().rightScene());
 			MenuItem sceneDelMenu = new MenuItem("削除");
 			sceneDelMenu.setOnAction(e -> Story.getCurrent().deleteScene());
-			this.scenePopup = new ContextMenu(sceneLeftMenu, sceneRightMenu, new SeparatorMenuItem(), sceneDelMenu);
+			this.scenePopup = new ContextMenu(addNextSceneMenu, addBackSceneMenu, new SeparatorMenuItem(),
+					sceneRightMenu, sceneLeftMenu, new SeparatorMenuItem(),
+					sceneDelMenu);
 			this.sceneNode.setOnContextMenuRequested(e -> this.scenePopup.show(this.sceneNode, e.getScreenX(), e.getScreenY()));
 		}
 
