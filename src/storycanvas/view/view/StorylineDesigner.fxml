@@ -15,6 +15,9 @@
 		<ScrollPane fx:id="storylineTitlePaneScroll" minWidth="200.0" maxWidth="200.0" hbarPolicy="ALWAYS" vbarPolicy="NEVER">
 			<content>
 				<VBox fx:id="storylineTitlePane" prefWidth="198.0">
+					<children>
+						<Button fx:id="addFirstStorylineButton" text="最初のストーリーラインを追加" prefHeight="100.0" prefWidth="198.0"  onAction="#addFirstStoryline" />
+					</children>
 				</VBox>
 			</content>
 		</ScrollPane>

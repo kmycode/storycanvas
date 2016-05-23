@@ -36,6 +36,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -75,6 +76,9 @@ public class StorylineDesigner extends HBox implements Initializable {
 	 */
 	private static final double SCENE_WIDTH = 85.0;
 	private static final double SCENE_H_MARGIN = 10.0;
+
+	@FXML
+	private Button addFirstStorylineButton;
 
 	@FXML
 	private ScrollPane storylineTitlePaneScroll;
@@ -320,6 +324,13 @@ public class StorylineDesigner extends HBox implements Initializable {
 						}
 					}
 				}
+			}
+
+			// 最初のストーリーラインを追加するボタン表示の有無
+			if (e.getList().size() != 0) {
+				this.storylineTitlePane.getChildren().remove(this.addFirstStorylineButton);
+			} else if (!this.storylineTitlePane.getChildren().contains(this.addFirstStorylineButton)) {
+				this.storylineTitlePane.getChildren().add(this.addFirstStorylineButton);
 			}
 		});
 	}
@@ -638,6 +649,14 @@ public class StorylineDesigner extends HBox implements Initializable {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * 最初のストーリーラインを追加.
+	 */
+	@FXML
+	private void addFirstStoryline() {
+		Story.getCurrent().addStoryline();
 	}
 
 	/**

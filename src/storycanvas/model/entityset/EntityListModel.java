@@ -75,7 +75,7 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 	 */
 	@Override
 	public void add(E entity) {
-		if (this.getSelectedEntity() == null) {
+		if (this.getSelectedEntity() == null || this.entities.isEmpty()) {
 			this.entities.add(entity);
 		} else {
 			this.insert(this.entities.indexOf(this.getSelectedEntity()), entity);
