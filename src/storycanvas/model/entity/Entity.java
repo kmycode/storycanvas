@@ -180,6 +180,17 @@ public abstract class Entity implements Comparable<Entity> {
 	public int compareTo(Entity other) {
 		return this.getOrder() > other.getOrder() ? 1 : this.getOrder() == other.getOrder() ? 0 : -1;
 	}
+
+	/**
+	 * 指定したエンティティの順番を入れ替えます
+	 * @param s1 エンティティ１
+	 * @param s2 エンティティ２
+	 */
+	public void replaceOrder(Entity other) {
+		long tmp = this.getOrder();
+		this.setOrder(other.getOrder());
+		other.setOrder(tmp);
+	}
 //</editor-fold>
 
 }

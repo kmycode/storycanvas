@@ -35,7 +35,6 @@ import storycanvas.message.entity.list.select.MainPersonTableSelectItemMessage;
 import storycanvas.message.entity.list.select.MainPlaceTableSelectItemMessage;
 import storycanvas.model.date.StoryCalendar;
 import storycanvas.model.date.StoryDate;
-import storycanvas.model.entity.Entity;
 import storycanvas.model.entity.Person;
 import storycanvas.model.entity.Place;
 import storycanvas.model.entity.Scene;
@@ -198,7 +197,7 @@ public class Story {
 	 */
 	public void addPerson() {
 		Person entity = new Person();
-		this.persons.add(entity);
+		this.persons.insert(entity);
 		Messenger.getInstance().send(new MainPersonTableSelectItemMessage(entity));
 	}
 
@@ -214,14 +213,18 @@ public class Story {
 	 * 選択された人物を上へ移動.
 	 */
 	public void upPerson() {
+		Person entity = this.persons.getSelectedEntity();
 		this.persons.up();
+		Messenger.getInstance().send(new MainPersonTableSelectItemMessage(entity));
 	}
 
 	/**
 	 * 選択された人物を下へ移動.
 	 */
 	public void downPerson() {
+		Person entity = this.persons.getSelectedEntity();
 		this.persons.down();
+		Messenger.getInstance().send(new MainPersonTableSelectItemMessage(entity));
 	}
 //</editor-fold>
 
@@ -297,7 +300,7 @@ public class Story {
 //</editor-fold>
 
 	/**
-	 * ストーリーラインの追加.
+	 * ストーリーラインの末尾への追加.
 	 */
 	public void addStoryline() {
 		Storyline line = this.createStoryline();
@@ -311,6 +314,39 @@ public class Story {
 	public void deleteStoryline() {
 		Messenger.getInstance().send(new EmptyEditMessage());
 		this.storylines.delete();
+	}
+
+	/**
+	 * ストーリーラインを、現在選択されているものの前に追加.
+	 */
+	public void addBackStoryline() {
+		Storyline line = this.createStoryline();
+		this.storylines.insert(line);
+		Messenger.getInstance().send(new StorylineEditMessage(line));
+	}
+
+	/**
+	 * ストーリーラインを、現在選択されているものの次に追加.
+	 */
+	public void addNextStoryline() {
+		Storyline line = this.createStoryline();
+		this.storylines.insert(line);
+		this.storylines.down(line);
+		Messenger.getInstance().send(new StorylineEditMessage(line));
+	}
+
+	/**
+	 * 現在選択されているストーリーラインを、１つ前へ移動.
+	 */
+	public void upStoryline() {
+		this.storylines.up();
+	}
+
+	/**
+	 * 現在選択されているストーリーラインを、１つ後へ移動.
+	 */
+	public void downStoryline() {
+		this.storylines.down();
 	}
 
 	/**
@@ -352,7 +388,7 @@ public class Story {
 			Scene entity = new Scene();
 			entity.setOrder(this.selectedScene.get().getOrder());
 			this.shiftSceneOrder(this.selectedScene.get());
-			this.replaceEntityOrder(entity, this.selectedScene.get());
+			entity.replaceOrder(this.selectedScene.get());
 			this.selectedScene.get().getStoryline().getScenes().add(entity);
 			Messenger.getInstance().send(new SceneEditMessage(entity));
 		}
@@ -380,7 +416,7 @@ public class Story {
 			Scene scene = this.selectedScene.get();
 			Scene backScene = this.findBackScene(scene);
 			if (backScene != null) {
-				this.replaceEntityOrder(scene, backScene);
+				scene.replaceOrder(backScene);
 				Messenger.getInstance().send(new SceneOrderChangeMessage());
 			}
 		}
@@ -394,21 +430,10 @@ public class Story {
 			Scene scene = this.selectedScene.get();
 			Scene nextScene = this.findNextScene(scene);
 			if (nextScene != null) {
-				this.replaceEntityOrder(scene, nextScene);
+				scene.replaceOrder(nextScene);
 				Messenger.getInstance().send(new SceneOrderChangeMessage());
 			}
 		}
-	}
-
-	/**
-	 * 指定したシーンの順番を入れ替えます
-	 * @param s1 シーン１
-	 * @param s2 シーン２
-	 */
-	private void replaceEntityOrder(Entity s1, Entity s2) {
-		long tmp = s2.getOrder();
-		s2.setOrder(s1.getOrder());
-		s1.setOrder(tmp);
 	}
 
 	/**

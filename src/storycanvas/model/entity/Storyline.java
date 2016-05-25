@@ -58,6 +58,8 @@ public class Storyline extends Entity {
 	@Override
 	protected final void initialize() {
 
+		super.initialize();
+
 		// シーンリストと、各シーンにおけるストーリーラインとのリンクを自動的に連動させる
 		this.scenes.addListener((ListChangeListener.Change<? extends Scene> e) -> {
 

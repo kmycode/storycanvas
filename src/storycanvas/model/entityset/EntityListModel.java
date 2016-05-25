@@ -75,6 +75,21 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 	 */
 	@Override
 	public void add(E entity) {
+		//if (this.getSelectedEntity() == null || this.entities.isEmpty()) {
+			this.entities.add(entity);
+			/*
+		} else {
+			this.insert(this.entities.indexOf(this.getSelectedEntity()), entity);
+		}
+		*/
+	}
+
+	/**
+	 * エンティティを、現在選択されているエンティティの上に追加。
+	 * 選択がなければ、通常のaddと同じ
+	 * @param entity 追加するエンティティ
+	 */
+	public void insert(E entity) {
 		if (this.getSelectedEntity() == null || this.entities.isEmpty()) {
 			this.entities.add(entity);
 		} else {
@@ -103,14 +118,21 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 			orderStack.add(this.entities.get(i).getOrder());
 		}
 		orderStack.add(entity.getOrder());
-
-		// エンティティを挿入
-		this.entities.add(index, entity);
+		
+		// 挿入するエンティティの順番を取得
+		long entityOrder = orderStack.poll();
 
 		// 以降のエンティティを１つずつ下にずらす
 		for (int i = index; i < this.entities.size(); i++) {
 			this.entities.get(i).setOrder(orderStack.poll());
 		}
+
+		// エンティティの順番を設定
+		entity.setOrder(entityOrder);
+
+		// エンティティを挿入
+		// ここまでに一通りやっておくことで、リスナーに出来る限り正しい順番番号を渡す
+		this.entities.add(index, entity);
 	}
 
 	/**
@@ -135,20 +157,15 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 		FXCollections.sort(this.entities);
 
 		// ひとつ順番が上のものを探す
-		E target = null;
-		for (E e : this.entities) {
-			if (e.getOrder() < entity.getOrder() && (target == null || e.getOrder() > target.getOrder())) {
-				target = e;
-			}
+		int entityIndex = this.entities.indexOf(entity);
+		E target = entityIndex - 1 >= 0 ? this.entities.get(entityIndex - 1) : null;
+		if (target == null) {
+			return;
 		}
-		if (target != null) {
-			long tmp = entity.getOrder();
-			entity.setOrder(target.getOrder());
-			target.setOrder(tmp);
-		}
+		entity.replaceOrder(target);
 
 		// エンティティを順番通りに並べ替える
-		FXCollections.sort(this.entities);
+		this.entities.add(entityIndex - 1, this.entities.remove(entityIndex));
 	}
 
 	/**
@@ -171,20 +188,15 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 		FXCollections.sort(this.entities);
 		
 		// ひとつ順番が下のものを探す
-		E target = null;
-		for (E e : this.entities) {
-			if (e.getOrder() > entity.getOrder() && (target == null || e.getOrder() < target.getOrder())) {
-				target = e;
-			}
+		int entityIndex = this.entities.indexOf(entity);
+		E target = entityIndex + 1 < this.entities.size() ? this.entities.get(entityIndex + 1) : null;
+		if (target == null) {
+			return;
 		}
-		if (target != null) {
-			long tmp = entity.getOrder();
-			entity.setOrder(target.getOrder());
-			target.setOrder(tmp);
-		}
+		entity.replaceOrder(target);
 
 		// エンティティを順番通りに並べ替える
-		FXCollections.sort(this.entities);
+		this.entities.add(entityIndex + 1, this.entities.remove(entityIndex));
 	}
 
 	/**
@@ -192,6 +204,21 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 	 */
 	public void down() {
 		this.down(this.getSelectedEntity());
+	}
+
+	/**
+	 * orderが指定したシーン以上であるエンティティの順番を1つずつ足し算してずらす
+	 * （引き算するメソッドは、orderの仕様上意味が無いので作らない）
+	 * ただし、指定したエンティティ（startEntity）がリストに登録されていない場合、そのエンティティに対しては処理を行わない
+	 * @param entity 指定するエンティティ。orderの値がこのエンティティのもの以上であるエンティティに対して処理される
+	 */
+	public void shiftOrder(E entity) {
+		long baseOrder = entity.getOrder();
+		for (E e : this.getEntities()) {
+			if (e.getOrder() >= baseOrder) {
+				e.setOrder(e.getOrder() + 1);
+			}
+		}
 	}
 
 }

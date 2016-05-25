@@ -201,11 +201,16 @@ public class StorylineDesigner extends HBox implements Initializable {
 
 				// 追加されたシェイプを画面に表示する
 				if (e.wasAdded()) {
+
+					// とりあえず追加された分をリストの末尾に追加
 					List<? extends StorylineShape> subList = e.getAddedSubList();
 					for(StorylineShape el : subList) {
 						this.storylineTitlePane.getChildren().add(el.title);
 						this.mainPane.getChildren().add(el.view);
 					}
+
+					// Permutatedイベントを発生させ、orderに基づいたソートを行う
+					FXCollections.sort(e.getList());
 				}
 
 				// 削除されたストーリーラインを表示から除去
@@ -217,9 +222,24 @@ public class StorylineDesigner extends HBox implements Initializable {
 					}
 				}
 
-				// ソートされたら、新しく最初からやり直す
+				// ソートされたら、順番が変わった項目だけ取り替える
 				else if (e.wasPermutated()) {
-					// TODO
+					// 新しいリストを作成
+					ObservableList<Node> newMainPaneList = FXCollections.observableArrayList(this.mainPane.getChildren());
+					ObservableList<Node> newTitlePaneList = FXCollections.observableArrayList(this.storylineTitlePane.getChildren());
+
+					// 置き換え
+					for (int oldIndex = 0; oldIndex < e.getList().size(); oldIndex++) {
+						int newIndex = e.getPermutation(oldIndex);
+						newMainPaneList.set(newIndex, this.mainPane.getChildren().get(oldIndex));
+						newTitlePaneList.set(newIndex, this.storylineTitlePane.getChildren().get(oldIndex));
+					}
+
+					// リストの中身を入れ替え
+					this.mainPane.getChildren().clear();
+					this.mainPane.getChildren().addAll(newMainPaneList);
+					this.storylineTitlePane.getChildren().clear();
+					this.storylineTitlePane.getChildren().addAll(newTitlePaneList);
 				}
 			}
 		});
@@ -312,6 +332,8 @@ public class StorylineDesigner extends HBox implements Initializable {
 
 				// ソートされたら、順番が変わったものだけとりかえる
 				else if (e.wasPermutated()) {
+					FXCollections.sort(this.storylines);
+					/*
 					for (int oldIndex = 0; oldIndex < e.getList().size(); oldIndex++) {
 						int newIndex = e.getPermutation(oldIndex);
 						if (newIndex != oldIndex) {
@@ -323,6 +345,7 @@ public class StorylineDesigner extends HBox implements Initializable {
 							this.mainPane.getChildren().add(oldIndex < newIndex ? newIndex - 1 : newIndex, newS);
 						}
 					}
+					*/
 				}
 			}
 
@@ -451,7 +474,7 @@ public class StorylineDesigner extends HBox implements Initializable {
 	/**
 	 * ストーリーラインに関連付けられたシェイプをまとめる内部クラス.
 	 */
-	private class StorylineShape {
+	private class StorylineShape implements Comparable<StorylineShape> {
 
 		private final Storyline storyline;
 
@@ -510,10 +533,19 @@ public class StorylineDesigner extends HBox implements Initializable {
 			sceneNewMenu.setOnAction(e -> Story.getCurrent().addScene(this.storyline));
 			MenuItem addStorylineMenu = new MenuItem("ストーリーラインを末尾に追加");
 			addStorylineMenu.setOnAction(e -> Story.getCurrent().addStoryline());
+			MenuItem addBackStorylineMenu = new MenuItem("ストーリーラインを上に追加");
+			addBackStorylineMenu.setOnAction(e -> Story.getCurrent().addBackStoryline());
+			MenuItem addNextStorylineMenu = new MenuItem("ストーリーラインを下に追加");
+			addNextStorylineMenu.setOnAction(e -> Story.getCurrent().addNextStoryline());
+			MenuItem upStorylineMenu = new MenuItem("ストーリーラインを上へ移動");
+			upStorylineMenu.setOnAction(e -> Story.getCurrent().upStoryline());
+			MenuItem downStorylineMenu = new MenuItem("ストーリーラインを下へ移動");
+			downStorylineMenu.setOnAction(e -> Story.getCurrent().downStoryline());
 			MenuItem deleteStorylineMenu = new MenuItem("ストーリーラインを削除");
 			deleteStorylineMenu.setOnAction(e -> Story.getCurrent().deleteStoryline());
 			this.viewPopup = new ContextMenu(sceneNewMenu, new SeparatorMenuItem(),
-						addStorylineMenu, new SeparatorMenuItem(),
+						addStorylineMenu, addBackStorylineMenu, addNextStorylineMenu, new SeparatorMenuItem(),
+						upStorylineMenu, downStorylineMenu, new SeparatorMenuItem(),
 						deleteStorylineMenu);
 			this.title.setOnContextMenuRequested(e -> this.viewPopup.show(this.title, e.getScreenX(), e.getScreenY()));
 		}
@@ -558,6 +590,11 @@ public class StorylineDesigner extends HBox implements Initializable {
 			}
 			this.viewLine.setLayoutX(startX);
 			this.viewLine.setEndX(endX - startX);
+		}
+
+		@Override
+		public int compareTo (StorylineShape o) {
+			return this.storyline.compareTo(o.storyline);
 		}
 	}
 //</editor-fold>
