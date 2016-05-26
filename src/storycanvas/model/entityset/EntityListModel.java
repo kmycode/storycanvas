@@ -221,4 +221,32 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 		}
 	}
 
+	/**
+	 * 指定のエンティティの１つ前のorderのエンティティを取得
+	 * @param entity エンティティ
+	 */
+	public E getBack(E entity) {
+		FXCollections.sort(this.entities);
+		int index = this.entities.indexOf(entity);
+		if (index > 0) {
+			return this.entities.get(index - 1);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * 指定のエンティティの１つ後のorderのエンティティを取得
+	 * @param entity エンティティ
+	 */
+	public E getNext(E entity) {
+		FXCollections.sort(this.entities);
+		int index = this.entities.indexOf(entity);
+		if (index < this.entities.size() - 1) {
+			return this.entities.get(index + 1);
+		} else {
+			return null;
+		}
+	}
+
 }

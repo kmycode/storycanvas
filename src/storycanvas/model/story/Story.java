@@ -343,10 +343,26 @@ public class Story {
 	}
 
 	/**
+	 * 指定のストーリーラインを、１つ前へ移動.
+	 * @param line ストーリーライン
+	 */
+	public void upStoryline(Storyline line) {
+		this.storylines.up(line);
+	}
+
+	/**
 	 * 現在選択されているストーリーラインを、１つ後へ移動.
 	 */
 	public void downStoryline() {
 		this.storylines.down();
+	}
+
+	/**
+	 * 指定のストーリーラインを、１つ後へ移動.
+	 * @param line ストーリーライン
+	 */
+	public void downStoryline(Storyline line) {
+		this.storylines.down(line);
 	}
 
 	/**
@@ -413,12 +429,18 @@ public class Story {
 	 */
 	public void leftScene() {
 		if (this.selectedScene.get() != null && this.selectedScene.get().getStoryline() != null) {
-			Scene scene = this.selectedScene.get();
-			Scene backScene = this.findBackScene(scene);
-			if (backScene != null) {
-				scene.replaceOrder(backScene);
-				Messenger.getInstance().send(new SceneOrderChangeMessage());
-			}
+			this.leftScene(this.selectedScene.get());
+		}
+	}
+
+	/**
+	 * 指定のシーンを左へ移動.
+	 */
+	public void leftScene(Scene scene) {
+		Scene backScene = this.findBackScene(scene);
+		if (backScene != null) {
+			scene.replaceOrder(backScene);
+			Messenger.getInstance().send(new SceneOrderChangeMessage());
 		}
 	}
 
@@ -427,13 +449,64 @@ public class Story {
 	 */
 	public void rightScene() {
 		if (this.selectedScene.get() != null && this.selectedScene.get().getStoryline() != null) {
-			Scene scene = this.selectedScene.get();
-			Scene nextScene = this.findNextScene(scene);
-			if (nextScene != null) {
-				scene.replaceOrder(nextScene);
-				Messenger.getInstance().send(new SceneOrderChangeMessage());
-			}
+			this.rightScene(this.selectedScene.get());
 		}
+	}
+
+	/**
+	 * 指定のシーンを右へ移動.
+	 */
+	public void rightScene(Scene scene) {
+		Scene nextScene = this.findNextScene(scene);
+		if (nextScene != null) {
+			scene.replaceOrder(nextScene);
+			Messenger.getInstance().send(new SceneOrderChangeMessage());
+		}
+	}
+
+	/**
+	 * 現在選択中のシーンを、orderが１つ前のストーリーラインへ移す.
+	 */
+	public void sceneToBackStoryline() {
+		this.sceneToBackStoryline(this.selectedScene.get());
+	}
+
+	/**
+	 * 指定のシーンを、orderが１つ前のストーリーラインへうつす
+	 * @param scene シーン
+	 */
+	public void sceneToBackStoryline(Scene scene) {
+		Storyline line = this.storylines.getBack(scene.getStoryline());
+		if (line != null) {
+			this.sceneToStoryline(scene, line);
+		}
+	}
+
+	/**
+	 * 現在選択中のシーンを、orderが１つ次のストーリーラインへ移す.
+	 */
+	public void sceneToNextStoryline() {
+		this.sceneToNextStoryline(this.selectedScene.get());
+	}
+
+	/**
+	 * 指定のシーンを、orderが１つ後のストーリーラインへうつす
+	 * @param scene シーン
+	 */
+	public void sceneToNextStoryline(Scene scene) {
+		Storyline line = this.storylines.getNext(scene.getStoryline());
+		if (line != null) {
+			this.sceneToStoryline(scene, line);
+		}
+	}
+
+	/**
+	 * 指定のシーンを、指定のストーリーラインへうつす
+	 * @param scene シーン
+	 * @param line ストーリーライン
+	 */
+	public void sceneToStoryline(Scene scene, Storyline line) {
+		line.getScenes().add(scene);
 	}
 
 	/**

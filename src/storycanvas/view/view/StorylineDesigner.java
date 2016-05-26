@@ -95,6 +95,9 @@ public class StorylineDesigner extends HBox implements Initializable {
 	private final ObservableList<StorylineShape> storylines = FXCollections.observableArrayList();
 	private final ObservableList<SceneShape> scenes = FXCollections.observableArrayList();
 
+	private SceneShape draggingSceneShape;
+	private StorylineShape draggingStorylineShape;
+
 //<editor-fold defaultstate="collapsed" desc="プロパティ">
 	/**
 	 * 現在選択されているストーリーライン.
@@ -158,6 +161,89 @@ public class StorylineDesigner extends HBox implements Initializable {
 				scrollBar.setDisable(true);
 			}
 		});
+
+		// シーンをドラッグできるようにする
+		this.mainPane.setOnMouseDragged(e -> {
+			if (this.draggingSceneShape != null) {
+				double mouseY = e.getY();
+				double mouseX = e.getX();
+				boolean hit = false;
+				if (mouseY <= this.draggingSceneShape.getTop()) {
+					Story.getCurrent().sceneToBackStoryline(this.draggingSceneShape.scene);
+					hit = true;
+				} else if (mouseY >= this.draggingSceneShape.getBottom()) {
+					Story.getCurrent().sceneToNextStoryline(this.draggingSceneShape.scene);
+					hit = true;
+				} else if (mouseX <= this.draggingSceneShape.getLeft()) {
+					Story.getCurrent().leftScene(this.draggingSceneShape.scene);
+					hit = true;
+				} else if (mouseX >= this.draggingSceneShape.getRight()) {
+					Story.getCurrent().rightScene(this.draggingSceneShape.scene);
+					hit = true;
+				}
+
+				// ドラッグの過程でシェイプが新しい物に差し替えられることがある。新しいシェイプを取得
+				if (hit) {
+					for (SceneShape sss : this.scenes) {
+						if (sss.scene == this.draggingSceneShape.scene) {
+							this.draggingSceneShape = sss;
+						}
+					}
+				}
+			}
+		});
+		this.mainPane.setOnMousePressed(e -> {
+			double mouseY = e.getY();
+			double mouseX = e.getX();
+			outside:
+			for (StorylineShape ss : this.storylines) {
+				if (ss.getTop() <= mouseY && ss.getBottom() >= mouseY) {
+					for (SceneShape sss : this.scenes) {
+						if (sss.scene.getStoryline() == ss.storyline) {
+							if (sss.getLeft() <= mouseX && sss.getRight() >= mouseX) {
+								this.draggingSceneShape = sss;
+								break outside;
+							}
+						}
+					}
+				}
+			}
+		});
+		this.mainPane.setOnMouseReleased(e -> this.draggingStorylineShape = null);
+
+		// ストーリーラインをドラッグできるようにする
+		this.storylineTitlePane.setOnMouseDragged(e -> {
+			if (this.draggingStorylineShape != null) {
+				double mouseY = e.getY();
+				boolean hit = false;
+				if (mouseY <= this.draggingStorylineShape.getTop()) {
+					Story.getCurrent().upStoryline(this.draggingStorylineShape.storyline);
+					hit = true;
+				} else if (mouseY >= this.draggingStorylineShape.getBottom()) {
+					Story.getCurrent().downStoryline(this.draggingStorylineShape.storyline);
+					hit = true;
+				}
+
+				// ドラッグの過程でシェイプが新しい物に差し替えられることがある。新しいシェイプを取得
+				if (hit) {
+					for (StorylineShape ss : this.storylines) {
+						if (ss.storyline == this.draggingStorylineShape.storyline) {
+							this.draggingStorylineShape = ss;
+						}
+					}
+				}
+			}
+		});
+		this.storylineTitlePane.setOnMousePressed(e -> {
+			double mouseY = e.getY();
+			for (StorylineShape ss : this.storylines) {
+				if (ss.getTop() <= mouseY && ss.getBottom() >= mouseY) {
+					this.draggingStorylineShape = ss;
+					break;
+				}
+			}
+		});
+		this.storylineTitlePane.setOnMouseReleased(e -> this.draggingStorylineShape = null);
 
 		this.setSceneShapeListener();
 		this.setStorylineShapeListener();
@@ -330,22 +416,9 @@ public class StorylineDesigner extends HBox implements Initializable {
 					}
 				}
 
-				// ソートされたら、順番が変わったものだけとりかえる
+				// ソートされたら、StorylineShapeの配列にも通知
 				else if (e.wasPermutated()) {
 					FXCollections.sort(this.storylines);
-					/*
-					for (int oldIndex = 0; oldIndex < e.getList().size(); oldIndex++) {
-						int newIndex = e.getPermutation(oldIndex);
-						if (newIndex != oldIndex) {
-							Node oldS = this.mainPane.getChildren().get(newIndex);
-							Node newS = this.mainPane.getChildren().get(oldIndex);
-							this.mainPane.getChildren().remove(oldS);
-							this.mainPane.getChildren().add(oldIndex > newIndex ? oldIndex - 1 : oldIndex, oldS);
-							this.mainPane.getChildren().remove(newS);
-							this.mainPane.getChildren().add(oldIndex < newIndex ? newIndex - 1 : newIndex, newS);
-						}
-					}
-					*/
 				}
 			}
 
@@ -529,7 +602,7 @@ public class StorylineDesigner extends HBox implements Initializable {
 			this.view = new Group(viewBackground, this.viewLine);
 
 			// ストーリーラインのタイトル部分を右クリックしたときのメニューを作成
-			MenuItem sceneNewMenu = new MenuItem("新規シーン");
+			MenuItem sceneNewMenu = new MenuItem("新規シーン", Resources.getMiniIconNode("create"));
 			sceneNewMenu.setOnAction(e -> Story.getCurrent().addScene(this.storyline));
 			MenuItem addStorylineMenu = new MenuItem("ストーリーラインを末尾に追加");
 			addStorylineMenu.setOnAction(e -> Story.getCurrent().addStoryline());
@@ -537,11 +610,11 @@ public class StorylineDesigner extends HBox implements Initializable {
 			addBackStorylineMenu.setOnAction(e -> Story.getCurrent().addBackStoryline());
 			MenuItem addNextStorylineMenu = new MenuItem("ストーリーラインを下に追加");
 			addNextStorylineMenu.setOnAction(e -> Story.getCurrent().addNextStoryline());
-			MenuItem upStorylineMenu = new MenuItem("ストーリーラインを上へ移動");
+			MenuItem upStorylineMenu = new MenuItem("ストーリーラインを上へ移動", Resources.getMiniIconNode("up"));
 			upStorylineMenu.setOnAction(e -> Story.getCurrent().upStoryline());
-			MenuItem downStorylineMenu = new MenuItem("ストーリーラインを下へ移動");
+			MenuItem downStorylineMenu = new MenuItem("ストーリーラインを下へ移動", Resources.getMiniIconNode("down"));
 			downStorylineMenu.setOnAction(e -> Story.getCurrent().downStoryline());
-			MenuItem deleteStorylineMenu = new MenuItem("ストーリーラインを削除");
+			MenuItem deleteStorylineMenu = new MenuItem("ストーリーラインを削除", Resources.getMiniIconNode("cancel"));
 			deleteStorylineMenu.setOnAction(e -> Story.getCurrent().deleteStoryline());
 			this.viewPopup = new ContextMenu(sceneNewMenu, new SeparatorMenuItem(),
 						addStorylineMenu, addBackStorylineMenu, addNextStorylineMenu, new SeparatorMenuItem(),
@@ -590,6 +663,22 @@ public class StorylineDesigner extends HBox implements Initializable {
 			}
 			this.viewLine.setLayoutX(startX);
 			this.viewLine.setEndX(endX - startX);
+		}
+
+		public double getTop() {
+			int index = StorylineDesigner.this.storylineTitlePane.getChildren().indexOf(this.title);
+			if (index >= 0) {
+				return STORYLINE_HEIGHT * index - storylineTitlePaneScroll.getVvalue();
+			}
+			return -65535;
+		}
+
+		public double getBottom() {
+			int index = StorylineDesigner.this.storylineTitlePane.getChildren().indexOf(this.title);
+			if (index >= 0) {
+				return STORYLINE_HEIGHT * (index + 1) - storylineTitlePaneScroll.getVvalue();
+			}
+			return 65535;
 		}
 
 		@Override
@@ -642,20 +731,48 @@ public class StorylineDesigner extends HBox implements Initializable {
 			addNextSceneMenu.setOnAction(e -> Story.getCurrent().addNextScene());
 			MenuItem addBackSceneMenu = new MenuItem("前のシーンを追加");
 			addBackSceneMenu.setOnAction(e -> Story.getCurrent().addBackScene());
-			MenuItem sceneLeftMenu = new MenuItem("前へ移動");
+			MenuItem sceneLeftMenu = new MenuItem("前へ移動", Resources.getMiniIconNode("left"));
 			sceneLeftMenu.setOnAction(e -> Story.getCurrent().leftScene());
-			MenuItem sceneRightMenu = new MenuItem("次へ移動");
+			MenuItem sceneRightMenu = new MenuItem("次へ移動", Resources.getMiniIconNode("right"));
 			sceneRightMenu.setOnAction(e -> Story.getCurrent().rightScene());
-			MenuItem sceneDelMenu = new MenuItem("削除");
+			MenuItem sceneUpMenu = new MenuItem("上へ移動", Resources.getMiniIconNode("up"));
+			sceneUpMenu.setOnAction(e -> Story.getCurrent().sceneToBackStoryline());
+			MenuItem sceneDownMenu = new MenuItem("下へ移動", Resources.getMiniIconNode("down"));
+			sceneDownMenu.setOnAction(e -> Story.getCurrent().sceneToNextStoryline());
+			MenuItem sceneDelMenu = new MenuItem("削除", Resources.getMiniIconNode("cancel"));
 			sceneDelMenu.setOnAction(e -> Story.getCurrent().deleteScene());
 			this.scenePopup = new ContextMenu(addNextSceneMenu, addBackSceneMenu, new SeparatorMenuItem(),
-					sceneRightMenu, sceneLeftMenu, new SeparatorMenuItem(),
+					sceneRightMenu, sceneLeftMenu, sceneUpMenu, sceneDownMenu, new SeparatorMenuItem(),
 					sceneDelMenu);
 			this.sceneNode.setOnContextMenuRequested(e -> this.scenePopup.show(this.sceneNode, e.getScreenX(), e.getScreenY()));
 		}
 
 		public void setSceneLayoutX(int index) {
 			this.sceneNode.setLayoutX(index * (SCENE_WIDTH + SCENE_H_MARGIN / 2));
+		}
+
+		public double getTop() {
+			int index = StorylineDesigner.this.storylineTitlePane.getChildren().indexOf(findStorylineShape(this.scene.getStoryline()).title);
+			if (index >= 0) {
+				return STORYLINE_HEIGHT * index - storylineTitlePaneScroll.getVvalue();
+			}
+			return -65535;
+		}
+
+		public double getBottom() {
+			int index = StorylineDesigner.this.storylineTitlePane.getChildren().indexOf(findStorylineShape(this.scene.getStoryline()).title);
+			if (index >= 0) {
+				return STORYLINE_HEIGHT * (index + 1) - storylineTitlePaneScroll.getVvalue();
+			}
+			return 65535;
+		}
+
+		public double getLeft() {
+			return this.sceneNode.getLayoutX() - storylineTitlePaneScroll.getHvalue();
+		}
+
+		public double getRight() {
+			return this.getLeft() + SCENE_WIDTH;
 		}
 
 		@Override
