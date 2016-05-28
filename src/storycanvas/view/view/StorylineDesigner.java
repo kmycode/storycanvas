@@ -602,13 +602,13 @@ public class StorylineDesigner extends HBox implements Initializable {
 			this.view = new Group(viewBackground, this.viewLine);
 
 			// ストーリーラインのタイトル部分を右クリックしたときのメニューを作成
-			MenuItem sceneNewMenu = new MenuItem("新規シーン", Resources.getMiniIconNode("create"));
+			MenuItem sceneNewMenu = new MenuItem("新規シーン", Resources.getMiniIconNode("scene"));
 			sceneNewMenu.setOnAction(e -> Story.getCurrent().addScene(this.storyline));
-			MenuItem addStorylineMenu = new MenuItem("ストーリーラインを末尾に追加");
+			MenuItem addStorylineMenu = new MenuItem("ストーリーラインを末尾に追加", Resources.getMiniIconNode("storyline"));
 			addStorylineMenu.setOnAction(e -> Story.getCurrent().addStoryline());
-			MenuItem addBackStorylineMenu = new MenuItem("ストーリーラインを上に追加");
+			MenuItem addBackStorylineMenu = new MenuItem("ストーリーラインを上に追加", Resources.getMiniIconNode("storyline"));
 			addBackStorylineMenu.setOnAction(e -> Story.getCurrent().addBackStoryline());
-			MenuItem addNextStorylineMenu = new MenuItem("ストーリーラインを下に追加");
+			MenuItem addNextStorylineMenu = new MenuItem("ストーリーラインを下に追加", Resources.getMiniIconNode("storyline"));
 			addNextStorylineMenu.setOnAction(e -> Story.getCurrent().addNextStoryline());
 			MenuItem upStorylineMenu = new MenuItem("ストーリーラインを上へ移動", Resources.getMiniIconNode("up"));
 			upStorylineMenu.setOnAction(e -> Story.getCurrent().upStoryline());
@@ -655,13 +655,14 @@ public class StorylineDesigner extends HBox implements Initializable {
 				i++;
 			}
 
-			double startX = (SCENE_WIDTH + SCENE_H_MARGIN) * firstSceneIndex - 10;
-			double endX = (SCENE_WIDTH + SCENE_H_MARGIN) * (lastSceneIndex + 1) + 10;
+			double width = SCENE_WIDTH + SCENE_H_MARGIN / 2;
+			double startX = width * firstSceneIndex - 5;
+			double endX = width * (lastSceneIndex + 1) + 10;
 			if (startX < 0) {
 				startX = 0;
-				endX += SCENE_WIDTH + 5;
 			}
 			this.viewLine.setLayoutX(startX);
+			this.viewLine.setStartX(0);
 			this.viewLine.setEndX(endX - startX);
 		}
 
@@ -704,7 +705,7 @@ public class StorylineDesigner extends HBox implements Initializable {
 
 			// シーンノードを作成
 			Rectangle sceneNodeBack = new Rectangle(5, 5, SCENE_WIDTH, STORYLINE_HEIGHT - 10);
-			sceneNodeBack.setFill(Color.BLACK);
+			sceneNodeBack.setFill(Color.GRAY);
 			Rectangle sceneNodeFor = new Rectangle(6, 6, SCENE_WIDTH - 2, STORYLINE_HEIGHT - 12);
 			sceneNodeFor.setFill(Color.WHITE);
 			sceneNodeFor.setCursor(Cursor.HAND);
@@ -727,9 +728,9 @@ public class StorylineDesigner extends HBox implements Initializable {
 			});
 
 			// シーンノードを右クリックしたときのメニューを作成
-			MenuItem addNextSceneMenu = new MenuItem("次のシーンを追加");
+			MenuItem addNextSceneMenu = new MenuItem("次のシーンを追加", Resources.getMiniIconNode("scene"));
 			addNextSceneMenu.setOnAction(e -> Story.getCurrent().addNextScene());
-			MenuItem addBackSceneMenu = new MenuItem("前のシーンを追加");
+			MenuItem addBackSceneMenu = new MenuItem("前のシーンを追加", Resources.getMiniIconNode("scene"));
 			addBackSceneMenu.setOnAction(e -> Story.getCurrent().addBackScene());
 			MenuItem sceneLeftMenu = new MenuItem("前へ移動", Resources.getMiniIconNode("left"));
 			sceneLeftMenu.setOnAction(e -> Story.getCurrent().leftScene());
