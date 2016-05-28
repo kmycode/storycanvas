@@ -19,80 +19,39 @@ package storycanvas.model.entity;
 
 import java.util.List;
 import javafx.beans.property.ListProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import net.kmycode.javafx.SimpleWeakObjectProperty;
 
 /**
- * ストーリーライン
+ * 物語の「編」.
  *
  * @author KMY
  */
-public class Storyline extends Entity {
+public class Part extends Entity {
 
 //<editor-fold defaultstate="collapsed" desc="プロパティ">
 	/**
-	 * 子となるシーン
+	 * 子となるストーリーライン.
 	 */
-	private final ListProperty<Scene> scenes = new ReadOnlyListWrapper<>(FXCollections.observableArrayList());
-	
-	public ObservableList<Scene> getScenes () {
-		return scenes.get();
-	}
-	
-	public void setScenes (ObservableList<Scene> value) {
-		scenes.set(value);
-	}
-	
-	public ListProperty<Scene> scenesProperty () {
-		return scenes;
+	private final ListProperty<Storyline> storylines = new ReadOnlyListWrapper<>(FXCollections.observableArrayList());
+
+	public ObservableList<Storyline> getStorylines () {
+		return storylines.get();
 	}
 
-	/**
-	 * 所属する編.
-	 */
-	private final ObjectProperty<Part> part = new SimpleWeakObjectProperty<>();
-
-	public Part getPart () {
-		return part.get();
+	public void setStorylines (ObservableList<Storyline> value) {
+		storylines.set(value);
 	}
 
-	public void setPart (Part value) {
-		part.set(value);
-	}
-
-	public ObjectProperty partProperty () {
-		return part;
-	}
-
-	/**
-	 * 編を削除.
-	 */
-	public void removePart() {
-		if (this.getPart() != null) {
-			this.getPart().getStorylines().remove(this);
-		}
-		this.setPart(null);
-	}
-
-	/**
-	 * 新しい編を設定
-	 * @param line 新しい編
-	 */
-	public void newPart(Part line) {
-		if (line == null) {
-			this.removePart();
-		} else {
-			this.setPart(line);
-		}
+	public ListProperty<Storyline> storylinesProperty () {
+		return storylines;
 	}
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="コンストラクタ">
-	public Storyline() {
+	public Part() {
 		this.initialize();
 	}
 
@@ -102,24 +61,24 @@ public class Storyline extends Entity {
 		super.initialize();
 
 		// シーンリストと、各シーンにおけるストーリーラインとのリンクを自動的に連動させる
-		this.scenes.addListener((ListChangeListener.Change<? extends Scene> e) -> {
+		this.storylines.addListener((ListChangeListener.Change<? extends Storyline> e) -> {
 
 			while (e.next()) {
 
 				// 追加された項目の元親の子リストから削除して、自分を新しい親に設定する
 				if (e.wasAdded()) {
-					List<? extends Scene> subList = e.getAddedSubList();
-					for(Scene el : subList) {
-						el.removeStoryline();
-						el.newStoryline(this);
+					List<? extends Storyline> subList = e.getAddedSubList();
+					for(Storyline el : subList) {
+						el.removePart();
+						el.newPart(this);
 					}
 				}
 
 				// 削除された項目の親を削除
 				else if (e.wasRemoved()) {
-					List<? extends Scene> subList = e.getRemoved();
-					for(Scene el : subList) {
-						el.removeStoryline();
+					List<? extends Storyline> subList = e.getRemoved();
+					for(Storyline el : subList) {
+						el.removePart();
 					}
 				}
 
@@ -133,7 +92,7 @@ public class Storyline extends Entity {
 
 	@Override
 	protected String getResourceName () {
-		return "storyline";
+		return "part";
 	}
 
 }

@@ -17,8 +17,6 @@
  */
 package storycanvas.model.entityset;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -112,6 +110,7 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 		// 並べ替えた後の新しいインデクス番号を取得
 		index = this.entities.indexOf(target);
 
+		/*
 		// 以降のエンティティの順番をリストアップ
 		Queue<Long> orderStack = new ArrayDeque<>();
 		for (int i = index; i < this.entities.size(); i++) {
@@ -126,9 +125,14 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 		for (int i = index; i < this.entities.size(); i++) {
 			this.entities.get(i).setOrder(orderStack.poll());
 		}
+		*/
+
+		// 以降のエンティティの順番を１つずつずらす
+		long oldTargetOrder = target.getOrder();
+		this.shiftOrder(target);
 
 		// エンティティの順番を設定
-		entity.setOrder(entityOrder);
+		entity.setOrder(oldTargetOrder);
 
 		// エンティティを挿入
 		// ここまでに一通りやっておくことで、リスナーに出来る限り正しい順番番号を渡す

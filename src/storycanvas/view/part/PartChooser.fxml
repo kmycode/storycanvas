@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<fx:root xmlns:fx="http://javafx.com/fxml/1" type="javafx.scene.layout.HBox">
+	<stylesheets>
+		<URL value="@/storycanvas/view/default.css"/>
+	</stylesheets>
+	<children>
+		<ImageView fitWidth="24" fitHeight="24">
+			<image>
+				<Image url="@/storycanvas/resource/icon/part.png" />
+			</image>
+		</ImageView>
+		<ComboBox fx:id="partChooser" HBox.hgrow="ALWAYS" />
+	</children>
+</fx:root>

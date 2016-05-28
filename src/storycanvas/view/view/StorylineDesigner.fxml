@@ -7,25 +7,30 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root xmlns:fx="http://javafx.com/fxml/1" type="javafx.scene.layout.HBox">
+<fx:root xmlns:fx="http://javafx.com/fxml/1" type="javafx.scene.layout.VBox">
 	<stylesheets>
 		<URL value="@/storycanvas/view/default.css"/>
 	</stylesheets>
 	<children>
-		<ScrollPane fx:id="storylineTitlePaneScroll" minWidth="200.0" maxWidth="200.0" hbarPolicy="ALWAYS" vbarPolicy="NEVER">
-			<content>
-				<VBox fx:id="storylineTitlePane" prefWidth="198.0">
-					<children>
-						<Button fx:id="addFirstStorylineButton" text="最初のストーリーラインを追加" prefHeight="100.0" prefWidth="198.0"  onAction="#addFirstStoryline" />
-					</children>
-				</VBox>
-			</content>
-		</ScrollPane>
-		<ScrollPane fx:id="mainPaneScroll" HBox.hgrow="ALWAYS" hbarPolicy="ALWAYS" vbarPolicy="ALWAYS">
-			<content>
-				<VBox fx:id="mainPane">
-				</VBox>
-			</content>
-		</ScrollPane>
+		<storycanvas.view.part.PartChooser />
+		<HBox VBox.vgrow="ALWAYS">
+			<children>
+				<ScrollPane fx:id="storylineTitlePaneScroll" minWidth="200.0" maxWidth="200.0" hbarPolicy="ALWAYS" vbarPolicy="NEVER">
+					<content>
+						<VBox fx:id="storylineTitlePane" prefWidth="198.0">
+							<children>
+								<Button fx:id="addFirstStorylineButton" text="最初のストーリーラインを追加" prefHeight="100.0" prefWidth="198.0"  onAction="#addFirstStoryline" />
+							</children>
+						</VBox>
+					</content>
+				</ScrollPane>
+				<ScrollPane fx:id="mainPaneScroll" HBox.hgrow="ALWAYS" hbarPolicy="ALWAYS" vbarPolicy="ALWAYS">
+					<content>
+						<VBox fx:id="mainPane">
+						</VBox>
+					</content>
+				</ScrollPane>
+			</children>
+		</HBox>
 	</children>
 </fx:root>

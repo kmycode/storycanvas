@@ -40,6 +40,7 @@ import storycanvas.model.entity.Place;
 import storycanvas.model.entity.Scene;
 import storycanvas.model.entity.Sex;
 import storycanvas.model.entity.Storyline;
+import storycanvas.model.entityset.EntityFilteredListModel;
 import storycanvas.model.entityset.EntityListModel;
 import storycanvas.model.entityset.EntityTreeModel;
 
@@ -174,7 +175,7 @@ public class Story {
 	/**
 	 * ストーリーライン一覧.
 	 */
-	private final EntityListModel<Storyline> storylines = new EntityListModel<>();
+	private final EntityFilteredListModel<Storyline> storylines = new EntityFilteredListModel<>();
 
 	private final ObjectProperty<Scene> selectedScene = new SimpleObjectProperty<>();
 //</editor-fold>

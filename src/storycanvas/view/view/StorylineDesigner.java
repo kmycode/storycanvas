@@ -44,7 +44,6 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -64,7 +63,7 @@ import storycanvas.resource.Resources;
  *
  * @author KMY
  */
-public class StorylineDesigner extends HBox implements Initializable {
+public class StorylineDesigner extends VBox implements Initializable {
 
 	/**
 	 * ストーリーライン１つ分を表示する上での高さ.
