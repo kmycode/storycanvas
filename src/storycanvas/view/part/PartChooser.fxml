@@ -13,11 +13,15 @@
 		<URL value="@/storycanvas/view/default.css"/>
 	</stylesheets>
 	<children>
-		<ImageView fitWidth="24" fitHeight="24">
-			<image>
-				<Image url="@/storycanvas/resource/icon/part.png" />
-			</image>
+		<ImageView fx:id="partIcon" fitWidth="24" fitHeight="24">
 		</ImageView>
 		<ComboBox fx:id="partChooser" HBox.hgrow="ALWAYS" />
+		<Button onAction="#resetPart" >
+			<graphic>
+				<ImageView fitWidth="16" fitHeight="16">
+					<Image url="@/storycanvas/resource/icon/cancel.png" />
+				</ImageView>
+			</graphic>
+		</Button>
 	</children>
 </fx:root>

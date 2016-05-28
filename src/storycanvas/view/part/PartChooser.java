@@ -20,9 +20,17 @@ package storycanvas.view.part;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import net.kmycode.javafx.Messenger;
+import storycanvas.message.entity.list.init.MainPartTableInitializeMessage;
+import storycanvas.model.entity.Part;
 
 /**
  * FXML Controller class
@@ -30,6 +38,12 @@ import javafx.scene.layout.HBox;
  * @author KMY
  */
 public class PartChooser extends HBox implements Initializable {
+
+	@FXML
+	private ComboBox<Part> partChooser;
+
+	@FXML
+	private ImageView partIcon;
 
 //<editor-fold defaultstate="collapsed" desc="コンストラクタ">
 	public PartChooser() {
@@ -42,8 +56,47 @@ public class PartChooser extends HBox implements Initializable {
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
+
+		this.partChooser.setCellFactory((e) -> new EntityListCell());
+
+		this.partChooser.getSelectionModel().selectedItemProperty().addListener(e -> {
+			Part selectedItem = ((ReadOnlyObjectProperty<Part>)e).get();
+			if (selectedItem != null) {
+				this.partIcon.setImage(selectedItem.getIcon());
+			} else {
+				this.partIcon.setImage(null);
+			}
+		});
+	}
+
+	/**
+	 * メインのビューに設定する.
+	 */
+	public void toMain() {
+
+		// 初期化メッセージを受け取る
+		Messenger.getInstance().apply(MainPartTableInitializeMessage.class, this, (m) -> {
+
+			// バインド
+			this.partChooser.setItems(m.getList());
+			m.selectedViewItemProperty().bind(this.partChooser.getSelectionModel().selectedItemProperty());
+		});
+
 	}
 //</editor-fold>
+
+	/**
+	 * 現在選択されている編を取得します
+	 * @return 選択されている編
+	 */
+	public Part getSelectedPart() {
+		return this.partChooser.getSelectionModel().getSelectedItem();
+	}
+
+	@FXML
+	private void resetPart(ActionEvent e) {
+		this.partChooser.getSelectionModel().select(null);
+	}
 
 	/**
 	 * Initializes the controller class.

@@ -24,6 +24,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TabPane;
 import storycanvas.model.story.Story;
 import storycanvas.view.part.EntityListButtonBox;
+import storycanvas.view.part.table.PartTableViewController;
 import storycanvas.view.part.table.PersonTableViewController;
 import storycanvas.view.part.table.PlaceTableViewController;
 import storycanvas.view.view.StorylineDesigner;
@@ -40,6 +41,12 @@ public class StoryMainNodeController implements Initializable {
 
 	@FXML
 	private StorylineDesigner mainStorylineDesigner;
+
+	@FXML
+	private PartTableViewController mainPartTableController;
+
+	@FXML
+	private EntityListButtonBox partButtonBox;
 
 	@FXML
 	private PersonTableViewController mainPersonTableController;
@@ -59,16 +66,24 @@ public class StoryMainNodeController implements Initializable {
 	@Override
 	public void initialize (URL url, ResourceBundle rb) {
 		// メインのビューを設定
+		this.mainPartTableController.toMain();
 		this.mainPersonTableController.toMain();
 		this.mainPlaceTableController.toMain();
 		this.mainStorylineDesigner.toMain();
 
 		// タブ切り替え時、各タブで選択されているエンティティをクリア
 		this.mainTabPane.getSelectionModel().selectedItemProperty().addListener(e -> {
+			this.mainPartTableController.unselect();
 			this.mainPersonTableController.unselect();
 			this.mainPlaceTableController.unselect();
 			this.mainStorylineDesigner.unselect();
 		});
+
+		// 編一覧のButtonBox
+		this.partButtonBox.setOnNewAction(e -> Story.getCurrent().addPart());
+		this.partButtonBox.setOnDeleteAction(e -> Story.getCurrent().deletePart());
+		this.partButtonBox.setOnUpAction(e -> Story.getCurrent().upPart());
+		this.partButtonBox.setOnDownAction(e -> Story.getCurrent().downPart());
 
 		// 人物一覧のButtonBox
 		this.personButtonBox.setOnNewAction(e -> Story.getCurrent().addPerson());

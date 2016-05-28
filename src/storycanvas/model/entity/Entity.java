@@ -191,6 +191,15 @@ public abstract class Entity implements Comparable<Entity> {
 		this.setOrder(other.getOrder());
 		other.setOrder(tmp);
 	}
+
+	/**
+	 * エンティティの文字列を入手します
+	 * @return 文字列化されたエンティティ
+	 */
+	@Override
+	public String toString() {
+		return this.getName();
+	}
 //</editor-fold>
 
 }

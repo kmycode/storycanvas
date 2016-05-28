@@ -26,6 +26,23 @@
 				</VBox>
 			</content>
 		</Tab>
+		<Tab fx:id="partTab" text="">
+			<graphic>
+				<ImageView pickOnBounds="true" preserveRatio="true" fitWidth="32" fitHeight="32">
+					<image>
+						<Image url="@/storycanvas/resource/icon/part_large.png" />
+					</image>
+				</ImageView>
+			</graphic>
+			<content>
+				<VBox minHeight="0.0" minWidth="0.0">
+					<children>
+						<fx:include fx:id="mainPartTable" source="/storycanvas/view/part/table/PartTableView.fxml"/>
+						<storycanvas.view.part.EntityListButtonBox fx:id="partButtonBox" />
+					</children>
+				</VBox>
+			</content>
+		</Tab>
 		<Tab fx:id="personTab" text="">
 			<graphic>
 				<ImageView pickOnBounds="true" preserveRatio="true" fitWidth="32" fitHeight="32">

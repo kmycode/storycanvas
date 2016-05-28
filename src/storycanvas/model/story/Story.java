@@ -23,18 +23,22 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.paint.Color;
 import net.kmycode.javafx.Messenger;
 import storycanvas.message.entity.edit.EmptyEditMessage;
+import storycanvas.message.entity.edit.PartEditMessage;
 import storycanvas.message.entity.edit.PersonEditMessage;
 import storycanvas.message.entity.edit.PlaceEditMessage;
 import storycanvas.message.entity.edit.SceneEditMessage;
 import storycanvas.message.entity.edit.StorylineEditMessage;
 import storycanvas.message.entity.list.SceneOrderChangeMessage;
+import storycanvas.message.entity.list.init.MainPartTableInitializeMessage;
 import storycanvas.message.entity.list.init.MainPersonTableInitializeMessage;
 import storycanvas.message.entity.list.init.MainPlaceTableInitializeMessage;
 import storycanvas.message.entity.list.init.MainStorylineViewInitializeMessage;
+import storycanvas.message.entity.list.select.MainPartTableSelectItemMessage;
 import storycanvas.message.entity.list.select.MainPersonTableSelectItemMessage;
 import storycanvas.message.entity.list.select.MainPlaceTableSelectItemMessage;
 import storycanvas.model.date.StoryCalendar;
 import storycanvas.model.date.StoryDate;
+import storycanvas.model.entity.Part;
 import storycanvas.model.entity.Person;
 import storycanvas.model.entity.Place;
 import storycanvas.model.entity.Scene;
@@ -93,6 +97,15 @@ public class Story {
 				Messenger.getInstance().send(new EmptyEditMessage());
 			}
 		});
+
+		// 画面で編が選択された時
+		this.parts.selectedEntityProperty().addListener(e -> {
+			if (this.parts.getSelectedEntity() != null) {
+				Messenger.getInstance().send(new PartEditMessage(this.parts.getSelectedEntity()));
+			} else {
+				Messenger.getInstance().send(new EmptyEditMessage());
+			}
+		});
 		
 		// TODO: テスト用データ
 		Person p1 = new Person();
@@ -107,9 +120,14 @@ public class Story {
 		l1.setName("学校");
 		this.places.add(l1);
 
+		Part t1 = new Part();
+		t1.setName("死をもって償え編");
+		this.parts.add(t1);
+
 		Storyline s1 = new Storyline();
 		s1.setName("本筋");
 		s1.setColor(Color.GREEN);
+		t1.getStorylines().add(s1);
 		this.storylines.add(s1);
 
 		Scene c1 = new Scene();
@@ -119,11 +137,14 @@ public class Story {
 		Storyline s2 = new Storyline();
 		s2.setName("別の場面");
 		s2.setColor(Color.BLUE);
+		t1.getStorylines().add(s2);
 		this.storylines.add(s2);
 
 		Scene c2 = new Scene();
 		c2.setName("女の子たちが殺しあう");
 		s2.getScenes().add(c2);
+		
+		this.storylines.filtering(e -> false);
 
 		// TODO: 日付計算テスト
 		/*
@@ -178,6 +199,14 @@ public class Story {
 	private final EntityFilteredListModel<Storyline> storylines = new EntityFilteredListModel<>();
 
 	private final ObjectProperty<Scene> selectedScene = new SimpleObjectProperty<>();
+
+	/**
+	 * 編一覧.
+	 */
+	private final EntityListModel<Part> parts = new EntityListModel<>();
+
+	// ストーリーラインデザイナ、その他、編の変更によって画面表示が大きく変わるところ用
+	private final ObjectProperty<Part> viewSelectedPart = new SimpleObjectProperty<>();
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="メソッド">
@@ -189,6 +218,10 @@ public class Story {
 		Messenger.getInstance().send(new MainPersonTableInitializeMessage(this.persons.getEntities(), this.persons.selectedEntityProperty()));
 		Messenger.getInstance().send(new MainPlaceTableInitializeMessage(this.places.getRootTreeItem(), this.places.selectedTreeItemEntityProperty()));
 		Messenger.getInstance().send(new MainStorylineViewInitializeMessage(this.storylines.getEntities(), this.storylines.selectedEntityProperty(), this.selectedScene));
+		Messenger.getInstance().send(new MainPartTableInitializeMessage(this.parts.getEntities(), this.parts.selectedEntityProperty(), this.viewSelectedPart));
+
+		// 表示する編が変わったら、それに対応したストーリーラインを表示させる
+		this.viewSelectedPart.addListener(e -> this.openPart());
 	}
 //</editor-fold>
 
@@ -300,40 +333,53 @@ public class Story {
 	}
 //</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="ストーリーラインの操作">
 	/**
 	 * ストーリーラインの末尾への追加.
 	 */
 	public void addStoryline() {
-		Storyline line = this.createStoryline();
-		this.storylines.add(line);
-		Messenger.getInstance().send(new StorylineEditMessage(line));
+		if (this.viewSelectedPart.get() != null) {
+			Storyline line = this.createStoryline();
+			this.viewSelectedPart.get().getStorylines().add(line);
+			this.storylines.add(line);
+			Messenger.getInstance().send(new StorylineEditMessage(line));
+		}
 	}
 
 	/**
 	 * 現在選択されているストーリーラインを削除.
 	 */
 	public void deleteStoryline() {
-		Messenger.getInstance().send(new EmptyEditMessage());
-		this.storylines.delete();
+		if (this.viewSelectedPart.get() != null) {
+			Messenger.getInstance().send(new EmptyEditMessage());
+			this.viewSelectedPart.get().getStorylines().remove(this.storylines.getSelectedEntity());
+			this.storylines.delete();
+		}
 	}
 
 	/**
 	 * ストーリーラインを、現在選択されているものの前に追加.
 	 */
 	public void addBackStoryline() {
-		Storyline line = this.createStoryline();
-		this.storylines.insert(line);
-		Messenger.getInstance().send(new StorylineEditMessage(line));
+		if (this.viewSelectedPart.get() != null) {
+			Storyline line = this.createStoryline();
+			this.viewSelectedPart.get().getStorylines().add(line);
+			this.storylines.insert(line);
+			Messenger.getInstance().send(new StorylineEditMessage(line));
+		}
 	}
 
 	/**
 	 * ストーリーラインを、現在選択されているものの次に追加.
 	 */
 	public void addNextStoryline() {
-		Storyline line = this.createStoryline();
-		this.storylines.insert(line);
-		this.storylines.down(line);
-		Messenger.getInstance().send(new StorylineEditMessage(line));
+		if (this.viewSelectedPart.get() != null) {
+			Storyline line = this.createStoryline();
+			this.viewSelectedPart.get().getStorylines().add(line);
+			this.storylines.insert(line);
+			this.storylines.down(line);
+			Messenger.getInstance().send(new StorylineEditMessage(line));
+		}
 	}
 
 	/**
@@ -375,6 +421,7 @@ public class Story {
 		line.setColor(Color.GRAY);
 		return line;
 	}
+//</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="シーンの操作">
 	/**
@@ -579,6 +626,61 @@ public class Story {
 		}
 
 		return ret;
+	}
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="編の操作">
+	/**
+	 * 編を追加.
+	 */
+	public void addPart() {
+		Part entity = new Part();
+		this.parts.insert(entity);
+		Messenger.getInstance().send(new MainPartTableSelectItemMessage(entity));
+	}
+
+	/**
+	 * 選択された編を削除.
+	 */
+	public void deletePart() {
+		Messenger.getInstance().send(new EmptyEditMessage());
+		this.parts.delete();
+	}
+
+	/**
+	 * 選択された編を上へ移動.
+	 */
+	public void upPart() {
+		Part entity = this.parts.getSelectedEntity();
+		this.parts.up();
+		Messenger.getInstance().send(new MainPartTableSelectItemMessage(entity));
+	}
+
+	/**
+	 * 選択された編を下へ移動.
+	 */
+	public void downPart() {
+		Part entity = this.parts.getSelectedEntity();
+		this.parts.down();
+		Messenger.getInstance().send(new MainPartTableSelectItemMessage(entity));
+	}
+
+	/**
+	 * 選択された編に関連する画面を開くようにする.
+	 */
+	public void openPart() {
+		if (this.viewSelectedPart.get() != null) {
+			this.storylines.filtering(e -> {
+				Storyline line = (Storyline)e;
+				if (line.getPart() != null) {
+					return line.getPart().getId() == this.viewSelectedPart.get().getId();
+				} else {
+					return false;
+				}
+			});
+		} else {
+			this.storylines.filtering(e -> false);
+		}
 	}
 //</editor-fold>
 }

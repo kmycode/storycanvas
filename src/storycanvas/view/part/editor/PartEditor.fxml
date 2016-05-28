@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml/1" id="AnchorPane" vgap="10" hgap="10" prefWidth="295.0" 
+			styleClass="mainFxmlClass" fx:controller="storycanvas.view.part.editor.PartEditorController" fx:id="root" visible="false">
+	<stylesheets>
+		<URL value="@/storycanvas/view/default.css"/>
+	</stylesheets>
+	<children>
+		<Label text="名前" GridPane.rowIndex="1" GridPane.columnIndex="1" minWidth="60.0" />
+		<TextField fx:id="nameInput" text="" GridPane.rowIndex="1" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" />
+		<Label text="" GridPane.rowIndex="1" GridPane.columnIndex="3" prefWidth="1.0" /><!-- dummy -->
+	</children>
+</GridPane>

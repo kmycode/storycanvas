@@ -57,6 +57,7 @@ import storycanvas.model.entity.Scene;
 import storycanvas.model.entity.Storyline;
 import storycanvas.model.story.Story;
 import storycanvas.resource.Resources;
+import storycanvas.view.part.PartChooser;
 
 /**
  * ストーリーラインのデザイナ
@@ -75,6 +76,9 @@ public class StorylineDesigner extends VBox implements Initializable {
 	 */
 	private static final double SCENE_WIDTH = 85.0;
 	private static final double SCENE_H_MARGIN = 10.0;
+
+	@FXML
+	private PartChooser partChooser;
 
 	@FXML
 	private Button addFirstStorylineButton;
@@ -273,6 +277,9 @@ public class StorylineDesigner extends VBox implements Initializable {
 		// このメッセージは、今回のプログラミングの方針に反するが、特例的に存在する。
 		// 詳しくは SceneOrderChangeMessage.java を参照のこと
 		Messenger.getInstance().apply(SceneOrderChangeMessage.class, this, m -> FXCollections.sort(this.scenes));
+
+		// 編の選択肢を設定する
+		this.partChooser.toMain();
 	}
 
 	/**
@@ -424,7 +431,8 @@ public class StorylineDesigner extends VBox implements Initializable {
 			// 最初のストーリーラインを追加するボタン表示の有無
 			if (e.getList().size() != 0) {
 				this.storylineTitlePane.getChildren().remove(this.addFirstStorylineButton);
-			} else if (!this.storylineTitlePane.getChildren().contains(this.addFirstStorylineButton)) {
+			} else if (!this.storylineTitlePane.getChildren().contains(this.addFirstStorylineButton) &&
+					this.partChooser.getSelectedPart() != null) {
 				this.storylineTitlePane.getChildren().add(this.addFirstStorylineButton);
 			}
 		});
