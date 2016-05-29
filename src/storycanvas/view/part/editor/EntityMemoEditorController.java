@@ -19,6 +19,7 @@ package storycanvas.view.part.editor;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.property.DoubleProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
@@ -40,7 +41,17 @@ public class EntityMemoEditorController implements Initializable {
 	@FXML
 	private TextArea memoInput;
 
-	
+	public void setHeight(double height) {
+		this.memoInput.setPrefHeight(height);
+	}
+
+	public DoubleProperty prefHeightProperty() {
+		return this.memoInput.prefHeightProperty();
+	}
+
+	public void setWidth(double width) {
+		this.memoInput.setPrefWidth(width);
+	}
 
 	/**
 	 * 編集

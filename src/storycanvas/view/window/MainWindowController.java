@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import net.kmycode.javafx.Messenger;
+import org.dockfx.DockNode;
 import storycanvas.StoryCanvas;
 import storycanvas.message.dialog.file.ShowDirectoryPickerMessage;
 import storycanvas.message.dialog.file.ShowOpenFilePickerMessage;
@@ -31,10 +32,15 @@ public class MainWindowController implements Initializable {
 	@FXML
 	private EntityEditorNode entityEditor;
 
+	@FXML
+	private DockNode entityEditorDockNode;
+
 	@Override
 	public void initialize (URL url, ResourceBundle rb) {
 		// 自分がメインのエディタであることを教える
 		this.entityEditor.toMain();
+
+		//this.entityEditorDockNode.setMaxWidth(300.0);
 
 		// ダイアログ表示のメッセージを受け取る
 		Messenger.getInstance().apply(ShowOpenFilePickerMessage.class, this, m -> {

@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import org.dockfx.*?>
 
-<VBox id="MainWindow" prefHeight="600" prefWidth="1100" xmlns:fx="http://javafx.com/fxml/1" fx:controller="storycanvas.view.window.MainWindowController">
+<VBox id="MainWindow" prefHeight="710" prefWidth="1100" xmlns:fx="http://javafx.com/fxml/1" fx:controller="storycanvas.view.window.MainWindowController">
 	<stylesheets>
 		<URL value="@/storycanvas/view/default.css"/>
 	</stylesheets>
@@ -23,7 +23,7 @@
 						<fx:include source="/storycanvas/view/node/StoryMainNode.fxml"/>
 					</content>
 				</DockNode>
-				<DockNode title="編集" prefWidth="300" dockPos="RIGHT" maxWidth="300.0" >
+				<DockNode title="編集" prefWidth="300" dockPos="RIGHT" maxWidth="300.0" fx:id="entityEditorDockNode">
 					<content>
 						<storycanvas.view.node.EntityEditorNode fx:id="entityEditor" />
 					</content>

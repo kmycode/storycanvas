@@ -9,13 +9,13 @@
 <?import javafx.scene.image.*?>
 
 <fx:root type="javafx.scene.control.ScrollPane" xmlns:fx="http://javafx.com/fxml"
-		 prefWidth="300.0" maxWidth="300.0" minWidth="300.0"
+		 prefWidth="300.0" minWidth="300.0"
 		 styleClass="mainFxmlClass">
 	<stylesheets>
 		<URL value="@/storycanvas/view/default.css"/>
 	</stylesheets>
 	<content>
-		<VBox prefWidth="295.0">
+		<VBox>
 			<children>
 				<HBox spacing="5.0">
 					<children>

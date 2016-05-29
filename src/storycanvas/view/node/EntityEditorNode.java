@@ -113,6 +113,22 @@ public class EntityEditorNode extends ScrollPane implements Initializable {
 
 		// デフォルトで表示されるタブ
 		this.editorTabPane.getSelectionModel().select(this.informationTab);
+
+		// 画面サイズ変更時　　　　　　　　　　　　　　　　　ScrollPane不便
+		this.widthProperty().addListener(e -> {
+			// タブの横幅を画面サイズにあわせる
+			this.editorTabPane.setPrefWidth(this.getWidth() - 10);
+
+			// メモの横幅
+			this.entityMemoEditorController.setWidth(this.getWidth() - 30);
+		});
+		this.heightProperty().addListener(e -> {
+			// タブの横幅を画面サイズにあわせる
+			this.editorTabPane.setPrefHeight(this.getHeight() - 100);
+
+			// メモの縦幅
+			this.entityMemoEditorController.setHeight(this.getHeight() - 140);
+		});
 	}
 
 	/**

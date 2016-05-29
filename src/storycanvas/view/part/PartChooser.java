@@ -67,6 +67,10 @@ public class PartChooser extends HBox implements Initializable {
 				this.partIcon.setImage(null);
 			}
 		});
+
+		// ComboBoxフリーズバグを避けるためのコード
+		// 参考：http://stackoverflow.com/questions/31786980/javafx-windows-10-combobox-error
+		this.partChooser.setOnMousePressed(e -> this.partChooser.requestFocus());
 	}
 
 	/**
