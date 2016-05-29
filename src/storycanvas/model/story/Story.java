@@ -17,6 +17,12 @@
  */
 package storycanvas.model.story;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.TreeItem;
@@ -106,7 +112,7 @@ public class Story {
 				Messenger.getInstance().send(new EmptyEditMessage());
 			}
 		});
-		
+
 		// TODO: テスト用データ
 		Person p1 = new Person();
 		p1.setLastName("中村");
@@ -114,6 +120,7 @@ public class Story {
 		StoryDate p1d = StoryCalendar.ANNO_DOMINI.date(2004, 11, 30);
 		p1.setBirthDay(p1d);
 		p1.setSex(Sex.FEMALE);
+		p1.setColor(Color.PINK);
 		this.persons.add(p1);
 
 		Place l1 = new Place();
@@ -145,6 +152,10 @@ public class Story {
 		s2.getScenes().add(c2);
 		
 		this.storylines.filtering(e -> false);
+
+		// TODO: シリアライズテスト
+		this.save("testdata");
+		this.load("testdata");
 
 		// TODO: 日付計算テスト
 		/*
@@ -222,6 +233,78 @@ public class Story {
 
 		// 表示する編が変わったら、それに対応したストーリーラインを表示させる
 		this.viewSelectedPart.addListener(e -> this.openPart());
+	}
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="ファイル入出力メソッド">
+	public void load(String folderName) {
+		try {
+			this.readObject(folderName);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} catch (ClassNotFoundException ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	public void save(String folderName) {
+		try {
+			this.writeObject(folderName);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	/**
+	 * シリアライズを行う
+	 * @param folderName フォルダ名
+	 * @throws IOException ストリームの読込に失敗した時スロー
+	 */
+	public void writeObject(String folderName) throws IOException {
+
+		File dir = new File(folderName);
+		if (!dir.isDirectory()) {
+			// フォルダ作成
+			if (!dir.mkdir()) {
+				throw new IOException("make folder failed!");
+			}
+		}
+
+		ObjectOutputStream stream;
+
+		// エンティティの書き込み
+		stream = new ObjectOutputStream(new FileOutputStream(folderName + "/" + "person.scb"));
+		this.persons.writeObject(stream);
+		stream.close();
+		stream = new ObjectOutputStream(new FileOutputStream(folderName + "/" + "place.scb"));
+		this.places.writeObject(stream);
+		stream.close();
+	}
+
+	/**
+	 * デシリアライズを行う
+	 * @param folderName フォルダ名
+	 * @throws IOException ストリームの読込に失敗した時スロー
+	 * @throws ClassNotFoundException 該当するバージョンのクラスが見つからなかった時にスロー
+	 */
+	private void readObject(String folderName) throws IOException, ClassNotFoundException {
+
+		File dir = new File(folderName);
+		if (!dir.isDirectory()) {
+			throw new IOException("folder is not exist!");
+		}
+
+		ObjectInputStream stream;
+
+		// エンティティの読み込み
+		stream = new ObjectInputStream(new FileInputStream(folderName + "/" + "person.scb"));
+		this.persons.clear();
+		this.persons.readObject(stream);
+		stream.close();
+		stream = new ObjectInputStream(new FileInputStream(folderName + "/" + "place.scb"));
+		this.places.clear();
+		this.places.readObject(stream);
+		stream.close();
 	}
 //</editor-fold>
 

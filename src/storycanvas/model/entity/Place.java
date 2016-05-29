@@ -17,11 +17,16 @@
  */
 package storycanvas.model.entity;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 /**
  * 場所を表すクラス
  * @author KMY
  */
-public class Place extends TreeEntity {
+public class Place extends TreeEntity implements Serializable {
 
 	public Place() {
 		this.initialize();
@@ -31,6 +36,53 @@ public class Place extends TreeEntity {
 	protected final void initialize() {
 		super.initialize();
 	}
+
+//<editor-fold defaultstate="collapsed" desc="シリアライズ">
+	private static final long serialVersionUID = 1L;
+	private static final long serialInstanceVersionUID = 0006_00000000001L;
+
+	/**
+	 * シリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームへの出力に失敗した時スロー
+	 */
+	private void writeObject(ObjectOutputStream stream) throws IOException {
+
+		this.writeBaseObject(stream);
+
+		// 固有UID書き込み
+		stream.writeLong(serialInstanceVersionUID);
+
+		// プロパティ書き込み
+
+		// 子エンティティの書き込み
+		super.writeChildren(stream);
+	}
+
+	/**
+	 * デシリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームの読込に失敗した時スロー
+	 * @throws ClassNotFoundException 該当するバージョンのクラスが見つからなかった時にスロー
+	 */
+	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+
+		this.readBaseObject(stream);
+
+		long uid = stream.readLong();
+		if (uid == serialInstanceVersionUID) {
+
+			// コンストラクタ
+			this.initialize();
+
+			// プロパティ読込
+
+			// 子エンティティ読み込み
+			super.readChildren(stream);
+		}
+
+	}
+//</editor-fold>
 
 	@Override
 	protected String getResourceName () {

@@ -17,6 +17,10 @@
  */
 package storycanvas.model.entityset;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -64,6 +68,39 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 	@Override
 	public ObjectProperty<E> selectedEntityProperty () {
 		return selectedEntity;
+	}
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="ファイル入出力メソッド">
+	/**
+	 * シリアライズを行う
+	 * @throws IOException ストリームの読込に失敗した時スロー
+	 */
+	public void writeObject(ObjectOutputStream stream) throws IOException {
+
+		// エンティティの書き込み
+		stream.writeInt(this.entities.size());
+		for (E entity : this.entities) {
+			stream.writeObject(entity);
+		}
+	}
+
+	/**
+	 * デシリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームの読込に失敗した時スロー
+	 * @throws ClassNotFoundException 該当するバージョンのクラスが見つからなかった時にスロー
+	 */
+	public void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+
+		// エンティティの取り込み
+		// わざわざ新しいリストを作ることで、リスナの呼び出し回数を節約。GUI描画処理が入れられたりするので
+		int size = stream.readInt();
+		ArrayList<E> addList = new ArrayList<>();
+		for (int i = 0; i < size; i++) {
+			addList.add((E)stream.readObject());
+		}
+		this.entities.addAll(addList);
 	}
 //</editor-fold>
 
@@ -146,6 +183,14 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 	@Override
 	public void delete(E entity) {
 		this.entities.remove(entity);
+	}
+
+	/**
+	 * エンティティを全削除.
+	 */
+	@Override
+	public void clear() {
+		this.entities.clear();
 	}
 	
 	/**

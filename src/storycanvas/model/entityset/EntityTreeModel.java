@@ -17,6 +17,9 @@
  */
 package storycanvas.model.entityset;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import javafx.beans.property.ObjectProperty;
@@ -71,6 +74,31 @@ public class EntityTreeModel<E extends TreeEntity> implements EntitySetModel<E> 
 		this.selectedTreeItemEntity.addListener(e -> this.selectedEntity.set(
 				this.selectedTreeItemEntity.get() != null ? this.selectedTreeItemEntity.get().getValue() : null
 		));
+	}
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="ファイル入出力メソッド">
+	/**
+	 * シリアライズを行う
+	 * @throws IOException ストリームの読込に失敗した時スロー
+	 */
+	public void writeObject(ObjectOutputStream stream) throws IOException {
+
+		// エンティティの書き込み
+		stream.writeObject(this.rootEntity);
+	}
+
+	/**
+	 * デシリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームの読込に失敗した時スロー
+	 * @throws ClassNotFoundException 該当するバージョンのクラスが見つからなかった時にスロー
+	 */
+	public void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+
+		// エンティティの取り込み
+		E newRoot = (E)stream.readObject();
+		this.rootEntity.getChildren().addAll(newRoot.getChildren());
 	}
 //</editor-fold>
 
@@ -152,6 +180,14 @@ public class EntityTreeModel<E extends TreeEntity> implements EntitySetModel<E> 
 		if (entity.getParent() != null) {
 			entity.getParent().getChildren().remove(entity);
 		}
+	}
+
+	/**
+	 * エンティティを全削除.
+	 */
+	@Override
+	public void clear() {
+		this.rootEntity.getChildren().clear();
 	}
 
 	/**

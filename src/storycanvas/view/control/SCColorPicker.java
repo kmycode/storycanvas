@@ -74,7 +74,7 @@ public class SCColorPicker extends HBox implements Initializable {
 	 */
 	@FXML
 	private void deleteColorAction(ActionEvent e) {
-		this.setValue(null);
+		this.setValue(Color.TRANSPARENT);
 	}
 
 	/**

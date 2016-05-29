@@ -17,6 +17,10 @@
  */
 package storycanvas.model.entity;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -28,13 +32,13 @@ import storycanvas.model.date.StoryDate;
  *
  * @author KMY
  */
-public class Person extends EditableEntity {
+public class Person extends EditableEntity implements Serializable {
 	
 //<editor-fold defaultstate="collapsed" desc="プロパティ">
 	/**
 	 * 姓.
 	 */
-	private final StringProperty lastName = new SimpleStringProperty();
+	private transient StringProperty lastName = new SimpleStringProperty("");
 	
 	public String getLastName () {
 		return lastName.get();
@@ -51,7 +55,7 @@ public class Person extends EditableEntity {
 	/**
 	 * 名.
 	 */
-	private final StringProperty firstName = new SimpleStringProperty();
+	private transient StringProperty firstName = new SimpleStringProperty("");
 	
 	public String getFirstName () {
 		return firstName.get();
@@ -68,7 +72,7 @@ public class Person extends EditableEntity {
 	/**
 	 * 性別.
 	 */
-	private final ObjectProperty<Sex> sex = new SimpleObjectProperty<>();
+	private transient ObjectProperty<Sex> sex = new SimpleObjectProperty<>();
 
 	public Sex getSex () {
 		return sex.get();
@@ -85,7 +89,7 @@ public class Person extends EditableEntity {
 	/**
 	 * 誕生日.
 	 */
-	private final ObjectProperty<StoryDate> birthDay = new SimpleObjectProperty<>();
+	private transient ObjectProperty<StoryDate> birthDay = new SimpleObjectProperty<>();
 
 	public StoryDate getBirthDay () {
 		return birthDay.get();
@@ -102,7 +106,7 @@ public class Person extends EditableEntity {
 	/**
 	 * 死亡日.
 	 */
-	private final ObjectProperty<StoryDate> deathDay = new SimpleObjectProperty<>();
+	private transient ObjectProperty<StoryDate> deathDay = new SimpleObjectProperty<>();
 
 	public StoryDate getDeathDay () {
 		return deathDay.get();
@@ -116,6 +120,62 @@ public class Person extends EditableEntity {
 		return deathDay;
 	}
 //</editor-fold>
+	
+//<editor-fold defaultstate="collapsed" desc="シリアライズ">
+	private static final long serialVersionUID = 1L;
+	private static final long serialInstanceVersionUID = 0001_00000000001L;
+
+	/**
+	 * シリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームへの出力に失敗した時スロー
+	 */
+	private void writeObject(ObjectOutputStream stream) throws IOException {
+
+		this.writeBaseObject(stream);
+
+		// 固有UID書き込み
+		stream.writeLong(serialInstanceVersionUID);
+
+		// プロパティ書き込み
+		stream.writeUTF(this.getFirstName());
+		stream.writeUTF(this.getLastName());
+		stream.writeObject(this.getBirthDay());
+		stream.writeObject(this.getDeathDay());
+
+		// 性
+		stream.writeLong(this.getSex().getId());
+	}
+
+	/**
+	 * デシリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームの読込に失敗した時スロー
+	 * @throws ClassNotFoundException 該当するバージョンのクラスが見つからなかった時にスロー
+	 */
+	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+
+		this.readBaseObject(stream);
+
+		long uid = stream.readLong();
+		if (uid == serialInstanceVersionUID) {
+
+			// コンストラクタ呼び出し
+			this.initialize();
+
+			// プロパティ読込
+			this.setFirstName(stream.readUTF());
+			this.setLastName(stream.readUTF());
+			this.setBirthDay((StoryDate)stream.readObject());
+			this.setDeathDay((StoryDate)stream.readObject());
+
+			// TODO: 性。将来的にSexオブジェクトから取得するよう変更する
+			long sexId = stream.readLong();
+			this.setSex(sexId == Sex.MALE.getId() ? Sex.MALE : sexId == Sex.FEMALE.getId() ? Sex.FEMALE : null);
+		}
+
+	}
+//</editor-fold>
 
 	public Person() {
 		this.initialize();
@@ -127,6 +187,13 @@ public class Person extends EditableEntity {
 	@Override
 	protected final void initialize() {
 		super.initialize();
+
+		this.firstName = new SimpleStringProperty("");
+		this.lastName = new SimpleStringProperty("");
+		this.sex = new SimpleObjectProperty<>();
+		this.birthDay = new SimpleObjectProperty<>();
+		this.deathDay = new SimpleObjectProperty<>();
+
 		this.setNameBinding();
 	}
 

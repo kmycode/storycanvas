@@ -17,7 +17,11 @@
  */
 package storycanvas.model.entity;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
@@ -78,6 +82,39 @@ public abstract class TreeEntity extends Entity {
 
 	public TreeItem<TreeEntity> getTreeItem() {
 		return this.rootTreeItem.get();
+	}
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="ファイル入出力メソッド">
+	/**
+	 * シリアライズを行う
+	 * @throws IOException ストリームの読込に失敗した時スロー
+	 */
+	protected final void writeChildren(ObjectOutputStream stream) throws IOException {
+
+		// エンティティの書き込み
+		stream.writeInt(this.getChildren().size());
+		for (TreeEntity entity : this.getChildren()) {
+			stream.writeObject(entity);
+		}
+	}
+
+	/**
+	 * デシリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームの読込に失敗した時スロー
+	 * @throws ClassNotFoundException 該当するバージョンのクラスが見つからなかった時にスロー
+	 */
+	public void readChildren(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+
+		// エンティティの取り込み
+		// わざわざ新しいリストを作ることで、リスナの呼び出し回数を節約。GUI描画処理が入れられたりするので
+		int size = stream.readInt();
+		ArrayList<TreeEntity> addList = new ArrayList<>();
+		for (int i = 0; i < size; i++) {
+			addList.add((TreeEntity)stream.readObject());
+		}
+		this.getChildren().addAll(addList);
 	}
 //</editor-fold>
 

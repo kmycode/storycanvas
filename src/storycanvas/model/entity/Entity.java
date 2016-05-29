@@ -17,14 +17,20 @@
  */
 package storycanvas.model.entity;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javax.imageio.ImageIO;
+import net.kmycode.javafx.ColorUtil;
 import storycanvas.resource.Resources;
 
 /**
@@ -57,7 +63,7 @@ public abstract class Entity implements Comparable<Entity> {
 	/**
 	 * エンティティの名前.
 	 */
-	private final StringProperty name = new SimpleStringProperty();
+	private final StringProperty name = new SimpleStringProperty("");
 
 	public String getName () {
 		return name.get();
@@ -75,6 +81,7 @@ public abstract class Entity implements Comparable<Entity> {
 	 * エンティティのアイコン.
 	 */
 	private final ObjectProperty<Image> icon = new SimpleObjectProperty<>(this.getDefaultIcon());
+	private boolean isOriginalIcon = false;
 
 	public Image getDefaultIcon () {
 		return Resources.getLargeIcon(this.getResourceName());
@@ -112,7 +119,7 @@ public abstract class Entity implements Comparable<Entity> {
 	/**
 	 * 色.
 	 */
-	private final ObjectProperty<Color> color = new SimpleObjectProperty<>();
+	private final ObjectProperty<Color> color = new SimpleObjectProperty<>(Color.TRANSPARENT);
 
 	public Color getColor () {
 		return color.get();
@@ -144,15 +151,79 @@ public abstract class Entity implements Comparable<Entity> {
 	}
 //</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="シリアライズ">
+	private static final long serialVersionUID = 1L;
+	private static final long serialInstanceVersionUID = 0000_00000000001L;
+
+	/**
+	 * シリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームへの出力に失敗した時スロー
+	 */
+	protected final void writeBaseObject(ObjectOutputStream stream) throws IOException {
+
+		// 固有UID書き込み
+		stream.writeLong(serialInstanceVersionUID);
+
+		// プロパティ書き込み
+		stream.writeLong(this.getId());
+		stream.writeLong(this.getOrder());
+		stream.writeUTF(this.getName());
+		ColorUtil.writeObject(this.getColor(), stream);
+		stream.writeBoolean(this.isOriginalIcon);
+		if (this.isOriginalIcon) {
+			ImageIO.write(SwingFXUtils.fromFXImage(this.getIcon(), null), "png", stream);
+		}
+	}
+
+	/**
+	 * デシリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームの読込に失敗した時スロー
+	 * @throws ClassNotFoundException 該当するバージョンのクラスが見つからなかった時にスロー
+	 */
+	protected final void readBaseObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+
+		long uid = stream.readLong();
+		if (uid == serialInstanceVersionUID) {
+
+			// プロパティ読込
+			this.setId(stream.readLong());
+			this.setOrder(stream.readLong());
+			this.setName(stream.readUTF());
+			this.setColor(ColorUtil.readObject(stream));
+			this.isOriginalIcon = stream.readBoolean();
+			if (this.isOriginalIcon) {
+				this.setIcon(SwingFXUtils.toFXImage(ImageIO.read(stream), null));
+			}
+		}
+	}
+//</editor-fold>
+
 //<editor-fold defaultstate="collapsed" desc="メソッド">
+	/**
+	 * コンストラクタです.
+	 */
+	protected Entity() {
+		long id = this.getNextID();
+		this.setId(id);
+		this.setOrder(id);
+
+		this.icon.addListener(e -> {
+			if (this.icon.get() == null) {
+				this.icon.set(this.getDefaultIcon());
+				this.isOriginalIcon = false;
+			} else {
+				this.isOriginalIcon = true;
+			}
+		});
+	}
+
 	/**
 	 * 事実上のコンストラクタです。
 	 * これは、シリアライズにあたってreadObjectメソッドから呼び出されることを想定しています。.
 	 */
 	protected void initialize() {
-		long id = this.getNextID();
-		this.setId(id);
-		this.setOrder(id);
 	}
 
 	/**

@@ -52,6 +52,11 @@ public interface EntitySetModel<E extends Entity> {
 	public void delete(E entity);
 
 	/**
+	 * エンティティを全削除.
+	 */
+	public void clear();
+
+	/**
 	 * 現在選択されているエンティティを削除.
 	 */
 	public default void delete() {

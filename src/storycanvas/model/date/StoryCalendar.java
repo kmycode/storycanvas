@@ -78,13 +78,13 @@ public class StoryCalendar implements Serializable {
 		ANNO_DOMINI.locked = true;
 	}
 	
-	private boolean locked = false;
-	private final List<Month> months = new CheckedArrayList<>();
-	private final List<Weekday> weekdays = new CheckedArrayList<>();
-	private int hourMax = 24;
-	private int minuteMax = 60;
-	private int secondMax = 60;
-	private StoryDate aSunday;			// ある日曜日（どの日曜日でも構わない）曜日計算の基準
+	private transient boolean locked = false;
+	private transient final List<Month> months = new CheckedArrayList<>();
+	private transient final List<Weekday> weekdays = new CheckedArrayList<>();
+	private transient int hourMax = 24;
+	private transient int minuteMax = 60;
+	private transient int secondMax = 60;
+	private transient StoryDate aSunday;			// ある日曜日（どの日曜日でも構わない）曜日計算の基準
 
 	// うるう年の日数を判定するリスナ
 	public interface LeapSizeListener extends EventListener {
