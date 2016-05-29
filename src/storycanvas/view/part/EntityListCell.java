@@ -35,7 +35,10 @@ public class EntityListCell<E extends Entity> extends ListCell<E> {
 			this.setGraphic(null);
 			this.setText("");
 		} else {
-			this.setGraphic(new ImageView(item.getIcon()));
+			ImageView iv = new ImageView(item.getIcon());
+			iv.setFitHeight(24);
+			iv.setFitWidth(24);
+			this.setGraphic(iv);
 			this.setText(item.getName());
 		}
    }
