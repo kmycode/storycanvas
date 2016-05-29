@@ -193,4 +193,19 @@ public abstract class TreeEntity extends Entity {
 		}
 	}
 
+	/**
+	 * 指定したIDを持つエンティティを取得する
+	 * @param ID
+	 * @return エンティティ。見つからなければnull
+	 */
+	public TreeEntity get(long id) {
+		for (TreeEntity te : this.children) {
+			TreeEntity e = te.get(id);
+			if (e != null) {
+				return e;
+			}
+		}
+		return null;
+	}
+
 }

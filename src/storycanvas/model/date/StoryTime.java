@@ -17,6 +17,9 @@
  */
 package storycanvas.model.date;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
@@ -26,7 +29,7 @@ import java.io.Serializable;
  */
 public class StoryTime implements Serializable, Comparable<StoryTime> {
 
-	private final StoryCalendar calendar;
+	private transient StoryCalendar calendar;
 
 	/**
 	 * コンストラクタ。publicでないため、外部から直接呼ぶことは出来ない。
@@ -37,9 +40,9 @@ public class StoryTime implements Serializable, Comparable<StoryTime> {
 		this.calendar = c;
 	}
 
-	private int hour;
-	private int minute;
-	private int second;
+	private transient int hour;
+	private transient int minute;
+	private transient int second;
 
 	public int getHour () {
 		return hour;
@@ -117,5 +120,50 @@ public class StoryTime implements Serializable, Comparable<StoryTime> {
 			}
 		}
 	}
+
+//<editor-fold defaultstate="collapsed" desc="シリアライズ">
+	private static final long serialVersionUID = 1L;
+	private static final long serialInstanceVersionUID = 3_00000000001L;
+
+	/**
+	 * シリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームへの出力に失敗した時スロー
+	 */
+	private void writeObject(ObjectOutputStream stream) throws IOException {
+
+		// 固有UID書き込み
+		stream.writeLong(serialInstanceVersionUID);
+
+		// プロパティ書き込み
+		stream.writeLong(0L);			// CalendarのIDのために予約
+		stream.writeInt(this.getHour());
+		stream.writeInt(this.getMinute());
+		stream.writeInt(this.getSecond());
+	}
+
+	/**
+	 * デシリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームの読込に失敗した時スロー
+	 * @throws ClassNotFoundException 該当するバージョンのクラスが見つからなかった時にスロー
+	 */
+	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+
+		long uid = stream.readLong();
+		if (uid == serialInstanceVersionUID) {
+
+			// 暫定：暦を西暦にしておく
+			this.calendar = StoryCalendar.ANNO_DOMINI;
+
+			// プロパティ読込
+			stream.readLong();
+			this.setHour(stream.readInt());
+			this.setMinute(stream.readInt());
+			this.setSecond(stream.readInt());
+		}
+
+	}
+//</editor-fold>
 
 }

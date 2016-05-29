@@ -31,6 +31,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javax.imageio.ImageIO;
 import net.kmycode.javafx.ColorUtil;
+import storycanvas.model.story.Story;
 import storycanvas.resource.Resources;
 
 /**
@@ -153,7 +154,7 @@ public abstract class Entity implements Comparable<Entity> {
 
 //<editor-fold defaultstate="collapsed" desc="シリアライズ">
 	private static final long serialVersionUID = 1L;
-	private static final long serialInstanceVersionUID = 0000_00000000001L;
+	private static final long serialInstanceVersionUID = 1L;
 
 	/**
 	 * シリアライズを行う
@@ -200,7 +201,38 @@ public abstract class Entity implements Comparable<Entity> {
 	}
 //</editor-fold>
 
-//<editor-fold defaultstate="collapsed" desc="メソッド">
+//<editor-fold defaultstate="collapsed" desc="staticメソッド">
+	private static Story currentStory = null;
+	
+	/**
+	 * これから読み込むストーリーをセットアップする
+	 * @param story ストーリー
+	 */
+	public static void setup(Story story) {
+		currentStory = story;
+		entityCount = 0;
+	}
+	
+	/**
+	 * IDからストーリーラインを取得
+	 * @param id ストーリーラインのID
+	 * @return ストーリーライン。見つからなければnull
+	 */
+	static Storyline getStoryline(long id) {
+		return currentStory.getStoryline(id);
+	}
+	
+	/**
+	 * IDから編を取得
+	 * @param id 編のID
+	 * @return 編。見つからなければnull
+	 */
+	static Part getPart(long id) {
+		return currentStory.getPart(id);
+	}
+//</editor-fold>
+	
+//<editor-fold defaultstate="collapsed" desc="コンストラクタ">
 	/**
 	 * コンストラクタです.
 	 */
@@ -208,7 +240,7 @@ public abstract class Entity implements Comparable<Entity> {
 		long id = this.getNextID();
 		this.setId(id);
 		this.setOrder(id);
-
+		
 		this.icon.addListener(e -> {
 			if (this.icon.get() == null) {
 				this.icon.set(this.getDefaultIcon());
@@ -218,14 +250,25 @@ public abstract class Entity implements Comparable<Entity> {
 			}
 		});
 	}
-
+	
 	/**
 	 * 事実上のコンストラクタです。
 	 * これは、シリアライズにあたってreadObjectメソッドから呼び出されることを想定しています。.
 	 */
 	protected void initialize() {
+		if (currentStory == null) {
+			throw new StoryNotSetuppedError();
+		}
 	}
+	
+	/**
+	 * ストーリーが設定されていないことについてのエラー.
+	 */
+	private class StoryNotSetuppedError extends RuntimeException {
+	}
+//</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="メソッド">
 	/**
 	 * エンティティを新規作成する時、新しいIDを取得します。
 	 * この数値は、エンティティの順番（order）として使われる場合があります。

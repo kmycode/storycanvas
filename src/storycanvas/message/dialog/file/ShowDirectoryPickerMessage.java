@@ -15,45 +15,32 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package storycanvas.view.window;
+package storycanvas.message.dialog.file;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import storycanvas.model.story.Story;
+import javafx.beans.property.StringProperty;
+import net.kmycode.javafx.Message;
 
 /**
- * メインメニューのコントローラクラス。
- * MainWindowのメニューとして使用される
+ * ディレクトリ選択画面を開く
  *
  * @author KMY
  */
-public class MainMenuController implements Initializable {
+public class ShowDirectoryPickerMessage extends Message {
 
-	/**
-	 * コントローラを初期化.
-	 */
-	@Override
-	public void initialize (URL url, ResourceBundle rb) {
-		// TODO
+	private final StringProperty selectedFileName;
+	private final String defaultPath;
+
+	public ShowDirectoryPickerMessage(StringProperty selectedFileName, String defaultPath) {
+		this.selectedFileName = selectedFileName;
+		this.defaultPath = defaultPath;
 	}
 
-	/**
-	 * ファイル -> 開く.
-	 */
-	@FXML
-	public void openAction(ActionEvent e) {
-		Story.getCurrent().load();
+	public StringProperty selectedFileNameProperty() {
+		return this.selectedFileName;
 	}
 
-	/**
-	 * ファイル -> 保存.
-	 */
-	@FXML
-	public void saveAction(ActionEvent e) {
-		Story.getCurrent().save();
+	public String getDefaultPath() {
+		return this.defaultPath;
 	}
 
 }

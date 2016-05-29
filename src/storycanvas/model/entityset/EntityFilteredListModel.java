@@ -17,6 +17,9 @@
  */
 package storycanvas.model.entityset;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.EventListener;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -53,6 +56,35 @@ public class EntityFilteredListModel<E extends Entity> extends EntityListModel<E
 		return hiddenEntities;
 	}
 //</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="ファイル入出力メソッド">
+	/**
+	 * シリアライズを行う
+	 * @throws IOException ストリームの読込に失敗した時スロー
+	 */
+	public void writeObject(ObjectOutputStream stream) throws IOException {
+
+		// エンティティの書き込み
+		ObservableList<E> entities = this.getAllEntities();
+		stream.writeInt(entities.size());
+		for (E entity : entities) {
+			stream.writeObject(entity);
+		}
+	}
+
+	/**
+	 * デシリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームの読込に失敗した時スロー
+	 * @throws ClassNotFoundException 該当するバージョンのクラスが見つからなかった時にスロー
+	 */
+	public void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+		super.readObject(stream);
+
+		// エンティティを全部隠してしまう
+		this.hideAll();
+	}
+//</editor-fold>
 	
 	/**
 	 * 公開されたエンティティ、隠されたエンティティ、全てを組み合わせたリストを返す
@@ -83,6 +115,41 @@ public class EntityFilteredListModel<E extends Entity> extends EntityListModel<E
 	}
 
 	/**
+	 * 全てのエンティティを隠す。他の処理から見えない状態にする.
+	 */
+	public void hideAll() {
+		this.hiddenEntities.addAll(this.getEntities());
+		this.getEntities().clear();
+	}
+
+	/**
+	 * 全てのエンティティを、他の処理から見える状態にする.
+	 */
+	public void showAll() {
+		this.getEntities().addAll(this.hiddenEntities);
+		this.hiddenEntities.clear();
+	}
+
+	/**
+	 * エンティティを削除
+	 * @param entity 削除するエンティティ
+	 */
+	@Override
+	public void delete(E entity) {
+		super.delete(entity);
+		this.hiddenEntities.remove(entity);
+	}
+
+	/**
+	 * エンティティを全削除.
+	 */
+	@Override
+	public void clear() {
+		super.clear();
+		this.hiddenEntities.clear();
+	}
+
+	/**
 	 * orderが指定したシーン以上であるエンティティの順番を1つずつ足し算してずらす
 	 * 隠されたエンティティのリストに対しても処理を行う
 	 * @param entity 指定するエンティティ。orderの値がこのエンティティのもの以上であるエンティティに対して処理される
@@ -96,6 +163,23 @@ public class EntityFilteredListModel<E extends Entity> extends EntityListModel<E
 				e.setOrder(e.getOrder() + 1);
 			}
 		}
+	}
+
+	/**
+	 * 指定したエンティティを取得する
+	 * @param id エンティティのID
+	 * @return エンティティ。見つからなければnull
+	 */
+	public E get(long id) {
+		E result = super.get(id);
+		if (result == null) {
+			for (E e : this.hiddenEntities) {
+				if (e.getId() == id) {
+					return e;
+				}
+			}
+		}
+		return result;
 	}
 	
 //<editor-fold defaultstate="collapsed" desc="リスナインターフェイス">

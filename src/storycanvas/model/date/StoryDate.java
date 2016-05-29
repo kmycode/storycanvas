@@ -135,7 +135,7 @@ public class StoryDate implements Serializable, Comparable<StoryDate> {
 
 //<editor-fold defaultstate="collapsed" desc="シリアライズ">
 	private static final long serialVersionUID = 1L;
-	private static final long serialInstanceVersionUID = 0002_00000000001L;
+	private static final long serialInstanceVersionUID = 2_00000000001L;
 
 	/**
 	 * シリアライズを行う

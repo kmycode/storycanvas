@@ -39,7 +39,7 @@ public class Place extends TreeEntity implements Serializable {
 
 //<editor-fold defaultstate="collapsed" desc="シリアライズ">
 	private static final long serialVersionUID = 1L;
-	private static final long serialInstanceVersionUID = 0006_00000000001L;
+	private static final long serialInstanceVersionUID = 6_00000000001L;
 
 	/**
 	 * シリアライズを行う

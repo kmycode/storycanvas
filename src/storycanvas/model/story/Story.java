@@ -23,11 +23,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.TreeItem;
 import javafx.scene.paint.Color;
 import net.kmycode.javafx.Messenger;
+import storycanvas.message.dialog.file.ShowDirectoryPickerMessage;
 import storycanvas.message.entity.edit.EmptyEditMessage;
 import storycanvas.message.entity.edit.PartEditMessage;
 import storycanvas.message.entity.edit.PersonEditMessage;
@@ -42,13 +46,11 @@ import storycanvas.message.entity.list.init.MainStorylineViewInitializeMessage;
 import storycanvas.message.entity.list.select.MainPartTableSelectItemMessage;
 import storycanvas.message.entity.list.select.MainPersonTableSelectItemMessage;
 import storycanvas.message.entity.list.select.MainPlaceTableSelectItemMessage;
-import storycanvas.model.date.StoryCalendar;
-import storycanvas.model.date.StoryDate;
+import storycanvas.model.entity.Entity;
 import storycanvas.model.entity.Part;
 import storycanvas.model.entity.Person;
 import storycanvas.model.entity.Place;
 import storycanvas.model.entity.Scene;
-import storycanvas.model.entity.Sex;
 import storycanvas.model.entity.Storyline;
 import storycanvas.model.entityset.EntityFilteredListModel;
 import storycanvas.model.entityset.EntityListModel;
@@ -67,6 +69,10 @@ public class Story {
 	public Story() {
 
 		setCurrent(this);
+		this.places = new EntityTreeModel<>(new Place());
+
+		// TODO: メイン画面に表示する処理。テストのため挿入
+		this.reloadView();
 
 		// リストで登場人物が選択された時
 		this.persons.selectedEntityProperty().addListener(e -> {
@@ -113,6 +119,7 @@ public class Story {
 			}
 		});
 
+		/*
 		// TODO: テスト用データ
 		Person p1 = new Person();
 		p1.setLastName("中村");
@@ -152,10 +159,11 @@ public class Story {
 		s2.getScenes().add(c2);
 		
 		this.storylines.filtering(e -> false);
+		*/
 
 		// TODO: シリアライズテスト
-		this.save("testdata");
-		this.load("testdata");
+		//this.save("testdata");
+		//this.load("testdata");
 
 		// TODO: 日付計算テスト
 		/*
@@ -187,7 +195,7 @@ public class Story {
 		current.addListener(e -> {
 			Story mainStory = getCurrent();
 			if (mainStory != null) {
-				mainStory.reloadView();
+				Entity.setup(mainStory);
 			}
 		});
 	}
@@ -202,7 +210,7 @@ public class Story {
 	/**
 	 * 場所一覧.
 	 */
-	private final EntityTreeModel<Place> places = new EntityTreeModel<>(new Place());
+	private final EntityTreeModel<Place> places;
 
 	/**
 	 * ストーリーライン一覧.
@@ -237,6 +245,17 @@ public class Story {
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="ファイル入出力メソッド">
+	/**
+	 * フォルダ選択画面を表示し、選択されたものをロードする.
+	 */
+	public void load() {
+		StringProperty selected = new SimpleStringProperty();
+		Messenger.getInstance().send(new ShowDirectoryPickerMessage(selected, null));
+		if (selected.get() != null && !selected.get().isEmpty()) {
+			this.load(selected.get());
+		}
+	}
+
 	public void load(String folderName) {
 		try {
 			this.readObject(folderName);
@@ -244,6 +263,16 @@ public class Story {
 			ex.printStackTrace();
 		} catch (ClassNotFoundException ex) {
 			ex.printStackTrace();
+		}
+	}
+	/**
+	 * フォルダ選択画面を表示し、選択された場所へセーブする.
+	 */
+	public void save() {
+		StringProperty selected = new SimpleStringProperty();
+		Messenger.getInstance().send(new ShowDirectoryPickerMessage(selected, null));
+		if (selected.get() != null && !selected.get().isEmpty()) {
+			this.save(selected.get());
 		}
 	}
 
@@ -279,6 +308,27 @@ public class Story {
 		stream = new ObjectOutputStream(new FileOutputStream(folderName + "/" + "place.scb"));
 		this.places.writeObject(stream);
 		stream.close();
+		stream = new ObjectOutputStream(new FileOutputStream(folderName + "/" + "part.scb"));
+		this.parts.writeObject(stream);
+		stream.close();
+		stream = new ObjectOutputStream(new FileOutputStream(folderName + "/" + "storyline.scb"));
+		this.storylines.writeObject(stream);
+		stream.close();
+		stream = new ObjectOutputStream(new FileOutputStream(folderName + "/" + "scene.scb"));
+		{
+			List<Storyline> lines = this.storylines.getAllEntities();
+			int size = 0;
+			for (Storyline line : lines) {
+				size += line.getScenes().size();
+			}
+			stream.writeInt(size);
+			for (Storyline line : lines) {
+				for (Scene s : line.getScenes()) {
+					stream.writeObject(s);
+				}
+			}
+		}
+		stream.close();
 	}
 
 	/**
@@ -304,6 +354,22 @@ public class Story {
 		stream = new ObjectInputStream(new FileInputStream(folderName + "/" + "place.scb"));
 		this.places.clear();
 		this.places.readObject(stream);
+		stream.close();
+		stream = new ObjectInputStream(new FileInputStream(folderName + "/" + "part.scb"));
+		this.parts.clear();
+		this.parts.readObject(stream);
+		stream.close();
+		stream = new ObjectInputStream(new FileInputStream(folderName + "/" + "storyline.scb"));
+		this.storylines.clear();
+		this.storylines.readObject(stream);
+		stream.close();
+		stream = new ObjectInputStream(new FileInputStream(folderName + "/" + "scene.scb"));
+		{
+			int size = stream.readInt();
+			for (int i = 0; i < size; i++) {
+				stream.readObject();
+			}
+		}
 		stream.close();
 	}
 //</editor-fold>
@@ -417,6 +483,15 @@ public class Story {
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="ストーリーラインの操作">
+	/**
+	 * 指定したIDを持つストーリーラインを取得
+	 * @param id ストーリーラインのID
+	 * @return ストーリーライン。なければnull
+	 */
+	public Storyline getStoryline(long id) {
+		return this.storylines.get(id);
+	}
+
 	/**
 	 * ストーリーラインの末尾への追加.
 	 */
@@ -713,6 +788,15 @@ public class Story {
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="編の操作">
+	/**
+	 * 指定したIDを持つ編を取得
+	 * @param id 編のID
+	 * @return 編。なければnull
+	 */
+	public Part getPart(long id) {
+		return this.parts.get(id);
+	}
+
 	/**
 	 * 編を追加.
 	 */

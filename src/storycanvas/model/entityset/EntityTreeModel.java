@@ -38,7 +38,7 @@ public class EntityTreeModel<E extends TreeEntity> implements EntitySetModel<E> 
 	/**
 	 * ルートとなるエンティティ.
 	 */
-	private E rootEntity;
+	private final E rootEntity;
 
 //<editor-fold defaultstate="collapsed" desc="プロパティ">
 	/**
@@ -313,5 +313,14 @@ public class EntityTreeModel<E extends TreeEntity> implements EntitySetModel<E> 
 	 */
 	public void left() {
 		this.left(this.getSelectedEntity());
+	}
+
+	/**
+	 * 指定したエンティティを取得する
+	 * @param id エンティティのID
+	 * @return エンティティ。見つからなければnull
+	 */
+	public E get(long id) {
+		return (E)this.rootEntity.get(id);
 	}
 }

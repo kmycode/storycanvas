@@ -123,7 +123,7 @@ public class Person extends EditableEntity implements Serializable {
 	
 //<editor-fold defaultstate="collapsed" desc="シリアライズ">
 	private static final long serialVersionUID = 1L;
-	private static final long serialInstanceVersionUID = 0001_00000000001L;
+	private static final long serialInstanceVersionUID = 1_00000000001L;
 
 	/**
 	 * シリアライズを行う

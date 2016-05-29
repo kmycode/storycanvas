@@ -17,6 +17,10 @@
  */
 package storycanvas.model.entity;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.List;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
@@ -31,13 +35,13 @@ import net.kmycode.javafx.SimpleWeakObjectProperty;
  *
  * @author KMY
  */
-public class Storyline extends Entity {
+public class Storyline extends Entity implements Serializable {
 
 //<editor-fold defaultstate="collapsed" desc="プロパティ">
 	/**
-	 * 子となるシーン
+	 * 子となるシーン.
 	 */
-	private final ListProperty<Scene> scenes = new ReadOnlyListWrapper<>(FXCollections.observableArrayList());
+	private ListProperty<Scene> scenes;
 	
 	public ObservableList<Scene> getScenes () {
 		return scenes.get();
@@ -54,7 +58,7 @@ public class Storyline extends Entity {
 	/**
 	 * 所属する編.
 	 */
-	private final ObjectProperty<Part> part = new SimpleWeakObjectProperty<>();
+	private ObjectProperty<Part> part;
 
 	public Part getPart () {
 		return part.get();
@@ -91,6 +95,56 @@ public class Storyline extends Entity {
 	}
 //</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="シリアライズ">
+	private static final long serialVersionUID = 1L;
+	private static final long serialInstanceVersionUID = 8_00000000001L;
+
+	/**
+	 * シリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームへの出力に失敗した時スロー
+	 */
+	private void writeObject(ObjectOutputStream stream) throws IOException {
+
+		this.writeBaseObject(stream);
+
+		// 固有UID書き込み
+		stream.writeLong(serialInstanceVersionUID);
+
+		// 所属する編
+		stream.writeLong(this.getPart().getId());
+
+		// プロパティ書き込み
+	}
+
+	/**
+	 * デシリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームの読込に失敗した時スロー
+	 * @throws ClassNotFoundException 該当するバージョンのクラスが見つからなかった時にスロー
+	 */
+	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+
+		this.readBaseObject(stream);
+
+		long uid = stream.readLong();
+		if (uid == serialInstanceVersionUID) {
+
+			// コンストラクタ
+			this.initialize();
+
+			// 所属する編
+			Part part = Entity.getPart(stream.readLong());
+			if (part != null) {
+				part.getStorylines().add(this);
+			}
+
+			// プロパティ読込
+		}
+
+	}
+//</editor-fold>
+
 //<editor-fold defaultstate="collapsed" desc="コンストラクタ">
 	public Storyline() {
 		this.initialize();
@@ -100,6 +154,9 @@ public class Storyline extends Entity {
 	protected final void initialize() {
 
 		super.initialize();
+
+		this.scenes = new ReadOnlyListWrapper<>(FXCollections.observableArrayList());
+		this.part = new SimpleWeakObjectProperty<>();
 
 		// シーンリストと、各シーンにおけるストーリーラインとのリンクを自動的に連動させる
 		this.scenes.addListener((ListChangeListener.Change<? extends Scene> e) -> {

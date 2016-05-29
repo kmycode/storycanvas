@@ -17,21 +17,30 @@
  */
 package storycanvas.model.entity;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import net.kmycode.javafx.SimpleWeakObjectProperty;
+import storycanvas.model.date.StoryDate;
+import storycanvas.model.date.StoryTime;
 
 /**
  * シーン
  *
  * @author KMY
  */
-public class Scene extends Entity {
+public class Scene extends Entity implements Serializable {
 
 //<editor-fold defaultstate="collapsed" desc="プロパティ">
 	/**
-	 * 属するストーリーライン
+	 * 属するストーリーライン.
 	 */
-	private final ObjectProperty<Storyline> storyline = new SimpleWeakObjectProperty<>();
+	private ObjectProperty<Storyline> storyline;
 	
 	public Storyline getStoryline () {
 		return storyline.get();
@@ -66,10 +75,167 @@ public class Scene extends Entity {
 			this.setStoryline(line);
 		}
 	}
+
+	/**
+	 * テキスト.
+	 */
+	private StringProperty text = new SimpleStringProperty("");
+
+	public String getText () {
+		return text.get();
+	}
+
+	public void setText (String value) {
+		text.set(value);
+	}
+
+	public StringProperty textProperty () {
+		return text;
+	}
+
+	/**
+	 * 開始日付.
+	 */
+	private ObjectProperty<StoryDate> startDate = new SimpleObjectProperty<>();
+
+	public StoryDate getStartDate () {
+		return startDate.get();
+	}
+
+	public void setStartDate (StoryDate value) {
+		startDate.set(value);
+	}
+
+	public ObjectProperty startDateProperty () {
+		return startDate;
+	}
+
+	/**
+	 * 開始時刻.
+	 */
+	private ObjectProperty<StoryTime> startTime = new SimpleObjectProperty<>();
+
+	public StoryTime getStartTime () {
+		return startTime.get();
+	}
+
+	public void setStartTime (StoryTime value) {
+		startTime.set(value);
+	}
+
+	public ObjectProperty startTimeProperty () {
+		return startTime;
+	}
+
+	/**
+	 * 終了日付.
+	 */
+	private ObjectProperty<StoryDate> endDate = new SimpleObjectProperty<>();
+
+	public StoryDate getEndDate () {
+		return endDate.get();
+	}
+
+	public void setEndDate (StoryDate value) {
+		endDate.set(value);
+	}
+
+	public ObjectProperty endDateProperty () {
+		return endDate;
+	}
+
+	/**
+	 * 終了時刻.
+	 */
+	private ObjectProperty<StoryTime> endTime = new SimpleObjectProperty<>();
+
+	public StoryTime getEndTime () {
+		return endTime.get();
+	}
+
+	public void setEndTime (StoryTime value) {
+		endTime.set(value);
+	}
+
+	public ObjectProperty endTimeProperty () {
+		return endTime;
+	}
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="シリアライズ">
+	private static final long serialVersionUID = 1L;
+	private static final long serialInstanceVersionUID = 7_00000000001L;
+
+	/**
+	 * シリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームへの出力に失敗した時スロー
+	 */
+	private void writeObject(ObjectOutputStream stream) throws IOException {
+
+		this.writeBaseObject(stream);
+
+		// 固有UID書き込み
+		stream.writeLong(serialInstanceVersionUID);
+
+		// 所属するストーリーライン
+		stream.writeLong(this.getStoryline().getId());
+
+		// プロパティ書き込み
+		stream.writeUTF(this.getText());
+		stream.writeObject(this.getStartDate());
+		stream.writeObject(this.getStartTime());
+		stream.writeObject(this.getEndDate());
+		stream.writeObject(this.getEndTime());
+	}
+
+	/**
+	 * デシリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームの読込に失敗した時スロー
+	 * @throws ClassNotFoundException 該当するバージョンのクラスが見つからなかった時にスロー
+	 */
+	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+
+		this.readBaseObject(stream);
+
+		long uid = stream.readLong();
+		if (uid == serialInstanceVersionUID) {
+
+			// コンストラクタ
+			this.initialize();
+
+			// 所属するストーリーライン
+			Storyline line = Entity.getStoryline(stream.readLong());
+			if (line != null) {
+				line.getScenes().add(this);
+			}
+
+			// プロパティ読込
+			this.setText(stream.readUTF());
+			this.setStartDate((StoryDate)stream.readObject());
+			this.setStartTime((StoryTime)stream.readObject());
+			this.setEndDate((StoryDate)stream.readObject());
+			this.setEndTime((StoryTime)stream.readObject());
+		}
+
+	}
 //</editor-fold>
 
 	public Scene() {
 		this.initialize();
+	}
+
+	@Override
+	protected void initialize() {
+		super.initialize();
+		
+		this.storyline = new SimpleWeakObjectProperty<>();
+		this.text = new SimpleStringProperty("");
+		this.startDate = new SimpleObjectProperty<>();
+		this.startTime = new SimpleObjectProperty<>();
+		this.endDate = new SimpleObjectProperty<>();
+		this.endTime = new SimpleObjectProperty<>();
 	}
 
 	@Override

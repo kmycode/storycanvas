@@ -17,6 +17,10 @@
  */
 package storycanvas.model.entity;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.List;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
@@ -29,13 +33,13 @@ import javafx.collections.ObservableList;
  *
  * @author KMY
  */
-public class Part extends Entity {
+public class Part extends Entity implements Serializable {
 
 //<editor-fold defaultstate="collapsed" desc="プロパティ">
 	/**
 	 * 子となるストーリーライン.
 	 */
-	private final ListProperty<Storyline> storylines = new ReadOnlyListWrapper<>(FXCollections.observableArrayList());
+	private ListProperty<Storyline> storylines;
 
 	public ObservableList<Storyline> getStorylines () {
 		return storylines.get();
@@ -50,6 +54,47 @@ public class Part extends Entity {
 	}
 //</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="シリアライズ">
+	private static final long serialVersionUID = 1L;
+	private static final long serialInstanceVersionUID = 9_00000000001L;
+
+	/**
+	 * シリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームへの出力に失敗した時スロー
+	 */
+	private void writeObject(ObjectOutputStream stream) throws IOException {
+
+		this.writeBaseObject(stream);
+
+		// 固有UID書き込み
+		stream.writeLong(serialInstanceVersionUID);
+
+		// プロパティ書き込み
+	}
+
+	/**
+	 * デシリアライズを行う
+	 * @param stream ストリーム
+	 * @throws IOException ストリームの読込に失敗した時スロー
+	 * @throws ClassNotFoundException 該当するバージョンのクラスが見つからなかった時にスロー
+	 */
+	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+
+		this.readBaseObject(stream);
+
+		long uid = stream.readLong();
+		if (uid == serialInstanceVersionUID) {
+
+			// コンストラクタ
+			this.initialize();
+
+			// プロパティ読込
+		}
+
+	}
+//</editor-fold>
+
 //<editor-fold defaultstate="collapsed" desc="コンストラクタ">
 	public Part() {
 		this.initialize();
@@ -59,6 +104,8 @@ public class Part extends Entity {
 	protected final void initialize() {
 
 		super.initialize();
+
+		this.storylines = new ReadOnlyListWrapper<>(FXCollections.observableArrayList());
 
 		// シーンリストと、各シーンにおけるストーリーラインとのリンクを自動的に連動させる
 		this.storylines.addListener((ListChangeListener.Change<? extends Storyline> e) -> {

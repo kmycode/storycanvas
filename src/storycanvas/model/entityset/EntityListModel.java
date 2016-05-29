@@ -298,4 +298,18 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 		}
 	}
 
+	/**
+	 * 指定したエンティティを取得する
+	 * @param id エンティティのID
+	 * @return エンティティ。見つからなければnull
+	 */
+	public E get(long id) {
+		for (E e : this.entities) {
+			if (e.getId() == id) {
+				return e;
+			}
+		}
+		return null;
+	}
+
 }

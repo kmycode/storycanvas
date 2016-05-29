@@ -65,4 +65,11 @@ public interface EntitySetModel<E extends Entity> {
 		}
 	}
 
+	/**
+	 * 指定したエンティティを取得する
+	 * @param id エンティティのID
+	 * @return エンティティ。見つからなければnull
+	 */
+	public E get(long id);
+
 }
