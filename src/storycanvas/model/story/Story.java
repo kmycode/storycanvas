@@ -46,6 +46,7 @@ import storycanvas.message.entity.list.init.MainStorylineViewInitializeMessage;
 import storycanvas.message.entity.list.select.MainPartTableSelectItemMessage;
 import storycanvas.message.entity.list.select.MainPersonTableSelectItemMessage;
 import storycanvas.message.entity.list.select.MainPlaceTableSelectItemMessage;
+import storycanvas.model.application.Config;
 import storycanvas.model.entity.Entity;
 import storycanvas.model.entity.Part;
 import storycanvas.model.entity.Person;
@@ -250,10 +251,12 @@ public class Story {
 	 */
 	public void load() {
 		StringProperty selected = new SimpleStringProperty();
-		Messenger.getInstance().send(new ShowDirectoryPickerMessage(selected, null));
+		StringProperty defaultPath = new SimpleStringProperty(Config.getInstance().getFolderOpenPath());
+		Messenger.getInstance().send(new ShowDirectoryPickerMessage(selected, defaultPath));
 		if (selected.get() != null && !selected.get().isEmpty()) {
 			this.load(selected.get());
 		}
+		Config.getInstance().setFolderOpenPath(defaultPath.get());
 	}
 
 	public void load(String folderName) {
@@ -270,10 +273,12 @@ public class Story {
 	 */
 	public void save() {
 		StringProperty selected = new SimpleStringProperty();
-		Messenger.getInstance().send(new ShowDirectoryPickerMessage(selected, null));
+		StringProperty defaultPath = new SimpleStringProperty(Config.getInstance().getFolderOpenPath());
+		Messenger.getInstance().send(new ShowDirectoryPickerMessage(selected, defaultPath));
 		if (selected.get() != null && !selected.get().isEmpty()) {
 			this.save(selected.get());
 		}
+		Config.getInstance().setFolderOpenPath(defaultPath.get());
 	}
 
 	public void save(String folderName) {

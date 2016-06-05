@@ -58,6 +58,7 @@ public class MainWindowController implements Initializable {
 			File f = dc.showDialog(StoryCanvas.getMainStage());
 			if (f != null) {
 				m.selectedFileNameProperty().set(f.getPath());
+				m.setDefaultPath(f.getPath());
 			} else {
 				m.selectedFileNameProperty().set("");
 			}

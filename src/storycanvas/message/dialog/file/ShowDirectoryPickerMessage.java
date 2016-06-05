@@ -17,6 +17,7 @@
  */
 package storycanvas.message.dialog.file;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import net.kmycode.javafx.Message;
 
@@ -28,9 +29,14 @@ import net.kmycode.javafx.Message;
 public class ShowDirectoryPickerMessage extends Message {
 
 	private final StringProperty selectedFileName;
-	private final String defaultPath;
+	private final StringProperty defaultPath;
 
 	public ShowDirectoryPickerMessage(StringProperty selectedFileName, String defaultPath) {
+		this.selectedFileName = selectedFileName;
+		this.defaultPath = new SimpleStringProperty(defaultPath);
+	}
+
+	public ShowDirectoryPickerMessage(StringProperty selectedFileName, StringProperty defaultPath) {
 		this.selectedFileName = selectedFileName;
 		this.defaultPath = defaultPath;
 	}
@@ -40,6 +46,14 @@ public class ShowDirectoryPickerMessage extends Message {
 	}
 
 	public String getDefaultPath() {
+		return this.defaultPath.get();
+	}
+
+	public void setDefaultPath(String var) {
+		this.defaultPath.set(var);
+	}
+
+	public StringProperty defaultPathProperty() {
 		return this.defaultPath;
 	}
 
