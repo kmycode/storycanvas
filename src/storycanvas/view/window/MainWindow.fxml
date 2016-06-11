@@ -23,7 +23,7 @@
 						<fx:include source="/storycanvas/view/node/StoryMainNode.fxml"/>
 					</content>
 				</DockNode>
-				<DockNode title="編集" prefWidth="300" dockPos="RIGHT" maxWidth="300.0" fx:id="entityEditorDockNode">
+				<DockNode title="編集" prefWidth="300" dockPos="RIGHT" fx:id="entityEditorDockNode">
 					<content>
 						<storycanvas.view.node.EntityEditorNode fx:id="entityEditor" />
 					</content>
