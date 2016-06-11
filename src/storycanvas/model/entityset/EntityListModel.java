@@ -312,4 +312,12 @@ public class EntityListModel<E extends Entity> implements EntitySetModel<E> {
 		return null;
 	}
 
+	/**
+	 * エンティティの数を取得する
+	 * @return エンティティの数
+	 */
+	public int count() {
+		return this.entities.size();
+	}
+
 }

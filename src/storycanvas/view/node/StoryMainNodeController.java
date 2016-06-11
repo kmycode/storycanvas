@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import storycanvas.model.story.Story;
 import storycanvas.view.part.EntityListButtonBox;
@@ -59,6 +60,9 @@ public class StoryMainNodeController implements Initializable {
 
 	@FXML
 	private EntityListButtonBox placeButtonBox;
+
+	@FXML
+	private Tab storyTab;
 
 	/**
 	 * Initializes the controller class.
@@ -99,6 +103,13 @@ public class StoryMainNodeController implements Initializable {
 		this.placeButtonBox.setOnDownAction(e -> Story.getCurrent().downPlace());
 		this.placeButtonBox.setOnLeftAction(e -> Story.getCurrent().leftPlace());
 		this.placeButtonBox.setOnRightAction(e -> Story.getCurrent().rightPlace());
+
+		// ストーリータブ表示時に、情報を自動で更新
+		this.storyTab.setOnSelectionChanged(e -> {
+			if (this.storyTab.isSelected()) {
+				Story.getCurrent().reloadStoryInformation();
+			}
+		});
 	}
 
 }

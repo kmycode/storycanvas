@@ -72,4 +72,10 @@ public interface EntitySetModel<E extends Entity> {
 	 */
 	public E get(long id);
 
+	/**
+	 * エンティティの数を取得する
+	 * @return エンティティの数
+	 */
+	public int count();
+
 }

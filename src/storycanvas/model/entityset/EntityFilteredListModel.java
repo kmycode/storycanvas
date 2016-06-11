@@ -181,6 +181,14 @@ public class EntityFilteredListModel<E extends Entity> extends EntityListModel<E
 		}
 		return result;
 	}
+
+	/**
+	 * エンティティの数を取得する
+	 * @return エンティティの数
+	 */
+	public int count() {
+		return super.count() + this.hiddenEntities.size();
+	}
 	
 //<editor-fold defaultstate="collapsed" desc="リスナインターフェイス">
 	/**

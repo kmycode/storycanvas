@@ -323,4 +323,12 @@ public class EntityTreeModel<E extends TreeEntity> implements EntitySetModel<E> 
 	public E get(long id) {
 		return (E)this.rootEntity.get(id);
 	}
+
+	/**
+	 * エンティティの数を取得する
+	 * @return エンティティの数
+	 */
+	public int count() {
+		return this.rootEntity.descendantsCount();
+	}
 }

@@ -208,4 +208,16 @@ public abstract class TreeEntity extends Entity {
 		return null;
 	}
 
+	/**
+	 * 全ての子孫の総数を返す
+	 * @return 子孫の総数
+	 */
+	public int descendantsCount() {
+		int c = 1;		// 自身を1カウント
+		for (TreeEntity e : this.children) {
+			c += e.descendantsCount();
+		}
+		return c;
+	}
+
 }

@@ -19,6 +19,7 @@ package storycanvas.model.story;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -46,6 +47,7 @@ import storycanvas.message.entity.list.init.MainStorylineViewInitializeMessage;
 import storycanvas.message.entity.list.select.MainPartTableSelectItemMessage;
 import storycanvas.message.entity.list.select.MainPersonTableSelectItemMessage;
 import storycanvas.message.entity.list.select.MainPlaceTableSelectItemMessage;
+import storycanvas.message.update.StoryInformationUpdateMessage;
 import storycanvas.model.application.Config;
 import storycanvas.model.entity.Entity;
 import storycanvas.model.entity.Part;
@@ -204,6 +206,11 @@ public class Story {
 
 //<editor-fold defaultstate="collapsed" desc="プロパティ">
 	/**
+	 * ストーリーの設定.
+	 */
+	private StoryConfig storyConfig = new StoryConfig();
+
+	/**
 	 * 登場人物一覧.
 	 */
 	private final EntityListModel<Person> persons = new EntityListModel<>();
@@ -243,6 +250,25 @@ public class Story {
 		// 表示する編が変わったら、それに対応したストーリーラインを表示させる
 		this.viewSelectedPart.addListener(e -> this.openPart());
 	}
+
+	/**
+	 * ストーリー全体の情報を更新する.
+	 */
+	public void reloadStoryInformation() {
+		int sceneCount = 0;
+		for (Storyline line : this.storylines.getAllEntities()) {
+			sceneCount += line.getScenes().size();
+		}
+		Messenger.getInstance().send(new StoryInformationUpdateMessage.Builder()
+														.setTitleProperty(this.storyConfig.titleProperty())
+														.setAuthorNameProperty(this.storyConfig.authorNameProperty())
+														.setPersonCount(this.persons.count())
+														.setPlaceCount(this.places.count())
+														.setSceneCount(sceneCount)
+														.setStorylineCount(this.storylines.count())
+														.setPartCount(this.parts.count())
+														.build());
+	}
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="ファイル入出力メソッド">
@@ -262,6 +288,7 @@ public class Story {
 	public void load(String folderName) {
 		try {
 			this.readObject(folderName);
+			this.reloadStoryInformation();
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		} catch (ClassNotFoundException ex) {
@@ -307,6 +334,9 @@ public class Story {
 		ObjectOutputStream stream;
 
 		// エンティティの書き込み
+		stream = new ObjectOutputStream(new FileOutputStream(folderName + "/" + "storyconfig.scb"));
+		stream.writeObject(this.storyConfig);
+		stream.close();
 		stream = new ObjectOutputStream(new FileOutputStream(folderName + "/" + "person.scb"));
 		this.persons.writeObject(stream);
 		stream.close();
@@ -352,6 +382,14 @@ public class Story {
 		ObjectInputStream stream;
 
 		// エンティティの読み込み
+		try {
+			// 後のコミットで追加されたファイルなので、存在しない場合に対応
+			stream = new ObjectInputStream(new FileInputStream(folderName + "/" + "storyconfig.scb"));
+			this.storyConfig = (StoryConfig)stream.readObject();
+			stream.close();
+		} catch (FileNotFoundException e) {
+			this.storyConfig = new StoryConfig();
+		}
 		stream = new ObjectInputStream(new FileInputStream(folderName + "/" + "person.scb"));
 		this.persons.clear();
 		this.persons.readObject(stream);

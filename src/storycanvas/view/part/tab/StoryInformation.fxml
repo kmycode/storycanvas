@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane id="GridPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass"
+		  hgap="8" vgap="10"
+		  xmlns:fx="http://javafx.com/fxml/1" fx:controller="storycanvas.view.part.tab.StoryInformationController">
+	<stylesheets>
+		<URL value="@/storycanvas/view/default.css"/>
+	</stylesheets>
+	<children>
+		<Label text="ストーリーの題名" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+		<TextField fx:id="title" text="" GridPane.rowIndex="1" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS"/>
+		<Label text="作者名" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+		<TextField fx:id="authorName" text="" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+		<Label text="登場人物数" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+		<Label fx:id="personCount" text="" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
+		<Label text="場所数" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+		<Label fx:id="placeCount" text="" GridPane.rowIndex="4" GridPane.columnIndex="2"/>
+		<Label text="シーン数" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+		<Label fx:id="sceneCount" text="" GridPane.rowIndex="5" GridPane.columnIndex="2"/>
+		<Label text="ストーリーライン数" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+		<Label fx:id="storylineCount" text="" GridPane.rowIndex="6" GridPane.columnIndex="2"/>
+		<Label text="章数" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+		<Label fx:id="partCount" text="" GridPane.rowIndex="7" GridPane.columnIndex="2"/>
+	</children>
+</GridPane>

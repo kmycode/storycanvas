@@ -31,6 +31,10 @@
 }
 
 /* 大きなアイコンを使ったタブ */
+.icon-middle-tab-pane .tab {
+	-fx-pref-width: 40px;
+	-fx-pref-height: 32px;
+}
 .icon-tab-pane .tab {
 	-fx-pref-width: 50px;
 	-fx-pref-height: 50px;

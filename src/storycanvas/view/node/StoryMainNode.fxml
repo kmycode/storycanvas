@@ -8,73 +8,119 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<TabPane xmlns:fx="http://javafx.com/fxml/1" fx:id="mainTabPane" side="LEFT" styleClass="icon-tab-pane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/8" fx:controller="storycanvas.view.node.StoryMainNodeController">
+<TabPane xmlns:fx="http://javafx.com/fxml/1" fx:id="mainTabPane" side="TOP" styleClass="icon-middle-tab-pane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/8" fx:controller="storycanvas.view.node.StoryMainNodeController">
 	<tabs>
-		<Tab fx:id="storylineTab" text="">
+		<Tab text="">
 			<graphic>
-				<ImageView pickOnBounds="true" preserveRatio="true" fitWidth="32" fitHeight="32">
+				<ImageView pickOnBounds="true" preserveRatio="true" fitWidth="24" fitHeight="24">
 					<image>
-						<Image url="@/storycanvas/resource/icon/storyline_large.png" />
+						<Image url="@/storycanvas/resource/icon/edit.png" />
 					</image>
 				</ImageView>
 			</graphic>
 			<content>
-				<VBox minHeight="0.0" minWidth="0.0">
-					<children>
-						<storycanvas.view.view.StorylineDesigner fx:id="mainStorylineDesigner" VBox.vgrow="ALWAYS" />
-					</children>
-				</VBox>
+				<TabPane side="LEFT" styleClass="icon-tab-pane" tabClosingPolicy="UNAVAILABLE">
+					<tabs>
+						<Tab fx:id="storylineTab" text="">
+							<graphic>
+								<ImageView pickOnBounds="true" preserveRatio="true" fitWidth="32" fitHeight="32">
+									<image>
+										<Image url="@/storycanvas/resource/icon/storyline_large.png" />
+									</image>
+								</ImageView>
+							</graphic>
+							<content>
+								<VBox minHeight="0.0" minWidth="0.0">
+									<children>
+										<storycanvas.view.view.StorylineDesigner fx:id="mainStorylineDesigner" VBox.vgrow="ALWAYS" />
+									</children>
+								</VBox>
+							</content>
+						</Tab>
+						<Tab fx:id="partTab" text="">
+							<graphic>
+								<ImageView pickOnBounds="true" preserveRatio="true" fitWidth="32" fitHeight="32">
+									<image>
+										<Image url="@/storycanvas/resource/icon/part_large.png" />
+									</image>
+								</ImageView>
+							</graphic>
+							<content>
+								<VBox minHeight="0.0" minWidth="0.0">
+									<children>
+										<fx:include fx:id="mainPartTable" source="/storycanvas/view/part/table/PartTableView.fxml"/>
+										<storycanvas.view.part.EntityListButtonBox fx:id="partButtonBox" />
+									</children>
+								</VBox>
+							</content>
+						</Tab>
+						<Tab fx:id="personTab" text="">
+							<graphic>
+								<ImageView pickOnBounds="true" preserveRatio="true" fitWidth="32" fitHeight="32">
+									<image>
+										<Image url="@/storycanvas/resource/icon/person_large.png" />
+									</image>
+								</ImageView>
+							</graphic>
+							<content>
+								<VBox minHeight="0.0" minWidth="0.0">
+									<children>
+										<fx:include fx:id="mainPersonTable" source="/storycanvas/view/part/table/PersonTableView.fxml"/>
+										<storycanvas.view.part.EntityListButtonBox fx:id="personButtonBox" />
+									</children>
+								</VBox>
+							</content>
+						</Tab>
+						<Tab fx:id="placeTab" text="">
+							<graphic>
+								<ImageView pickOnBounds="true" preserveRatio="true" fitWidth="32" fitHeight="32">
+									<image>
+										<Image url="@/storycanvas/resource/icon/place_large.png" />
+									</image>
+								</ImageView>
+							</graphic>
+							<content>
+								<VBox minHeight="0.0" minWidth="0.0">
+									<children>
+										<fx:include fx:id="mainPlaceTable" source="/storycanvas/view/part/table/PlaceTableView.fxml"/>
+										<storycanvas.view.part.EntityListButtonBox fx:id="placeButtonBox" />
+									</children>
+								</VBox>
+							</content>
+						</Tab>
+					</tabs>
+				</TabPane>
 			</content>
 		</Tab>
-		<Tab fx:id="partTab" text="">
+		<Tab text="" fx:id="storyTab">
 			<graphic>
-				<ImageView pickOnBounds="true" preserveRatio="true" fitWidth="32" fitHeight="32">
+				<ImageView pickOnBounds="true" preserveRatio="true" fitWidth="24" fitHeight="24">
 					<image>
-						<Image url="@/storycanvas/resource/icon/part_large.png" />
+						<Image url="@/storycanvas/resource/icon/story.png" />
 					</image>
 				</ImageView>
 			</graphic>
 			<content>
-				<VBox minHeight="0.0" minWidth="0.0">
-					<children>
-						<fx:include fx:id="mainPartTable" source="/storycanvas/view/part/table/PartTableView.fxml"/>
-						<storycanvas.view.part.EntityListButtonBox fx:id="partButtonBox" />
-					</children>
-				</VBox>
-			</content>
-		</Tab>
-		<Tab fx:id="personTab" text="">
-			<graphic>
-				<ImageView pickOnBounds="true" preserveRatio="true" fitWidth="32" fitHeight="32">
-					<image>
-						<Image url="@/storycanvas/resource/icon/person_large.png" />
-					</image>
-				</ImageView>
-			</graphic>
-			<content>
-				<VBox minHeight="0.0" minWidth="0.0">
-					<children>
-						<fx:include fx:id="mainPersonTable" source="/storycanvas/view/part/table/PersonTableView.fxml"/>
-						<storycanvas.view.part.EntityListButtonBox fx:id="personButtonBox" />
-					</children>
-				</VBox>
-			</content>
-		</Tab>
-		<Tab fx:id="placeTab" text="">
-			<graphic>
-				<ImageView pickOnBounds="true" preserveRatio="true" fitWidth="32" fitHeight="32">
-					<image>
-						<Image url="@/storycanvas/resource/icon/place_large.png" />
-					</image>
-				</ImageView>
-			</graphic>
-			<content>
-				<VBox minHeight="0.0" minWidth="0.0">
-					<children>
-						<fx:include fx:id="mainPlaceTable" source="/storycanvas/view/part/table/PlaceTableView.fxml"/>
-						<storycanvas.view.part.EntityListButtonBox fx:id="placeButtonBox" />
-					</children>
-				</VBox>
+				<TabPane side="LEFT" styleClass="icon-tab-pane" tabClosingPolicy="UNAVAILABLE">
+					<tabs>
+						<Tab fx:id="informationTab" text="">
+							<graphic>
+								<ImageView pickOnBounds="true" preserveRatio="true" fitWidth="32" fitHeight="32">
+									<image>
+										<Image url="@/storycanvas/resource/icon/information_large.png" />
+									</image>
+								</ImageView>
+							</graphic>
+							<content>
+								<VBox minHeight="0.0" minWidth="0.0">
+									<children>
+										<fx:include fx:id="mainInformationView" source="/storycanvas/view/part/tab/StoryInformation.fxml"/>
+									</children>
+								</VBox>
+							</content>
+						</Tab>
+					</tabs>
+				</TabPane>
 			</content>
 		</Tab>
 	</tabs>
